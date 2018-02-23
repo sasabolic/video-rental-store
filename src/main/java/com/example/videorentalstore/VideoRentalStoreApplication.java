@@ -1,4 +1,4 @@
-package com.vrs.videorentalstore;
+package com.example.videorentalstore;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
