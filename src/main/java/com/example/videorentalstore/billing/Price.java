@@ -10,7 +10,7 @@ public enum Price {
 
     private final BigDecimal value;
 
-    private Price(BigDecimal value) {
+    Price(BigDecimal value) {
         this.value = value;
     }
 
