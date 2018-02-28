@@ -1,20 +1,11 @@
-package com.example.videorentalstore.billing;
+package com.example.videorentalstore.inventory;
 
 import java.math.BigDecimal;
 
-public enum Price {
+public class Price {
 
-    PREMIUM_PRICE(BigDecimal.valueOf(40)),
+    public static final BigDecimal PREMIUM_PRICE = BigDecimal.valueOf(40);
 
-    BASIC_PRICE(BigDecimal.valueOf(30));
+    public static final BigDecimal BASIC_PRICE = BigDecimal.valueOf(30);
 
-    private final BigDecimal value;
-
-    Price(BigDecimal value) {
-        this.value = value;
-    }
-
-    public BigDecimal value() {
-        return this.value;
-    }
 }
