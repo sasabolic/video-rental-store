@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  mysql:
+    image: mysql:5.7.21
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: r00tpwd123
+      MYSQL_DATABASE: db_app
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: TheP@ssw0rd
+    ports:
+      - "3306:3306"
