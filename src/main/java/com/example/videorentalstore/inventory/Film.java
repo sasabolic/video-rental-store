@@ -1,28 +1,21 @@
 package com.example.videorentalstore.inventory;
 
-import java.time.Instant;
+import java.math.BigDecimal;
 
-public class Film {
+public abstract class Film {
 
-    private Long id;
     private String name;
-    private Instant releaseDate;
-    private int count;
 
-
-    public Long getId() {
-        return id;
+    public Film(String name) {
+        this.name = name;
     }
 
     public String getName() {
         return name;
     }
 
-    public Instant getReleaseDate() {
-        return releaseDate;
-    }
+    public abstract BigDecimal calculatePrice(long daysRented);
 
-    public int getCount() {
-        return count;
-    }
+    public abstract int calculateBonusPoints();
+
 }
