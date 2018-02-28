@@ -3,10 +3,7 @@ package com.example.videorentalstore.rental;
 import com.example.videorentalstore.inventory.Film;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -25,11 +22,22 @@ public class Rental {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "customer_id")
     private Long customerId;
-    private final Film film;
-    private final long daysRented;
-    private final Instant startDate;
+
+    @OneToOne
+    @JoinColumn(name="film_id")
+    private Film film;
+
+    @Column(name = "days_rented")
+    private long daysRented;
+
+    @Column(name = "start_date")
+    private Instant startDate;
+
+    @Column(name = "end_date")
     private Instant endDate;
+
     private Status status;
 
 

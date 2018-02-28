@@ -1,9 +1,13 @@
 package com.example.videorentalstore.inventory;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 
 import static com.example.videorentalstore.inventory.Price.PREMIUM_PRICE;
 
+@Entity
+@DiscriminatorValue("NEW_RELEASE")
 public class NewReleaseFilm extends Film {
 
     public NewReleaseFilm(String name) {

@@ -2,12 +2,30 @@ package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.rental.Rental;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Entity
 public class Customer {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "bonus_points")
+    private Long bonusPoints;
+
+    @OneToMany
+    @JoinColumn(name = "customer_id")
     private List<Rental> rentals = new ArrayList<>();
 
     public void addRental(Rental rental) {
