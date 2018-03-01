@@ -1,7 +1,7 @@
 package com.example.videorentalstore.customer.web;
 
 import com.example.videorentalstore.rental.RentalService;
-import com.example.videorentalstore.pricing.RentalDataFixtures;
+import com.example.videorentalstore.rental.RentalDataFixtures;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;

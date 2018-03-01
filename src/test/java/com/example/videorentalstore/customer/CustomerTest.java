@@ -1,7 +1,8 @@
-package com.example.videorentalstore.pricing;
+package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.rental.Rental;
+import com.example.videorentalstore.rental.RentalDataFixtures;
 import org.junit.Test;
 
 import java.math.BigDecimal;
