@@ -10,9 +10,19 @@ import static com.example.videorentalstore.inventory.Price.PREMIUM_PRICE;
 @DiscriminatorValue("NEW_RELEASE")
 public class NewReleaseFilm extends Film {
 
+
+    public NewReleaseFilm() {
+
+    }
+
     public NewReleaseFilm(String name) {
         super(name);
     }
+
+    public NewReleaseFilm(String name, int quantity) {
+        super(name, quantity);
+    }
+
 
     @Override
     public BigDecimal calculatePrice(long daysRented) {

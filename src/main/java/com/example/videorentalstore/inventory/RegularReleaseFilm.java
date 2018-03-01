@@ -10,8 +10,17 @@ import static com.example.videorentalstore.inventory.Price.BASIC_PRICE;
 @DiscriminatorValue("REGULAR_RELEASE")
 public class RegularReleaseFilm extends Film {
 
+
+    public RegularReleaseFilm() {
+
+    }
+
     public RegularReleaseFilm(String name) {
         super(name);
+    }
+
+    public RegularReleaseFilm(String name, int quantity) {
+        super(name, quantity);
     }
 
     @Override

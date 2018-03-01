@@ -1,8 +1,10 @@
 package com.example.videorentalstore.inventory;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface FilmRepository extends CrudRepository<Film, Long> {
 
-//    List<Customer> findById(String lastName);
+    Iterable<Film> findByNameContainingIgnoreCase(String name);
 }

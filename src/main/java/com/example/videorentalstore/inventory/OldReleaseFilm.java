@@ -10,8 +10,16 @@ import static com.example.videorentalstore.inventory.Price.BASIC_PRICE;
 @DiscriminatorValue("OLD_RELEASE")
 public class OldReleaseFilm extends Film {
 
+    public OldReleaseFilm() {
+
+    }
+
     public OldReleaseFilm(String name) {
         super(name);
+    }
+
+    public OldReleaseFilm(String name, int quantity) {
+        super(name, quantity);
     }
 
     @Override

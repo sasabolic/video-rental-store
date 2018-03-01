@@ -14,7 +14,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="type" type="varchar(50)"/>
-            <column name="count" type="int"/>
+            <column name="quantity" type="int"/>
         </createTable>
 
         <createTable tableName="rental">
