@@ -1,9 +1,8 @@
 package com.example.videorentalstore.customer.web;
 
 import com.example.videorentalstore.customer.Invoice;
-import com.example.videorentalstore.film.NewReleaseFilm;
-import com.example.videorentalstore.film.OldReleaseFilm;
-import com.example.videorentalstore.film.RegularReleaseFilm;
+import com.example.videorentalstore.film.Film;
+import com.example.videorentalstore.pricing.ReleaseType;
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalService;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +29,10 @@ public class CustomerRentalController {
     public List<Rental> get(@PathVariable("id") long customerId) {
         final Instant startDate = Instant.now().minus(3, ChronoUnit.DAYS);
         return Arrays.asList(
-                new Rental(new NewReleaseFilm("Matrix 11"), 1, startDate),
-                new Rental(new RegularReleaseFilm("Spider Man"), 5, startDate),
-                new Rental(new RegularReleaseFilm("Spider Man 2"), 2, startDate),
-                new Rental(new OldReleaseFilm("Out of Africa"), 7, startDate));
+                new Rental(new Film("Matrix 11", ReleaseType.NEW_RELEASE), 1, startDate),
+                new Rental(new Film("Spider Man", ReleaseType.REGULAR_RELEASE), 5, startDate),
+                new Rental(new Film("Spider Man 2", ReleaseType.REGULAR_RELEASE), 2, startDate),
+                new Rental(new Film("Out of Africa", ReleaseType.OLD_RELEASE), 7, startDate));
     }
 
     @PostMapping("/customers/{id}/rentals")

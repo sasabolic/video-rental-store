@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public class CreateFilmCmd {
 
+    private Long id;
     private String name;
     private String type;
     private int quantity;
@@ -14,4 +15,5 @@ public class CreateFilmCmd {
         this.type = type;
         this.quantity = quantity;
     }
+
 }

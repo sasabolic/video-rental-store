@@ -1,5 +1,7 @@
 package com.example.videorentalstore.film;
 
+import com.example.videorentalstore.pricing.ReleaseType;
+
 import java.util.Arrays;
 
 public class FilmDataFixtures {
@@ -7,43 +9,47 @@ public class FilmDataFixtures {
     public static Iterable<Film> films() {
         return Arrays.asList(
                 newReleaseFilm(),
-                new RegularReleaseFilm("Spider Man"),
-                new RegularReleaseFilm("Spider Man 2"),
-                new OldReleaseFilm("Out of Africa"));
+                new Film("Spider Man", ReleaseType.REGULAR_RELEASE),
+                new Film("Spider Man 2", ReleaseType.REGULAR_RELEASE),
+                new Film("Out of Africa", ReleaseType.OLD_RELEASE));
     }
 
     public static Iterable<Film> filmsWithSpiderMan() {
         return Arrays.asList(
-                new RegularReleaseFilm("Spider Man"),
-                new RegularReleaseFilm("Spider Man 2"));
+                new Film("Spider Man", ReleaseType.REGULAR_RELEASE),
+                new Film("Spider Man 2", ReleaseType.REGULAR_RELEASE));
     }
 
     public static Film newReleaseFilm() {
-        return new NewReleaseFilm("Matrix 11");
+        return new Film("Matrix 11", ReleaseType.NEW_RELEASE);
     }
 
     public static Film newReleaseFilm(String name) {
-        return new NewReleaseFilm(name);
+        return new Film(name, ReleaseType.NEW_RELEASE);
     }
 
     public static Film newReleaseFilm(String name, int quantity) {
-        return new NewReleaseFilm(name, quantity);
+        return new Film(name, ReleaseType.NEW_RELEASE, quantity);
     }
 
     public static Film regularReleaseFilm() {
-        return new RegularReleaseFilm("Spider Man");
+        return new Film("Spider Man", ReleaseType.REGULAR_RELEASE);
     }
 
     public static Film regularReleaseFilm(String name) {
-        return new RegularReleaseFilm(name);
+        return new Film(name, ReleaseType.REGULAR_RELEASE);
+    }
+
+    public static Film regularReleaseFilm(String name, int quantity) {
+        return new Film(name, ReleaseType.REGULAR_RELEASE, quantity);
     }
 
     public static Film oldReleaseFilm() {
-        return new OldReleaseFilm("Out of Africa");
+        return new Film("Out of Africa", ReleaseType.OLD_RELEASE);
     }
 
     public static Film oldReleaseFilm(String name) {
-        return new OldReleaseFilm(name);
+        return new Film(name, ReleaseType.OLD_RELEASE);
     }
 
 }

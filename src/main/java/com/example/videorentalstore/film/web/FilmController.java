@@ -1,12 +1,10 @@
 package com.example.videorentalstore.film.web;
 
-import com.example.videorentalstore.film.*;
+import com.example.videorentalstore.film.Film;
+import com.example.videorentalstore.film.FilmService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Arrays;
-import java.util.List;
 
 @RestController
 @RequestMapping("/films")
@@ -20,12 +18,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> getAll() {
-        return Arrays.asList(
-                new NewReleaseFilm("Matrix 11"),
-                new RegularReleaseFilm("Spider Man"),
-                new RegularReleaseFilm("Spider Man 2"),
-                new OldReleaseFilm("Out of Africa")
-        );
+    public Iterable<Film> getAll() {
+        return this.filmService.findAll();
     }
 }

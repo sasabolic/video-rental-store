@@ -10,7 +10,7 @@ public interface FilmService {
 
     Film save(CreateFilmCmd createFilmCmd);
 
-    void update(UpdateFilmCmd updateFilmCmd);
+    Film update(UpdateFilmCmd updateFilmCmd);
 
     void delete(Long id);
 

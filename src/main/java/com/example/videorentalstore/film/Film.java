@@ -1,20 +1,13 @@
 package com.example.videorentalstore.film;
 
+import com.example.videorentalstore.pricing.ReleasePolicyFactory;
+import com.example.videorentalstore.pricing.ReleaseType;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(
-        discriminatorType = DiscriminatorType.STRING,
-        name = "type",
-        columnDefinition = "VARCHAR(50)"
-)
-public abstract class Film {
-
-    static final String NEW_RELEASE = "NEW_RELEASE";
-    static final String REGULAR_RELEASE = "REGULAR_RELEASE";
-    static final String OLD_RELEASE = "OLD_RELEASE";
+public class Film {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,20 +15,23 @@ public abstract class Film {
 
     private String name;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private ReleaseType type;
 
     private int quantity;
 
+    private boolean active;
+
     public Film() {
-
     }
 
-    public Film(String name) {
+    public Film(String name, ReleaseType type) {
         this.name = name;
+        this.type = type;
     }
 
-    public Film(String name, int quantity) {
-        this(name);
+    public Film(String name, ReleaseType type, int quantity) {
+        this(name, type);
         this.quantity = quantity;
     }
 
@@ -53,8 +49,16 @@ public abstract class Film {
 
     public void process(UpdateFilmCmd updateFilmCmd) {
         this.name = updateFilmCmd.getName();
-        this.type = updateFilmCmd.getType();
+        this.type = ReleaseType.valueOf(updateFilmCmd.getType());
         this.quantity = updateFilmCmd.getQuantity();
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public void increaseBy(int quantity) {
+        this.quantity = this.quantity + quantity;
     }
 
     public void take() {
@@ -68,8 +72,13 @@ public abstract class Film {
         this.quantity++;
     }
 
-    public abstract BigDecimal calculatePrice(long daysRented);
+    public BigDecimal calculatePrice(long daysRented) {
+//        return ReleasePolicy.of(type).calculatePrice(daysRented);
+        return ReleasePolicyFactory.of(type).calculatePrice(daysRented);
+    }
 
-    public abstract int calculateBonusPoints();
+    public int calculateBonusPoints() {
+        return ReleasePolicyFactory.of(type).calculateBonusPoints();
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.videorentalstore.film;
 
+import com.example.videorentalstore.pricing.ReleaseType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class FilmRepositoryTest {
 
     @Test
     public void whenFindOneThenReturnCorrectResult() {
-        final Film newFilm = new NewReleaseFilm("Murder on the Orient Express", 2);
+        final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, 2);
         entityManager.persist(newFilm);
         entityManager.flush();
 
@@ -35,7 +36,7 @@ public class FilmRepositoryTest {
     @Test
     public void whenReturnBackThenQuantityIsIncremented() {
         final int quantity = 2;
-        final Film newFilm = new NewReleaseFilm("Murder on the Orient Express", quantity);
+        final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, quantity);
         entityManager.persist(newFilm);
         entityManager.flush();
 
@@ -55,7 +56,7 @@ public class FilmRepositoryTest {
     @Test
     public void whenTakeThenQuantityIsDecremented() {
         final int quantity = 2;
-        final Film newFilm = new NewReleaseFilm("Murder on the Orient Express", quantity);
+        final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, quantity);
         entityManager.persist(newFilm);
         entityManager.flush();
 
@@ -74,7 +75,7 @@ public class FilmRepositoryTest {
 
     @Test
     public void whenFindByNameThenReturnCorrectResult() {
-        final Film newFilm = new NewReleaseFilm("Murder on the Orient Express", 2);
+        final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, 2);
         entityManager.persist(newFilm);
         entityManager.flush();
 
@@ -88,7 +89,7 @@ public class FilmRepositoryTest {
 
     @Test
     public void whenSaveThenReturnCorrectResult() {
-        final Film newFilm = new NewReleaseFilm("Maze Runner: The Death Cure", 6);
+        final Film newFilm = new Film("Maze Runner: The Death Cure", ReleaseType.NEW_RELEASE, 6);
 
         final Film savedFilm = filmRepository.save(newFilm);
 

@@ -12,7 +12,7 @@ public class FilmTest {
 
     @Test
     public void givenNewReleaseWhenCalculatePriceThenReturnCorrectResult() {
-        final NewReleaseFilm newReleaseFilm = new NewReleaseFilm("Matrix 11");
+        final Film newReleaseFilm = FilmDataFixtures.newReleaseFilm("Matrix 11");
 
         final BigDecimal result = newReleaseFilm.calculatePrice(daysRented);
 
@@ -22,7 +22,7 @@ public class FilmTest {
 
     @Test
     public void givenRegularReleaseWhenCalculatePriceThenReturnCorrectResult() {
-        final RegularReleaseFilm regularReleaseFilm = new RegularReleaseFilm("Spider Man");
+        final Film regularReleaseFilm = FilmDataFixtures.regularReleaseFilm("Spider Man");
 
         final BigDecimal result = regularReleaseFilm.calculatePrice(daysRented);
 
@@ -32,7 +32,7 @@ public class FilmTest {
 
     @Test
     public void givenOldReleaseWhenCalculatePriceThenReturnCorrectResult() {
-        final OldReleaseFilm oldReleaseFilm = new OldReleaseFilm("Out of Africa");
+        final Film oldReleaseFilm = FilmDataFixtures.oldReleaseFilm("Out of Africa");
 
         final BigDecimal result = oldReleaseFilm.calculatePrice(daysRented);
 
@@ -42,7 +42,7 @@ public class FilmTest {
 
     @Test
     public void givenNewReleaseWhenCalculateBonusPointsThenReturnCorrectResult() {
-        final NewReleaseFilm newReleaseFilm = new NewReleaseFilm("Matrix 11");
+        final Film newReleaseFilm = FilmDataFixtures.newReleaseFilm("Matrix 11");
 
         final int result = newReleaseFilm.calculateBonusPoints();
 
@@ -52,7 +52,7 @@ public class FilmTest {
 
     @Test
     public void givenRegularReleaseWhenCalculateBonusPointsThenReturnCorrectResult() {
-        final RegularReleaseFilm regularReleaseFilm = new RegularReleaseFilm("Spider Man");
+        final Film regularReleaseFilm = FilmDataFixtures.regularReleaseFilm("Spider Man");
 
         final int result = regularReleaseFilm.calculateBonusPoints();
 
@@ -62,7 +62,7 @@ public class FilmTest {
 
     @Test
     public void givenOldReleaseWhenCalculateBonusPointsThenReturnCorrectResult() {
-        final OldReleaseFilm oldReleaseFilm = new OldReleaseFilm("Out of Africa");
+        final Film oldReleaseFilm = FilmDataFixtures.oldReleaseFilm("Out of Africa");
 
         final int result = oldReleaseFilm.calculateBonusPoints();
 

@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.example.videorentalstore.pricing.ReleaseType.NEW_RELEASE;
+import static com.example.videorentalstore.pricing.ReleaseType.REGULAR_RELEASE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
@@ -68,7 +70,7 @@ public class FilmServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("name", name);
-        assertThat(result).isInstanceOf(NewReleaseFilm.class);
+        assertThat(result).hasFieldOrPropertyWithValue("type", NEW_RELEASE);
         assertThat(result).hasFieldOrPropertyWithValue("quantity", quantity);
 
     }
@@ -77,20 +79,19 @@ public class FilmServiceTest {
     public void whenUpdatingFilmThenReturnSavedFilm() {
         final String name = "Maze Runner: The Death Cure";
         final String newName = "New Maze Runner: The Death Cure";
-        final String type = "NEW_RELEASE";
+        final String newType = "REGULAR_RELEASE";
         final int quantity = 10;
 
-        final UpdateFilmCmd updateFilmCmd = new UpdateFilmCmd(5L, name, type, quantity);
+        final UpdateFilmCmd updateFilmCmd = new UpdateFilmCmd(5L, newName, newType, quantity);
 
         doReturn(FilmDataFixtures.newReleaseFilm(name, quantity)).when(filmRepository).findOne(isA(Long.class));
-        doReturn(FilmDataFixtures.newReleaseFilm(newName, quantity)).when(filmRepository).save(isA(Film.class));
+        doReturn(FilmDataFixtures.regularReleaseFilm(newName, quantity)).when(filmRepository).save(isA(Film.class));
 
-        filmService.update(updateFilmCmd);
+        final Film result = filmService.update(updateFilmCmd);
 
-//        assertThat(result).isNotNull();
-//        assertThat(result).hasFieldOrPropertyWithValue("name", name);
-//        assertThat(result).isInstanceOf(NewReleaseFilm.class);
-//        assertThat(result).hasFieldOrPropertyWithValue("quantity", quantity);
-
+        assertThat(result).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("name", newName);
+        assertThat(result).hasFieldOrPropertyWithValue("type", REGULAR_RELEASE);
+        assertThat(result).hasFieldOrPropertyWithValue("quantity", quantity);
     }
 }

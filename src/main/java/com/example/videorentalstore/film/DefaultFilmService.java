@@ -1,5 +1,6 @@
 package com.example.videorentalstore.film;
 
+import com.example.videorentalstore.pricing.ReleaseType;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,27 +29,35 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public Film save(CreateFilmCmd createFilmCmd) {
-        final Film film = FilmFactory.create(createFilmCmd);
+        final Film film = new Film(createFilmCmd.getName(), ReleaseType.valueOf(createFilmCmd.getType()), createFilmCmd.getQuantity());
 
         return this.filmRepository.save(film);
     }
 
     @Override
-    public void update(UpdateFilmCmd updateFilmCmd) {
+    public Film update(UpdateFilmCmd updateFilmCmd) {
         final Film film = this.filmRepository.findOne(updateFilmCmd.getId());
 
         film.process(updateFilmCmd);
+
+        return this.filmRepository.save(film);
+    }
+
+    @Override
+    public void delete(Long id) {
+        final Film film = this.filmRepository.findOne(id);
+
+        film.deactivate();
 
         this.filmRepository.save(film);
     }
 
     @Override
-    public void delete(Long id) {
-
-    }
-
-    @Override
     public void updateQuantity(UpdateFilmQuantityCmd updateFilmQuantityCmd) {
+        final Film film = this.filmRepository.findOne(updateFilmQuantityCmd.getId());
 
+        film.increaseBy(updateFilmQuantityCmd.getQuantity());
+
+        this.filmRepository.save(film);
     }
 }

@@ -1,9 +1,12 @@
 package com.example.videorentalstore.film.web;
 
+import com.example.videorentalstore.film.FilmDataFixtures;
+import com.example.videorentalstore.film.FilmService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -12,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -21,9 +25,16 @@ public class FilmControllerTest {
     @Autowired
 	private MockMvc mockMvc;
 
+    @MockBean
+	private FilmService filmService;
+
 
 	@Test
 	public void whenGetAllThenReturnListOfFilms() throws Exception {
+
+		given(this.filmService.findAll())
+				.willReturn(FilmDataFixtures.films());
+
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/films")
                 .accept(MediaType.APPLICATION_JSON);

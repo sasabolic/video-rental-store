@@ -1,9 +1,7 @@
 package com.example.videorentalstore.rental;
 
 import com.example.videorentalstore.film.Film;
-import com.example.videorentalstore.film.NewReleaseFilm;
-import com.example.videorentalstore.film.OldReleaseFilm;
-import com.example.videorentalstore.film.RegularReleaseFilm;
+import com.example.videorentalstore.film.FilmDataFixtures;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -15,7 +13,7 @@ public class RentalTest {
 
     @Test
     public void giveRegularReleaseRentedFor5DaysWhenCalculatePriceThenReturn90() {
-        Film film = new RegularReleaseFilm("Spider Man");
+        Film film = FilmDataFixtures.regularReleaseFilm("Spider Man");
 
         Rental rental = new Rental(film, 5);
 
@@ -26,7 +24,7 @@ public class RentalTest {
 
     @Test
     public void giveRegularReleaseRentedFor3DaysWhenCalculatePriceThenReturn30() {
-        Film film = new RegularReleaseFilm("Spider Man 2");
+        Film film = FilmDataFixtures.regularReleaseFilm("Spider Man 2");
 
         Rental rental = new Rental(film, 3);
 
@@ -37,7 +35,7 @@ public class RentalTest {
 
     @Test
     public void giveRegularReleaseRentedFor1DaysWhenCalculatePriceThenReturn30() {
-        Film film = new RegularReleaseFilm("Spider Man 2");
+        Film film = FilmDataFixtures.regularReleaseFilm("Spider Man 2");
 
         Rental rental = new Rental(film, 1);
 
@@ -48,7 +46,7 @@ public class RentalTest {
 
     @Test
     public void giveNewReleaseRentedFor1DaysWhenCalculatePriceThenReturn40() {
-        Film film = new NewReleaseFilm("Matrix 11");
+        Film film = FilmDataFixtures.newReleaseFilm("Matrix 11");
 
         Rental rental = new Rental(film, 1);
 
@@ -59,7 +57,7 @@ public class RentalTest {
 
     @Test
     public void giveNewReleaseRentedFor3DaysWhenCalculatePriceThenReturn120() {
-        Film film = new NewReleaseFilm("Matrix 11");
+        Film film = FilmDataFixtures.newReleaseFilm("Matrix 11");
 
         Rental rental = new Rental(film, 3);
 
@@ -70,7 +68,7 @@ public class RentalTest {
 
     @Test
     public void givenOldReleaseFilmRentedFor5DaysWhenCalculatePriceThenReturn30() {
-        Film film = new OldReleaseFilm("Out of Africa");
+        Film film = FilmDataFixtures.oldReleaseFilm("Out of Africa");
 
         Rental rental = new Rental(film, 5);
 
@@ -81,7 +79,7 @@ public class RentalTest {
 
     @Test
     public void givenOldReleaseFilmRentedFor7DaysWhenCalculatePriceThenReturn90() {
-        Film film = new OldReleaseFilm("Out of Africa");
+        Film film = FilmDataFixtures.oldReleaseFilm("Out of Africa");
 
         Rental rental = new Rental(film, 7);
 
@@ -92,7 +90,7 @@ public class RentalTest {
 
     @Test
     public void givenOldReleaseFilmRentedFor1DayWhenCalculatePriceThenReturn30() {
-        Film film = new OldReleaseFilm("Out of Africa");
+        Film film = FilmDataFixtures.oldReleaseFilm("Out of Africa");
 
         Rental rental = spy(new Rental(film, 1));
 
