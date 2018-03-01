@@ -12,6 +12,10 @@ import java.math.BigDecimal;
 )
 public abstract class Film {
 
+    static final String NEW_RELEASE = "NEW_RELEASE";
+    static final String REGULAR_RELEASE = "REGULAR_RELEASE";
+    static final String OLD_RELEASE = "OLD_RELEASE";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
