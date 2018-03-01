@@ -12,8 +12,8 @@ public interface FilmService {
 
     Film update(UpdateFilmCmd updateFilmCmd);
 
-    void delete(Long id);
+    Film delete(Long id);
 
-    void updateQuantity(UpdateFilmQuantityCmd updateFilmQuantityCmd);
+    Film updateQuantity(UpdateFilmQuantityCmd updateFilmQuantityCmd);
 
 }

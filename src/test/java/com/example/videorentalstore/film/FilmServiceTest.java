@@ -94,4 +94,35 @@ public class FilmServiceTest {
         assertThat(result).hasFieldOrPropertyWithValue("type", REGULAR_RELEASE);
         assertThat(result).hasFieldOrPropertyWithValue("quantity", quantity);
     }
+
+    @Test
+    public void whenDeleteThenDeactivateRecord() {
+        final Film toBeReturned = FilmDataFixtures.oldReleaseFilm();
+        doReturn(toBeReturned).when(filmRepository).findOne(isA(Long.class));
+        doReturn(toBeReturned).when(filmRepository).save(isA(Film.class));
+
+        final Film result = filmService.delete(1L);
+
+        assertThat(result).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("name", toBeReturned.getName());
+        assertThat(result).hasFieldOrPropertyWithValue("type", toBeReturned.getType());
+        assertThat(result).hasFieldOrPropertyWithValue("quantity", toBeReturned.getQuantity());
+        assertThat(result).hasFieldOrPropertyWithValue("active", false);
+    }
+
+    @Test
+    public void whenUpdateQuantityThenIncreaseQuantity() {
+        final int oldQuantity = 10;
+        final Film toBeReturned = FilmDataFixtures.oldReleaseFilm("Out of Africa", oldQuantity);
+
+        doReturn(toBeReturned).when(filmRepository).findOne(isA(Long.class));
+        doReturn(toBeReturned).when(filmRepository).save(isA(Film.class));
+
+        final Film result = filmService.updateQuantity(new UpdateFilmQuantityCmd(1L, 23));
+
+        assertThat(result).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("name", toBeReturned.getName());
+        assertThat(result).hasFieldOrPropertyWithValue("type", toBeReturned.getType());
+        assertThat(result).hasFieldOrPropertyWithValue("quantity", oldQuantity + 23);
+    }
 }

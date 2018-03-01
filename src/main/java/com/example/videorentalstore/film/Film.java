@@ -20,7 +20,7 @@ public class Film {
 
     private int quantity;
 
-    private boolean active;
+    private boolean active = true;
 
     public Film() {
     }
@@ -45,6 +45,14 @@ public class Film {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public ReleaseType getType() {
+        return type;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     public void process(UpdateFilmCmd updateFilmCmd) {

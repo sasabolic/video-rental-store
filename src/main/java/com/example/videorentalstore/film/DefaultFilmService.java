@@ -44,20 +44,20 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public void delete(Long id) {
+    public Film delete(Long id) {
         final Film film = this.filmRepository.findOne(id);
 
         film.deactivate();
 
-        this.filmRepository.save(film);
+        return this.filmRepository.save(film);
     }
 
     @Override
-    public void updateQuantity(UpdateFilmQuantityCmd updateFilmQuantityCmd) {
+    public Film updateQuantity(UpdateFilmQuantityCmd updateFilmQuantityCmd) {
         final Film film = this.filmRepository.findOne(updateFilmQuantityCmd.getId());
 
         film.increaseBy(updateFilmQuantityCmd.getQuantity());
 
-        this.filmRepository.save(film);
+        return this.filmRepository.save(film);
     }
 }

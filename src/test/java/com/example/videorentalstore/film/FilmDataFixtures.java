@@ -52,4 +52,8 @@ public class FilmDataFixtures {
         return new Film(name, ReleaseType.OLD_RELEASE);
     }
 
+    public static Film oldReleaseFilm(String name, int quantity) {
+        return new Film(name, ReleaseType.OLD_RELEASE, quantity);
+    }
+
 }

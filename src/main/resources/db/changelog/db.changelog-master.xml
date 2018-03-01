@@ -15,6 +15,7 @@
             </column>
             <column name="type" type="varchar(50)"/>
             <column name="quantity" type="int"/>
+            <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
 
         <createTable tableName="rental">
