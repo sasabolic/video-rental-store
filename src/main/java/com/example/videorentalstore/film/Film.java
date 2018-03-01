@@ -22,6 +22,8 @@ public abstract class Film {
 
     private String name;
 
+    private String type;
+
     private int quantity;
 
     public Film() {
@@ -47,6 +49,12 @@ public abstract class Film {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public void process(UpdateFilmCmd updateFilmCmd) {
+        this.name = updateFilmCmd.getName();
+        this.type = updateFilmCmd.getType();
+        this.quantity = updateFilmCmd.getQuantity();
     }
 
     public void take() {

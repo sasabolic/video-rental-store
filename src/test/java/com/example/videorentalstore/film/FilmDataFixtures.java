@@ -12,12 +12,22 @@ public class FilmDataFixtures {
                 new OldReleaseFilm("Out of Africa"));
     }
 
+    public static Iterable<Film> filmsWithSpiderMan() {
+        return Arrays.asList(
+                new RegularReleaseFilm("Spider Man"),
+                new RegularReleaseFilm("Spider Man 2"));
+    }
+
     public static Film newReleaseFilm() {
         return new NewReleaseFilm("Matrix 11");
     }
 
     public static Film newReleaseFilm(String name) {
         return new NewReleaseFilm(name);
+    }
+
+    public static Film newReleaseFilm(String name, int quantity) {
+        return new NewReleaseFilm(name, quantity);
     }
 
     public static Film regularReleaseFilm() {
