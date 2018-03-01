@@ -1,4 +1,4 @@
-package com.example.videorentalstore.film.web;
+package com.example.videorentalstore.film;
 
 import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.NewReleaseFilm;
