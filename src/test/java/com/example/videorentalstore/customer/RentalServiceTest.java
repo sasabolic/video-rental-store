@@ -1,8 +1,8 @@
 package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.customer.web.RentalItem;
-import com.example.videorentalstore.film.FilmRepository;
 import com.example.videorentalstore.film.FilmDataFixtures;
+import com.example.videorentalstore.film.FilmRepository;
 import com.example.videorentalstore.rental.DefaultRentalService;
 import com.example.videorentalstore.rental.RentalService;
 import org.junit.Before;

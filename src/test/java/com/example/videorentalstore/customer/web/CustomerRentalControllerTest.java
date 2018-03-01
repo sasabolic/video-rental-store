@@ -1,7 +1,7 @@
 package com.example.videorentalstore.customer.web;
 
-import com.example.videorentalstore.rental.RentalService;
 import com.example.videorentalstore.rental.RentalDataFixtures;
+import com.example.videorentalstore.rental.RentalService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -17,7 +17,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

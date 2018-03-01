@@ -3,7 +3,6 @@ package com.example.videorentalstore.rental;
 import com.example.videorentalstore.film.NewReleaseFilm;
 import com.example.videorentalstore.film.OldReleaseFilm;
 import com.example.videorentalstore.film.RegularReleaseFilm;
-import com.example.videorentalstore.rental.Rental;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

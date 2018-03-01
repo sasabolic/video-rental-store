@@ -1,9 +1,11 @@
 package com.example.videorentalstore.customer.web;
 
 import com.example.videorentalstore.customer.Invoice;
-import com.example.videorentalstore.rental.RentalService;
-import com.example.videorentalstore.film.*;
+import com.example.videorentalstore.film.NewReleaseFilm;
+import com.example.videorentalstore.film.OldReleaseFilm;
+import com.example.videorentalstore.film.RegularReleaseFilm;
 import com.example.videorentalstore.rental.Rental;
+import com.example.videorentalstore.rental.RentalService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

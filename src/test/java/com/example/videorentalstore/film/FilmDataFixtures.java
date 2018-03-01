@@ -1,10 +1,5 @@
 package com.example.videorentalstore.film;
 
-import com.example.videorentalstore.film.Film;
-import com.example.videorentalstore.film.NewReleaseFilm;
-import com.example.videorentalstore.film.OldReleaseFilm;
-import com.example.videorentalstore.film.RegularReleaseFilm;
-
 import java.util.Arrays;
 
 public class FilmDataFixtures {
