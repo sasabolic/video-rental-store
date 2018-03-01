@@ -1,9 +1,9 @@
-package com.example.videorentalstore.inventory.web;
+package com.example.videorentalstore.film.web;
 
-import com.example.videorentalstore.inventory.Film;
-import com.example.videorentalstore.inventory.NewReleaseFilm;
-import com.example.videorentalstore.inventory.OldReleaseFilm;
-import com.example.videorentalstore.inventory.RegularReleaseFilm;
+import com.example.videorentalstore.film.Film;
+import com.example.videorentalstore.film.NewReleaseFilm;
+import com.example.videorentalstore.film.OldReleaseFilm;
+import com.example.videorentalstore.film.RegularReleaseFilm;
 
 import java.util.Arrays;
 

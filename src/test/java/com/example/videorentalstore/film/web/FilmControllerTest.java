@@ -1,4 +1,4 @@
-package com.example.videorentalstore.inventory.web;
+package com.example.videorentalstore.film.web;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

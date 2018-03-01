@@ -1,9 +1,9 @@
 package com.example.videorentalstore.rental;
 
-import com.example.videorentalstore.inventory.Film;
-import com.example.videorentalstore.inventory.NewReleaseFilm;
-import com.example.videorentalstore.inventory.OldReleaseFilm;
-import com.example.videorentalstore.inventory.RegularReleaseFilm;
+import com.example.videorentalstore.film.Film;
+import com.example.videorentalstore.film.NewReleaseFilm;
+import com.example.videorentalstore.film.OldReleaseFilm;
+import com.example.videorentalstore.film.RegularReleaseFilm;
 import org.junit.Test;
 
 import java.math.BigDecimal;

@@ -3,8 +3,8 @@ package com.example.videorentalstore.rental;
 import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.customer.CustomerRepository;
 import com.example.videorentalstore.customer.web.RentalItem;
-import com.example.videorentalstore.inventory.Film;
-import com.example.videorentalstore.inventory.FilmRepository;
+import com.example.videorentalstore.film.Film;
+import com.example.videorentalstore.film.FilmRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

@@ -1,9 +1,6 @@
-package com.example.videorentalstore.inventory.web;
+package com.example.videorentalstore.film.web;
 
-import com.example.videorentalstore.inventory.Film;
-import com.example.videorentalstore.inventory.NewReleaseFilm;
-import com.example.videorentalstore.inventory.OldReleaseFilm;
-import com.example.videorentalstore.inventory.RegularReleaseFilm;
+import com.example.videorentalstore.film.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +11,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+
+
+    private final FilmService filmService;
+
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @GetMapping
     public List<Film> getAll() {

@@ -1,6 +1,6 @@
 package com.example.videorentalstore.rental;
 
-import com.example.videorentalstore.inventory.Film;
+import com.example.videorentalstore.film.Film;
 import lombok.Getter;
 
 import javax.persistence.*;

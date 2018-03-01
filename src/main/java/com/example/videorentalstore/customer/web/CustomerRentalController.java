@@ -2,7 +2,7 @@ package com.example.videorentalstore.customer.web;
 
 import com.example.videorentalstore.customer.Invoice;
 import com.example.videorentalstore.rental.RentalService;
-import com.example.videorentalstore.inventory.*;
+import com.example.videorentalstore.film.*;
 import com.example.videorentalstore.rental.Rental;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

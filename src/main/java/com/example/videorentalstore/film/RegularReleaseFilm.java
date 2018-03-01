@@ -1,10 +1,10 @@
-package com.example.videorentalstore.inventory;
+package com.example.videorentalstore.film;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 
-import static com.example.videorentalstore.inventory.Price.BASIC_PRICE;
+import static com.example.videorentalstore.film.Price.BASIC_PRICE;
 
 @Entity
 @DiscriminatorValue("REGULAR_RELEASE")

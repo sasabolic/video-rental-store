@@ -1,8 +1,8 @@
 package com.example.videorentalstore.pricing;
 
-import com.example.videorentalstore.inventory.NewReleaseFilm;
-import com.example.videorentalstore.inventory.OldReleaseFilm;
-import com.example.videorentalstore.inventory.RegularReleaseFilm;
+import com.example.videorentalstore.film.NewReleaseFilm;
+import com.example.videorentalstore.film.OldReleaseFilm;
+import com.example.videorentalstore.film.RegularReleaseFilm;
 import com.example.videorentalstore.rental.Rental;
 
 import java.time.Instant;
