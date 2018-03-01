@@ -59,10 +59,6 @@ public class FilmRepositoryTest {
         entityManager.persist(newFilm);
         entityManager.flush();
 
-        filmRepository.findAll().forEach(f -> {
-            System.out.println(f.getId() + ": " + f.getName() + ":" + f.getQuantity());
-        });
-
         Film film = filmRepository.findOne(newFilm.getId());
         film.take();
 
@@ -82,16 +78,25 @@ public class FilmRepositoryTest {
         entityManager.persist(newFilm);
         entityManager.flush();
 
-        filmRepository.findAll().forEach(f -> {
-            System.out.println(f.getId() + ": " + f.getName() + ":" + f.getQuantity());
-        });
-
         final Iterable<Film> films = filmRepository.findByNameContainingIgnoreCase("orient express");
-
 
         assertThat(films).isNotNull();
         assertThat(films).isNotEmpty();
         assertThat(films).hasSize(1);
         assertThat(films).extracting(Film::getName).containsExactly("Murder on the Orient Express");
+    }
+
+    @Test
+    public void whenSaveThenReturnCorrectResult() {
+        final Film newFilm = new NewReleaseFilm("Maze Runner: The Death Cure", 6);
+
+        final Film savedFilm = filmRepository.save(newFilm);
+
+        final Film result = filmRepository.findOne(savedFilm.getId());
+
+        assertThat(result).isNotNull();
+        assertThat(result.getName()).isEqualTo(newFilm.getName());
+        assertThat(result.getQuantity()).isEqualTo(newFilm.getQuantity());
+
     }
 }
