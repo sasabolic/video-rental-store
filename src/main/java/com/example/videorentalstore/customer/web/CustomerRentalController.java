@@ -48,8 +48,9 @@ public class CustomerRentalController {
 
 
 
-    @PutMapping("/customers/{id}/rentals")
+    @PatchMapping("/customers/{id}/rentals")
     public ResponseEntity<Void> update(@RequestBody List<Rental> rentals) {
         return null;
     }
+
 }
