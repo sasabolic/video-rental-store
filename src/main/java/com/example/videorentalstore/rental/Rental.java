@@ -1,7 +1,10 @@
 package com.example.videorentalstore.rental;
 
 import com.example.videorentalstore.film.Film;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,21 +12,15 @@ import java.time.Instant;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
-@Getter
 @Entity
+@Getter
+@NoArgsConstructor
+@ToString
 public class Rental {
-
-    public enum Status {
-        RENTED,
-        RETURNED
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "customer_id")
-    private Long customerId;
 
     @OneToOne
     @JoinColumn(name="film_id")
@@ -38,8 +35,8 @@ public class Rental {
     @Column(name = "end_date")
     private Instant endDate;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
-
 
     public Rental(Film film, long daysRented) {
         this(film, daysRented, Instant.now());
@@ -49,7 +46,7 @@ public class Rental {
         this.film = film;
         this.daysRented = daysRented;
         this.startDate = startDate;
-        this.status = Status.RENTED;
+        this.status = Status.RESERVED;
     }
 
     public void turnBack() {
@@ -72,4 +69,11 @@ public class Rental {
         return 0;
     }
 
+    public enum Status {
+        RESERVED,
+
+        RENTED,
+
+        RETURNED
+    }
 }
