@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface RentalService {
 
-    BigDecimal create(long customerId, List<RentalItem> rentalItems);
+    BigDecimal create(Long customerId, List<RentalItem> rentalItems);
 }

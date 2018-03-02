@@ -8,7 +8,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -26,11 +28,12 @@ public class FilmRepositoryTest {
         entityManager.persist(newFilm);
         entityManager.flush();
 
-        final Film film = filmRepository.findOne(5L);
+        final Optional<Film> film = filmRepository.findById(5L);
 
         assertThat(film).isNotNull();
-        assertThat(film).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
-        assertThat(film).hasFieldOrPropertyWithValue("quantity", 2);
+        assertThat(film.isPresent()).isTrue();
+        assertThat(film.get()).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
+        assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", 2);
     }
 
     @Test
@@ -40,17 +43,21 @@ public class FilmRepositoryTest {
         entityManager.persist(newFilm);
         entityManager.flush();
 
-        Film film = filmRepository.findOne(newFilm.getId());
-        film.returnBack();
+        Optional<Film> film = filmRepository.findById(newFilm.getId());
+        if (film.isPresent()) {
+            final Film saved = film.get();
+            saved.returnBack();
 
-        entityManager.persist(film);
-        entityManager.flush();
+            entityManager.persist(saved);
+            entityManager.flush();
+        }
 
-        film = filmRepository.findOne(newFilm.getId());
+        film = filmRepository.findById(newFilm.getId());
 
         assertThat(film).isNotNull();
-        assertThat(film).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
-        assertThat(film).hasFieldOrPropertyWithValue("quantity", quantity + 1);
+        assertThat(film.isPresent()).isTrue();
+        assertThat(film.get()).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
+        assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", quantity + 1);
     }
 
     @Test
@@ -60,17 +67,21 @@ public class FilmRepositoryTest {
         entityManager.persist(newFilm);
         entityManager.flush();
 
-        Film film = filmRepository.findOne(newFilm.getId());
-        film.take();
+        Optional<Film> film = filmRepository.findById(newFilm.getId());
+        if (film.isPresent()) {
+            final Film saved = film.get();
+            saved.take();
 
-        entityManager.persist(film);
-        entityManager.flush();
+            entityManager.persist(saved);
+            entityManager.flush();
+        }
 
-        film = filmRepository.findOne(newFilm.getId());
+        film = filmRepository.findById(newFilm.getId());
 
         assertThat(film).isNotNull();
-        assertThat(film).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
-        assertThat(film).hasFieldOrPropertyWithValue("quantity", quantity - 1);
+        assertThat(film.isPresent()).isTrue();
+        assertThat(film.get()).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
+        assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", quantity - 1);
     }
 
     @Test
@@ -93,11 +104,12 @@ public class FilmRepositoryTest {
 
         final Film savedFilm = filmRepository.save(newFilm);
 
-        final Film result = filmRepository.findOne(savedFilm.getId());
+        final Optional<Film> result = filmRepository.findById(savedFilm.getId());
 
         assertThat(result).isNotNull();
-        assertThat(result.getName()).isEqualTo(newFilm.getName());
-        assertThat(result.getQuantity()).isEqualTo(newFilm.getQuantity());
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getName()).isEqualTo(newFilm.getName());
+        assertThat(result.get().getQuantity()).isEqualTo(newFilm.getQuantity());
 
     }
 }

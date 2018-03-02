@@ -6,9 +6,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static com.example.videorentalstore.pricing.ReleaseType.NEW_RELEASE;
 import static com.example.videorentalstore.pricing.ReleaseType.REGULAR_RELEASE;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
 
@@ -49,11 +51,12 @@ public class FilmServiceTest {
 
     @Test
     public void whenFindingByIdThenReturnOneResult() {
-        doReturn(FilmDataFixtures.oldReleaseFilm()).when(filmRepository).findOne(isA(Long.class));
+        doReturn(Optional.of(FilmDataFixtures.oldReleaseFilm())).when(filmRepository).findById(isA(Long.class));
 
-        final Film result = filmService.findById(4L);
+        final Optional<Film> result = filmService.findById(4L);
 
         assertThat(result).isNotNull();
+        assertThat(result.isPresent()).isTrue();
     }
 
     @Test
@@ -84,7 +87,7 @@ public class FilmServiceTest {
 
         final UpdateFilmCmd updateFilmCmd = new UpdateFilmCmd(5L, newName, newType, quantity);
 
-        doReturn(FilmDataFixtures.newReleaseFilm(name, quantity)).when(filmRepository).findOne(isA(Long.class));
+        doReturn(Optional.of(FilmDataFixtures.newReleaseFilm(name, quantity))).when(filmRepository).findById(isA(Long.class));
         doReturn(FilmDataFixtures.regularReleaseFilm(newName, quantity)).when(filmRepository).save(isA(Film.class));
 
         final Film result = filmService.update(updateFilmCmd);
@@ -98,7 +101,7 @@ public class FilmServiceTest {
     @Test
     public void whenDeleteThenDeactivateRecord() {
         final Film toBeReturned = FilmDataFixtures.oldReleaseFilm();
-        doReturn(toBeReturned).when(filmRepository).findOne(isA(Long.class));
+        doReturn(Optional.of(toBeReturned)).when(filmRepository).findById(isA(Long.class));
         doReturn(toBeReturned).when(filmRepository).save(isA(Film.class));
 
         final Film result = filmService.delete(1L);
@@ -115,7 +118,7 @@ public class FilmServiceTest {
         final int oldQuantity = 10;
         final Film toBeReturned = FilmDataFixtures.oldReleaseFilm("Out of Africa", oldQuantity);
 
-        doReturn(toBeReturned).when(filmRepository).findOne(isA(Long.class));
+        doReturn(Optional.of(toBeReturned)).when(filmRepository).findById(isA(Long.class));
         doReturn(toBeReturned).when(filmRepository).save(isA(Film.class));
 
         final Film result = filmService.updateQuantity(new UpdateFilmQuantityCmd(1L, 23));

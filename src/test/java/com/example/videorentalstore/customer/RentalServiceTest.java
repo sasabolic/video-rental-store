@@ -17,7 +17,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,12 +45,12 @@ public class RentalServiceTest {
 
     @Test
     public void test() {
-        doReturn(CustomerDataFixtures.customer()).when(customerRepository).findOne(Matchers.eq(1L));
+        doReturn(Optional.of(CustomerDataFixtures.customer())).when(customerRepository).findById(anyLong());
 
-        doReturn(FilmDataFixtures.newReleaseFilm("Matrix 11")).when(filmRepository).findOne(Matchers.eq(1L));
-        doReturn(FilmDataFixtures.regularReleaseFilm("Spider Man")).when(filmRepository).findOne(Matchers.eq(2L));
-        doReturn(FilmDataFixtures.regularReleaseFilm("Spider Man 2")).when(filmRepository).findOne(Matchers.eq(3L));
-        doReturn(FilmDataFixtures.oldReleaseFilm("Out of Africa")).when(filmRepository).findOne(Matchers.eq(4L));
+        doReturn(Optional.of(FilmDataFixtures.newReleaseFilm("Matrix 11"))).when(filmRepository).findById(eq(1L));
+        doReturn(Optional.of(FilmDataFixtures.regularReleaseFilm("Spider Man"))).when(filmRepository).findById(eq(2L));
+        doReturn(Optional.of(FilmDataFixtures.regularReleaseFilm("Spider Man 2"))).when(filmRepository).findById(eq(3L));
+        doReturn(Optional.of(FilmDataFixtures.oldReleaseFilm("Out of Africa"))).when(filmRepository).findById(eq(4L));
 
         final List<RentalItem> rentalItems = Arrays.asList(
                 new RentalItem(1L, 1),

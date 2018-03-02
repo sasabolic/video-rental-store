@@ -3,6 +3,8 @@ package com.example.videorentalstore.film;
 import com.example.videorentalstore.pricing.ReleaseType;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class DefaultFilmService implements FilmService {
 
@@ -23,8 +25,8 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Film findById(Long id) {
-        return this.filmRepository.findOne(id);
+    public Optional<Film> findById(Long id) {
+        return this.filmRepository.findById(id);
     }
 
     @Override
@@ -36,7 +38,8 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public Film update(UpdateFilmCmd updateFilmCmd) {
-        final Film film = this.filmRepository.findOne(updateFilmCmd.getId());
+        final Film film = this.filmRepository.findById(updateFilmCmd.getId())
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmCmd.getId())));
 
         film.process(updateFilmCmd);
 
@@ -45,7 +48,8 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public Film delete(Long id) {
-        final Film film = this.filmRepository.findOne(id);
+        final Film film = this.filmRepository.findById(id)
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", id)));
 
         film.deactivate();
 
@@ -54,7 +58,8 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public Film updateQuantity(UpdateFilmQuantityCmd updateFilmQuantityCmd) {
-        final Film film = this.filmRepository.findOne(updateFilmQuantityCmd.getId());
+        final Film film = this.filmRepository.findById(updateFilmQuantityCmd.getId())
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmQuantityCmd.getId())));;
 
         film.increaseBy(updateFilmQuantityCmd.getQuantity());
 
