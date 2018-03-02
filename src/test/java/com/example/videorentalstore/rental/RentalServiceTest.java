@@ -5,16 +5,13 @@ import com.example.videorentalstore.customer.CustomerRepository;
 import com.example.videorentalstore.customer.web.RentalItem;
 import com.example.videorentalstore.film.FilmDataFixtures;
 import com.example.videorentalstore.film.FilmRepository;
-import com.example.videorentalstore.rental.DefaultRentalService;
-import com.example.videorentalstore.rental.RentalService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
