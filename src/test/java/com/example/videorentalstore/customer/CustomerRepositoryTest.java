@@ -105,13 +105,22 @@ public class CustomerRepositoryTest {
     public void whenDeactivateCustomerThenActiveIsFalse() {
 
         Customer customer = customerRepository.save(CustomerDataFixtures.customer());
+        customer.deactivate();
 
-        customerRepository.deactivate(customer.getId());
+        final Customer result = customerRepository.save(customer);
 
-        final Optional<Customer> result = customerRepository.findById(customer.getId());
+        assertThat(result).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("active", false);
+    }
 
-        assertThat(result).isPresent();
-        assertThat(result.get()).hasFieldOrPropertyWithValue("active", false);
+    @Test
+    public void whenSearchByNameThenReturnResult() {
+
+        final Iterable<Customer> customers = customerRepository.findByNameContainingIgnoreCase("tes");
+
+        assertThat(customers).isNotEmpty();
+        assertThat(customers).hasSize(1);
+        assertThat(customers).extracting(Customer::getLastName).containsExactly("Tesla");
     }
 
     @Test

@@ -32,7 +32,7 @@ public class Customer {
     private long bonusPoints;
 
     @JsonIgnore
-    private boolean active;
+    private boolean active = true;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "customer_id")
@@ -42,6 +42,10 @@ public class Customer {
     public Customer(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public void deactivate() {
+        this.active = false;
     }
 
     public void addRental(Rental rental) {
