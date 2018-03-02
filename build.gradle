@@ -32,7 +32,6 @@ ext {
 dependencyManagement {
     dependencies {
         dependency "javax.xml.bind:jaxb-api:${jaxbVersion}"
-        dependency "com.zaxxer:HikariCP:${hikariVersion}"
         dependency "com.h2database:h2:${h2Version}"
     }
 }
@@ -45,7 +44,6 @@ dependencies {
 
     // database
     compile('mysql:mysql-connector-java')
-    compile('com.zaxxer:HikariCP')
     compile('org.liquibase:liquibase-core')
     compile('javax.xml.bind:jaxb-api')
 
