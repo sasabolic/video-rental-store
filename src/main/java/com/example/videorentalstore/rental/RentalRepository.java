@@ -1,4 +1,7 @@
 package com.example.videorentalstore.rental;
 
-public class RentalRepository {
+import org.springframework.data.repository.CrudRepository;
+
+public interface RentalRepository extends CrudRepository<Rental, Long> {
+
 }
