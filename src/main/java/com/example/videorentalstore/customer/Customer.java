@@ -1,6 +1,7 @@
 package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.rental.Rental;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -29,6 +30,9 @@ public class Customer {
 
     @Column(name = "bonus_points")
     private long bonusPoints;
+
+    @JsonIgnore
+    private boolean active;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "customer_id")

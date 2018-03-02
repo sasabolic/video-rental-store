@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,6 +90,28 @@ public class CustomerRepositoryTest {
 
         assertThat(result).hasSize(before.intValue() + 1);
         assertThat(result).contains(customer);
+    }
+
+    @Test
+    public void whenCreateNewCustomerThenActiveIsTrue() {
+
+        Customer customer = customerRepository.save(CustomerDataFixtures.customer());
+
+        assertThat(customer).isNotNull();
+        assertThat(customer).hasFieldOrPropertyWithValue("active", true);
+    }
+
+    @Test
+    public void whenDeactivateCustomerThenActiveIsFalse() {
+
+        Customer customer = customerRepository.save(CustomerDataFixtures.customer());
+
+        customerRepository.deactivate(customer.getId());
+
+        final Optional<Customer> result = customerRepository.findById(customer.getId());
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).hasFieldOrPropertyWithValue("active", false);
     }
 
     @Test
