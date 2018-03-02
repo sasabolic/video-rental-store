@@ -22,7 +22,7 @@ public class Film {
     private int quantity;
 
     @JsonIgnore
-    private boolean active;
+    private boolean active = true;
 
     public Film() {
     }
