@@ -1,6 +1,9 @@
 package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.rental.Rental;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,6 +12,9 @@ import java.util.List;
 
 
 @Entity
+@Getter
+@NoArgsConstructor
+@ToString
 public class Customer {
 
     @Id
@@ -22,11 +28,17 @@ public class Customer {
     private String lastName;
 
     @Column(name = "bonus_points")
-    private Long bonusPoints;
+    private long bonusPoints;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "customer_id")
     private List<Rental> rentals = new ArrayList<>();
+
+
+    public Customer(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public void addRental(Rental rental) {
         this.rentals.add(rental);
@@ -34,7 +46,7 @@ public class Customer {
 
     public BigDecimal calculate() {
         return this.rentals.stream()
-                .filter(r -> Rental.Status.RENTED.equals(r.getStatus()))
+                .filter(r -> Rental.Status.RESERVED.equals(r.getStatus()))
                 .map(r -> r.calculatePrice())
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }

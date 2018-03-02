@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CustomerTest {
 
 
-    private Customer customer = new Customer();
+    private Customer customer = CustomerDataFixtures.customer();
 
     @Test
     public void whenCalculateThenReturnAmountOf250() {
