@@ -15,7 +15,7 @@ public class CustomerTest {
     private Customer customer = CustomerDataFixtures.customer();
 
     @Test
-    public void whenCalculateThenReturnAmountOf250() {
+    public void whenCalculateThenReturnCorrectAmount() {
         RentalDataFixtures.rentalList().forEach(r -> customer.addRental(r));
 
         final BigDecimal totalAmount = customer.calculate();
@@ -24,7 +24,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void givenReturnedRentalsWhenCalculateThenReturnCorrectAmount() {
+    public void givenRentalsWithStatusReturnedWhenCalculateExtraChargesThenReturnCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentalList();
         rentals.stream().forEach(Rental::turnBack);
 
