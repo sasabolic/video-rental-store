@@ -28,13 +28,21 @@ public class DefaultRentalService implements RentalService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
-        final List<Rental> rentals = rentalItems.stream().map(rCmd -> {
-            final Film film = filmRepository.findById(rCmd.getFilmId())
-                    .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", rCmd.getFilmId())));
-            return new Rental(film, rCmd.getDaysRented());
-        }).collect(Collectors.toList());
 
-        rentals.forEach(r -> customer.addRental(r));
+        rentalItems.stream()
+                .forEach(rCmd -> {
+                    final Film film = filmRepository.findById(rCmd.getFilmId())
+                            .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", rCmd.getFilmId())));
+
+                    film.take();
+
+                    filmRepository.save(film);
+
+                    customer.addRental( new Rental(film, rCmd.getDaysRented()));
+                });
+
+        customerRepository.save(customer);
+
 
         return customer.calculate();
     }
