@@ -2,6 +2,7 @@ package com.example.videorentalstore.film;
 
 import com.example.videorentalstore.pricing.ReleasePolicyFactory;
 import com.example.videorentalstore.pricing.ReleaseType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 public class Film {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -20,6 +21,7 @@ public class Film {
 
     private int quantity;
 
+    @JsonIgnore
     private boolean active = true;
 
     public Film() {
