@@ -1,5 +1,7 @@
-package com.example.videorentalstore.customer;
+package com.example.videorentalstore.rental;
 
+import com.example.videorentalstore.customer.CustomerDataFixtures;
+import com.example.videorentalstore.customer.CustomerRepository;
 import com.example.videorentalstore.customer.web.RentalItem;
 import com.example.videorentalstore.film.FilmDataFixtures;
 import com.example.videorentalstore.film.FilmRepository;
