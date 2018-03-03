@@ -2,7 +2,7 @@ package com.example.videorentalstore.customer.web;
 
 import com.example.videorentalstore.customer.Invoice;
 import com.example.videorentalstore.film.Film;
-import com.example.videorentalstore.pricing.ReleaseType;
+import com.example.videorentalstore.film.ReleaseType;
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalService;
 import org.springframework.http.ResponseEntity;
