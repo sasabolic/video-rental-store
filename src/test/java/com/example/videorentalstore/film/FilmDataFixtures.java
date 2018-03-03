@@ -1,7 +1,5 @@
 package com.example.videorentalstore.film;
 
-import com.example.videorentalstore.pricing.ReleaseType;
-
 import java.util.Arrays;
 
 public class FilmDataFixtures {
@@ -21,11 +19,11 @@ public class FilmDataFixtures {
     }
 
     public static Film newReleaseFilm() {
-        return new Film("Matrix 11", ReleaseType.NEW_RELEASE);
+        return new Film("Matrix 11", ReleaseType.NEW_RELEASE, 10);
     }
 
     public static Film newReleaseFilm(String name) {
-        return new Film(name, ReleaseType.NEW_RELEASE);
+        return new Film(name, ReleaseType.NEW_RELEASE, 10);
     }
 
     public static Film newReleaseFilm(String name, int quantity) {
@@ -33,11 +31,11 @@ public class FilmDataFixtures {
     }
 
     public static Film regularReleaseFilm() {
-        return new Film("Spider Man", ReleaseType.REGULAR_RELEASE);
+        return new Film("Spider Man", ReleaseType.REGULAR_RELEASE, 10);
     }
 
     public static Film regularReleaseFilm(String name) {
-        return new Film(name, ReleaseType.REGULAR_RELEASE);
+        return new Film(name, ReleaseType.REGULAR_RELEASE, 10);
     }
 
     public static Film regularReleaseFilm(String name, int quantity) {
@@ -45,11 +43,11 @@ public class FilmDataFixtures {
     }
 
     public static Film oldReleaseFilm() {
-        return new Film("Out of Africa", ReleaseType.OLD_RELEASE);
+        return new Film("Out of Africa", ReleaseType.OLD_RELEASE, 10);
     }
 
     public static Film oldReleaseFilm(String name) {
-        return new Film(name, ReleaseType.OLD_RELEASE);
+        return new Film(name, ReleaseType.OLD_RELEASE, 10);
     }
 
     public static Film oldReleaseFilm(String name, int quantity) {

@@ -8,10 +8,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static com.example.videorentalstore.pricing.ReleaseType.NEW_RELEASE;
-import static com.example.videorentalstore.pricing.ReleaseType.REGULAR_RELEASE;
+import static com.example.videorentalstore.film.ReleaseType.NEW_RELEASE;
+import static com.example.videorentalstore.film.ReleaseType.REGULAR_RELEASE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringRunner.class)

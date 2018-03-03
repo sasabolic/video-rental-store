@@ -1,7 +1,5 @@
 package com.example.videorentalstore.film;
 
-import com.example.videorentalstore.pricing.ReleasePolicyFactory;
-import com.example.videorentalstore.pricing.ReleaseType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -83,12 +81,11 @@ public class Film {
     }
 
     public BigDecimal calculatePrice(long daysRented) {
-//        return ReleasePolicy.of(type).calculatePrice(daysRented);
-        return ReleasePolicyFactory.of(type).calculatePrice(daysRented);
+        return type.calculatePrice(daysRented);
     }
 
     public int calculateBonusPoints() {
-        return ReleasePolicyFactory.of(type).calculateBonusPoints();
+        return type.calculateBonusPoints();
     }
 
 }
