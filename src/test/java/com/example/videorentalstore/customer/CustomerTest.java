@@ -24,7 +24,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void givenRentalsWithStatusReturnedWhenCalculateExtraChargesThenReturnCorrectAmount() {
+    public void whenRentalTurnedBackTheCalculateExtraChargesReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentalList();
         rentals.stream().forEach(Rental::turnBack);
 
