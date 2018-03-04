@@ -1,8 +1,9 @@
-package com.example.videorentalstore.customer.web;
+package com.example.videorentalstore.rental.web;
 
 import com.example.videorentalstore.rental.RentalDataFixtures;
 import com.example.videorentalstore.rental.RentalResponse;
 import com.example.videorentalstore.rental.RentalService;
+import com.example.videorentalstore.rental.web.CustomerRentalController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

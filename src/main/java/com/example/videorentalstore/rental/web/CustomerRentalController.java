@@ -1,5 +1,6 @@
-package com.example.videorentalstore.customer.web;
+package com.example.videorentalstore.rental.web;
 
+import com.example.videorentalstore.customer.web.CreateRentalRequest;
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalResponse;
 import com.example.videorentalstore.rental.RentalService;
