@@ -50,11 +50,14 @@ public class Customer {
 
     public void addRental(Rental rental) {
         this.rentals.add(rental);
+        if (rental.isCreated()) {
+            this.bonusPoints += rental.calculateBonusPoints();
+        }
     }
 
     public BigDecimal calculate() {
         return this.rentals.stream()
-                .filter(r -> Rental.Status.RESERVED.equals(r.getStatus()))
+                .filter(r -> Rental.Status.RENTED.equals(r.getStatus()))
                 .map(r -> r.calculatePrice())
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }
@@ -64,12 +67,5 @@ public class Customer {
                 .filter(r -> Rental.Status.RETURNED.equals(r.getStatus()))
                 .map(r -> r.calculateExtraCharges())
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
-    }
-
-    public int calculateBonusPoint() {
-        return this.rentals.stream()
-                .filter(r -> Rental.Status.RETURNED.equals(r.getStatus()))
-                .map(r -> r.calculateBonusPoints())
-                .reduce(0, (x, y) -> x + y);
     }
 }
