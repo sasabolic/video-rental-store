@@ -1,7 +1,6 @@
 package com.example.videorentalstore.rental;
 
 import com.example.videorentalstore.film.Film;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -23,7 +22,7 @@ public class Rental {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name="film_id")
+    @JoinColumn(name = "film_id")
     private Film film;
 
     @Column(name = "days_rented")
@@ -46,12 +45,24 @@ public class Rental {
         this.film = film;
         this.daysRented = daysRented;
         this.startDate = startDate;
-        this.status = Status.RESERVED;
+        this.status = Status.RENTED;
     }
 
-    public void turnBack() {
+    public boolean isCreated() {
+        return this.status == Status.RENTED;
+    }
+
+    public Rental markReturned() {
+        if (this.status != Status.RENTED) {
+            throw new IllegalStateException(
+                    String.format("Cannot mark Rental as RETURNED that is currently not rented! Current status: %s.", this.status));
+        }
+
         this.endDate = Instant.now();
+        this.film.returnBack();
         this.status = Status.RETURNED;
+
+        return this;
     }
 
     public BigDecimal calculatePrice() {
@@ -63,15 +74,10 @@ public class Rental {
     }
 
     public int calculateBonusPoints() {
-        if (Status.RETURNED.equals(this.status)) {
-            return this.film.calculateBonusPoints();
-        }
-        return 0;
+        return this.film.calculateBonusPoints();
     }
 
     public enum Status {
-        RESERVED,
-
         RENTED,
 
         RETURNED
