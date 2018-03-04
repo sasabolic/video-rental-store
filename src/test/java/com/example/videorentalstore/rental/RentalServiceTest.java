@@ -2,7 +2,7 @@ package com.example.videorentalstore.rental;
 
 import com.example.videorentalstore.customer.CustomerDataFixtures;
 import com.example.videorentalstore.customer.CustomerRepository;
-import com.example.videorentalstore.customer.web.RentalItem;
+import com.example.videorentalstore.customer.web.CreateRentalRequest;
 import com.example.videorentalstore.film.FilmDataFixtures;
 import com.example.videorentalstore.film.FilmRepository;
 import org.junit.Before;
@@ -51,12 +51,12 @@ public class RentalServiceTest {
         doReturn(Optional.of(FilmDataFixtures.regularReleaseFilm("Spider Man 2"))).when(filmRepository).findById(eq(3L));
         doReturn(Optional.of(FilmDataFixtures.oldReleaseFilm("Out of Africa"))).when(filmRepository).findById(eq(4L));
 
-        final List<RentalItem> rentalItems = Arrays.asList(
-                new RentalItem(1L, 1),
-                new RentalItem(2L, 5),
-                new RentalItem(3L, 2),
-                new RentalItem(4L, 7));
+        final List<CreateRentalRequest> createRentalRequests = Arrays.asList(
+                new CreateRentalRequest(1L, 1),
+                new CreateRentalRequest(2L, 5),
+                new CreateRentalRequest(3L, 2),
+                new CreateRentalRequest(4L, 7));
 
-        final BigDecimal rentals = rentalService.create(1L, rentalItems);
+        rentalService.create(1L, createRentalRequests);
     }
 }

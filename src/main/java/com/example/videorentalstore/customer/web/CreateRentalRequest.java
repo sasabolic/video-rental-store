@@ -7,14 +7,14 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class RentalItem {
+public class CreateRentalRequest {
 
     private Long filmId;
     private int daysRented;
 
     @JsonCreator
-    public RentalItem(@JsonProperty("film_id") Long filmId,
-                      @JsonProperty("days_rented") int daysRented) {
+    public CreateRentalRequest(@JsonProperty("film_id") Long filmId,
+                               @JsonProperty("days_rented") int daysRented) {
         this.filmId = Long.valueOf(filmId);
         this.daysRented = daysRented;
     }
