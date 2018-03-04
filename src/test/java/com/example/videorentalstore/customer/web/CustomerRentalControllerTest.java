@@ -1,10 +1,10 @@
 package com.example.videorentalstore.customer.web;
 
 import com.example.videorentalstore.rental.RentalDataFixtures;
+import com.example.videorentalstore.rental.RentalResponse;
 import com.example.videorentalstore.rental.RentalService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,9 +35,9 @@ public class CustomerRentalControllerTest {
     private RentalService rentalService;
 
     @Test
-    public void whenCreateRentalsForCustomerThenReturnTotalAmount() throws Exception {
+    public void whenCreateRentalsForCustomerThenReturnCorrectResponse() throws Exception {
 
-        doReturn(BigDecimal.valueOf(250)).when(rentalService).create(Matchers.isA(Long.class), Matchers.isA(List.class));
+        doReturn(new RentalResponse(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(Long.class), isA(List.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{id}/rentals", 12)
@@ -45,7 +46,7 @@ public class CustomerRentalControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.amount", equalTo(250)));
 
@@ -53,6 +54,8 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetRentalsForCustomerThenReturnListOfFilms() throws Exception {
+        doReturn(RentalDataFixtures.rentals()).when(rentalService).findAll(isA(Long.class));
+
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{id}/rentals", 12)
                 .accept(MediaType.APPLICATION_JSON);

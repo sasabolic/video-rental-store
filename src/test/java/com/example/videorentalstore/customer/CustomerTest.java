@@ -16,7 +16,7 @@ public class CustomerTest {
 
     @Test
     public void whenCalculateThenReturnCorrectAmount() {
-        RentalDataFixtures.rentalList().forEach(r -> customer.addRental(r));
+        RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
 
         final BigDecimal totalAmount = customer.calculate();
 
@@ -24,14 +24,63 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalTurnedBackTheCalculateExtraChargesReturnsCorrectAmount() {
-        final List<Rental> rentals = RentalDataFixtures.rentalList();
-        rentals.stream().forEach(Rental::turnBack);
+    public void whenRentalsAddedThenBonusPointsAreAdded() {
+        final long before = customer.getBonusPoints();
+
+        RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
+
+        final long result = customer.getBonusPoints();
+
+        assertThat(result).isEqualByComparingTo(before + 5);
+    }
+
+    @Test
+    public void whenRentalsReturnedThenBonusPointsAreNotAdded() {
+        final long before = customer.getBonusPoints();
+
+        final List<Rental> rentals = RentalDataFixtures.rentals();
+        rentals.stream().forEach(Rental::markReturned);
+
+        rentals.stream().forEach(r -> customer.addRental(r));
+
+        final long result = customer.getBonusPoints();
+
+        assertThat(result).isEqualByComparingTo(before);
+    }
+
+    @Test
+    public void whenRentalsReturnedImmediatelyThenCalculateExtraChargesReturnsZero() {
+        final List<Rental> rentals = RentalDataFixtures.rentals();
+        rentals.stream().forEach(Rental::markReturned);
+
+        rentals.stream().forEach(r -> customer.addRental(r));
+
+        final BigDecimal totalAmount = customer.calculateExtraCharges();
+
+        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    public void whenRentalsReturnedThenCalculateExtraChargesReturnsCorrectAmount() {
+        final List<Rental> rentals = RentalDataFixtures.rentals(3);
+        rentals.stream().forEach(Rental::markReturned);
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
         final BigDecimal totalAmount = customer.calculateExtraCharges();
 
         assertThat(totalAmount).isEqualByComparingTo(BigDecimal.valueOf(110));
+    }
+
+    @Test
+    public void whenRentalsReturnedThenCalculateReturnsCorrectAmount() {
+        final List<Rental> rentals = RentalDataFixtures.rentals();
+        rentals.stream().forEach(Rental::markReturned);
+
+        rentals.stream().forEach(r -> customer.addRental(r));
+
+        final BigDecimal totalAmount = customer.calculate();
+
+        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.ZERO);
     }
 }

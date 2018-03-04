@@ -1,5 +1,6 @@
 package com.example.videorentalstore.rental;
 
+import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.FilmDataFixtures;
 
 import java.time.Instant;
@@ -14,7 +15,30 @@ public class RentalDataFixtures {
         return new Rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1, startDate);
     }
 
-    public static List<Rental> rentalList() {
+    public static Rental rental(Film film) {
+        return new Rental(film, 1);
+    }
+
+    public static Rental rental(Film film, int daysRented) {
+        return new Rental(film, daysRented);
+    }
+
+    public static Rental rental(Film film, int daysRented, int startedDaysBeforeNow) {
+        final Instant startDate = Instant.now().minus(startedDaysBeforeNow, ChronoUnit.DAYS);
+        return new Rental(film, daysRented, startDate);
+    }
+
+    public static List<Rental> rentals() {
+        return Arrays.asList(
+                new Rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1),
+                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5),
+                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2),
+                new Rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7)
+        );
+    }
+
+    public static List<Rental> rentals(int startedDaysBeforeNow) {
+        final Instant startDate = Instant.now().minus(startedDaysBeforeNow, ChronoUnit.DAYS);
         return Arrays.asList(
                 new Rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1, startDate),
                 new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, startDate),
