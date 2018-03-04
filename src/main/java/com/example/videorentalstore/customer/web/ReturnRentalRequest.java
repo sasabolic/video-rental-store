@@ -11,11 +11,11 @@ public class RentalUpdateRequest {
 
     private Action action;
 
-    private List<RentalItem> rentals;
+    private List<CreateRentalRequest> rentals;
 
     @JsonCreator
     public RentalUpdateRequest(@JsonProperty("action") Action action,
-                               @JsonProperty("rentals") List<RentalItem> rentals) {
+                               @JsonProperty("rentals") List<CreateRentalRequest> rentals) {
         this.action = action;
         this.rentals = rentals;
     }
