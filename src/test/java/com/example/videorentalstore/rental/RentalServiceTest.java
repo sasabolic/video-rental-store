@@ -181,10 +181,10 @@ public class RentalServiceTest {
             assertThat(ex.getExceptions()).hasSize(4);
             assertThat(ex.getExceptions()).extracting(Exception::getMessage)
                     .containsExactly(
-                            "Cannot mark Rental as RETURNED that is currently not rented! Current status: RETURNED.",
-                            "Cannot mark Rental as RETURNED that is currently not rented! Current status: RETURNED.",
-                            "Cannot mark Rental as RETURNED that is currently not rented! Current status: RETURNED.",
-                            "Cannot mark Rental as RETURNED that is currently not rented! Current status: RETURNED."
+                            "Cannot mark rental with id '1' as RETURNED that is currently not RENTED! Current status: RETURNED.",
+                            "Cannot mark rental with id '2' as RETURNED that is currently not RENTED! Current status: RETURNED.",
+                            "Cannot mark rental with id '3' as RETURNED that is currently not RENTED! Current status: RETURNED.",
+                            "Cannot mark rental with id '4' as RETURNED that is currently not RENTED! Current status: RETURNED."
                     );
         }
 

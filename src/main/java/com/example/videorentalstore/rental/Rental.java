@@ -67,7 +67,7 @@ public class Rental {
     public Rental markReturned() {
         if (this.status != Status.RENTED) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as RETURNED that is currently not rented! Current status: %s.", this.status));
+                    String.format("Cannot mark rental with id '%d' as RETURNED that is currently not RENTED! Current status: %s.", this.id, this.status));
         }
 
         this.endDate = Instant.now();
