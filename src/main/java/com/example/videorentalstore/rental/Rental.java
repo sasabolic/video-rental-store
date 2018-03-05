@@ -43,9 +43,7 @@ public class Rental {
     }
 
     public Rental(Film film, long daysRented, Instant startDate) {
-        film.take();
-
-        this.film = film;
+        this.film = film.take();
         this.daysRented = daysRented;
         this.startDate = startDate;
         this.status = Status.RENTED;
@@ -63,7 +61,7 @@ public class Rental {
         }
 
         this.endDate = Instant.now();
-        this.film.returnBack();
+        this.film = this.film.returnBack();
         this.status = Status.RETURNED;
 
         return this;
