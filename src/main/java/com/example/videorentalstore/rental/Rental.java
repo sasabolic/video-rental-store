@@ -1,6 +1,7 @@
 package com.example.videorentalstore.rental;
 
 import com.example.videorentalstore.film.Film;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -42,13 +43,16 @@ public class Rental {
     }
 
     public Rental(Film film, long daysRented, Instant startDate) {
+        film.take();
+
         this.film = film;
         this.daysRented = daysRented;
         this.startDate = startDate;
         this.status = Status.RENTED;
     }
 
-    public boolean isCreated() {
+    @JsonIgnore
+    public boolean isNew() {
         return this.status == Status.RENTED;
     }
 

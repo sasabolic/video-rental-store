@@ -50,7 +50,7 @@ public class Customer {
 
     public void addRental(Rental rental) {
         this.rentals.add(rental);
-        if (rental.isCreated()) {
+        if (rental.isNew()) {
             this.bonusPoints += rental.calculateBonusPoints();
         }
     }
