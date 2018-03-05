@@ -69,14 +69,18 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.amount", equalTo(110)))
                 .andExpect(jsonPath("$.rentals").isArray())
                 .andExpect(jsonPath("$.rentals", hasSize(4)))
-                .andExpect(jsonPath("$.rentals.[0].type", equalTo("RETURNED")))
-                .andExpect(jsonPath("$.rentals.[0].film.name", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$.rentals.[1].type", equalTo("RETURNED")))
-                .andExpect(jsonPath("$.rentals.[1].film.name", equalTo("Spider Man")))
-                .andExpect(jsonPath("$.rentals.[2].type", equalTo("RETURNED")))
-                .andExpect(jsonPath("$.rentals.[2].film.name", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$.rentals.[3].type", equalTo("RETURNED")))
-                .andExpect(jsonPath("$.rentals.[3].film.name", equalTo("Out of Africa")));
+                .andExpect(jsonPath("$.rentals[0].status", equalTo("RETURNED")))
+                .andExpect(jsonPath("$.rentals[0].daysRented", equalTo(1)))
+                .andExpect(jsonPath("$.rentals[0].film.name", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$.rentals[1].status", equalTo("RETURNED")))
+                .andExpect(jsonPath("$.rentals[1].daysRented", equalTo(5)))
+                .andExpect(jsonPath("$.rentals[1].film.name", equalTo("Spider Man")))
+                .andExpect(jsonPath("$.rentals[2].status", equalTo("RETURNED")))
+                .andExpect(jsonPath("$.rentals[2].daysRented", equalTo(2)))
+                .andExpect(jsonPath("$.rentals[2].film.name", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$.rentals[3].status", equalTo("RETURNED")))
+                .andExpect(jsonPath("$.rentals[3].daysRented", equalTo(7)))
+                .andExpect(jsonPath("$.rentals[3].film.name", equalTo("Out of Africa")));
 
     }
 
