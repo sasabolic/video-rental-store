@@ -2,8 +2,6 @@ package com.example.videorentalstore.film.web;
 
 import com.example.videorentalstore.AbstractWebIntTest;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -14,9 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class FilmControllerIntTest extends AbstractWebIntTest {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @Test
     public void whenRequestForFilmsThenReturnList() throws Exception {
@@ -79,6 +74,5 @@ public class FilmControllerIntTest extends AbstractWebIntTest {
                 .andExpect(jsonPath("$.message", equalTo("Film with id '" + nonExistingId + "' does not exist")));
 
     }
-
 
 }
