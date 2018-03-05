@@ -1,6 +1,6 @@
 package com.example.videorentalstore.rental;
 
-import com.example.videorentalstore.customer.web.CreateRentalRequest;
+import com.example.videorentalstore.rental.web.CreateRentalRequest;
 
 import java.util.List;
 

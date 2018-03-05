@@ -3,7 +3,7 @@ package com.example.videorentalstore.rental;
 import com.example.videorentalstore.customer.CustomerDataFixtures;
 import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.customer.CustomerRepository;
-import com.example.videorentalstore.customer.web.CreateRentalRequest;
+import com.example.videorentalstore.rental.web.CreateRentalRequest;
 import com.example.videorentalstore.film.FilmDataFixtures;
 import com.example.videorentalstore.film.FilmRepository;
 import org.junit.Before;
