@@ -12,47 +12,47 @@ public class RentalDataFixtures {
     private static final Instant startDate = Instant.now().minus(3, ChronoUnit.DAYS);
 
     public static Rental rental() {
-        return new Rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1, startDate);
+        return new Rental(1L, FilmDataFixtures.newReleaseFilm("Matrix 11"), 1, startDate);
     }
 
     public static Rental rental(Film film) {
-        return new Rental(film, 1);
+        return new Rental(1L, film, 1);
     }
 
     public static Rental rental(Film film, int daysRented) {
-        return new Rental(film, daysRented);
+        return new Rental(1L, film, daysRented);
     }
 
     public static Rental rental(Film film, int daysRented, int startedDaysBeforeNow) {
         final Instant startDate = Instant.now().minus(startedDaysBeforeNow, ChronoUnit.DAYS);
-        return new Rental(film, daysRented, startDate);
+        return new Rental(1L, film, daysRented, startDate);
     }
 
     public static List<Rental> rentals() {
         return Arrays.asList(
-                new Rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1),
-                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5),
-                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2),
-                new Rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7)
+                new Rental(1L, FilmDataFixtures.newReleaseFilm("Matrix 11"), 1),
+                new Rental(2L, FilmDataFixtures.regularReleaseFilm("Spider Man"), 5),
+                new Rental(3L, FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2),
+                new Rental(4L, FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7)
         );
     }
 
     public static List<Rental> rentals(int startedDaysBeforeNow) {
         final Instant startDate = Instant.now().minus(startedDaysBeforeNow, ChronoUnit.DAYS);
         return Arrays.asList(
-                new Rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1, startDate),
-                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, startDate),
-                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2, startDate),
-                new Rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7, startDate)
+                new Rental(1L, FilmDataFixtures.newReleaseFilm("Matrix 11"), 1, startDate),
+                new Rental(2L, FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, startDate),
+                new Rental(3L, FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2, startDate),
+                new Rental(4L, FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7, startDate)
         );
     }
 
     public static List<Rental> returnedRentals() {
         return Arrays.asList(
-                new Rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1).markReturned(),
-                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5).markReturned(),
-                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2).markReturned(),
-                new Rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7).markReturned()
+                new Rental(1L, FilmDataFixtures.newReleaseFilm("Matrix 11"), 1).markReturned(),
+                new Rental(2L, FilmDataFixtures.regularReleaseFilm("Spider Man"), 5).markReturned(),
+                new Rental(3L, FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2).markReturned(),
+                new Rental(4L, FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7).markReturned()
         );
     }
 

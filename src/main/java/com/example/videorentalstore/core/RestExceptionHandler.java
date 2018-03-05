@@ -1,13 +1,18 @@
 package com.example.videorentalstore.core;
 
 import com.example.videorentalstore.film.FilmNotFoundException;
+import com.example.videorentalstore.rental.RentalException;
 import lombok.Data;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
@@ -21,6 +26,24 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({FilmNotFoundException.class})
     public ResponseEntity<Object> handleNotFound(Exception e) {
         return buildResponseEntity(RestError.of(HttpStatus.NOT_FOUND, e));
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        BindingResult bindingResult = ex.getBindingResult();
+
+        RestError restError = RestError.of(status, ex, "Validation failed");
+        restError.addValidationErrors(bindingResult.getAllErrors());
+
+        return buildResponseEntity(restError);
+    }
+
+    @ExceptionHandler({RentalException.class})
+    protected ResponseEntity<Object> handleRentalException(RentalException ex) {
+        RestError restError = RestError.of(HttpStatus.BAD_REQUEST, ex, ex.getMessage());
+        restError.addErrors(ex.getExceptions());
+
+        return buildResponseEntity(restError);
     }
 
     private ResponseEntity<Object> buildResponseEntity(RestError restError) {
@@ -71,6 +94,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         public void addValidationErrors(List<? extends ObjectError> bindErrors) {
             this.errors = bindErrors.stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+        }
+
+        public void addErrors(List<? extends Exception> errors) {
+            this.errors = errors.stream()
+                    .map(Exception::getMessage).collect(Collectors.toList());
         }
     }
 }

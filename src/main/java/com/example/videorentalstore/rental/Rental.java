@@ -27,7 +27,7 @@ public class Rental {
     private Film film;
 
     @Column(name = "days_rented")
-    private long daysRented;
+    private int daysRented;
 
     @Column(name = "start_date")
     private Instant startDate;
@@ -38,15 +38,25 @@ public class Rental {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public Rental(Film film, long daysRented) {
+    public Rental(Film film, int daysRented) {
         this(film, daysRented, Instant.now());
     }
 
-    public Rental(Film film, long daysRented, Instant startDate) {
+    public Rental(Film film, int daysRented, Instant startDate) {
         this.film = film.take();
         this.daysRented = daysRented;
         this.startDate = startDate;
         this.status = Status.RENTED;
+    }
+
+    public Rental(long id, Film film, int daysRented, Instant startDate) {
+        this(film, daysRented, startDate);
+        this.id = id;
+    }
+
+    public Rental(long id, Film film, int daysRented) {
+        this(film, daysRented);
+        this.id = id;
     }
 
     @JsonIgnore

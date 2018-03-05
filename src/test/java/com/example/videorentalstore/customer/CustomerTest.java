@@ -49,7 +49,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalsReturnedImmediatelyThenCalculateExtraChargesReturnsZero() {
+    public void whenRentalsReturnedSameDayThenCalculateExtraChargesReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
         rentals.stream().forEach(Rental::markReturned);
 
@@ -71,7 +71,6 @@ public class CustomerTest {
 
         assertThat(totalAmount).isEqualByComparingTo(BigDecimal.valueOf(110));
     }
-
     @Test
     public void whenRentalsReturnedThenCalculateReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
