@@ -1,11 +1,13 @@
 package com.example.videorentalstore.film;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Getter
 public class Film {
 
     @Id
