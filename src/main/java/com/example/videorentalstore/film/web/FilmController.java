@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
@@ -21,7 +21,7 @@ public class FilmController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Iterable<Film>> getAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<Film>> getAll(@RequestParam(required = false) String name) {
         if (name == null) {
             return ResponseEntity.ok(this.filmService.findAll());
         }

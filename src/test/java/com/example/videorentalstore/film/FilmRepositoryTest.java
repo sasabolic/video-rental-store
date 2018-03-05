@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -89,7 +90,7 @@ public class FilmRepositoryTest {
         entityManager.persist(newFilm);
         entityManager.flush();
 
-        final Iterable<Film> films = filmRepository.findByNameContainingIgnoreCase("orient express");
+        final List<Film> films = filmRepository.findByNameContainingIgnoreCase("orient express");
 
         assertThat(films).isNotNull();
         assertThat(films).isNotEmpty();

@@ -2,6 +2,7 @@ package com.example.videorentalstore.film;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,12 +15,12 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Iterable<Film> findAll() {
+    public List<Film> findAll() {
         return this.filmRepository.findAll();
     }
 
     @Override
-    public Iterable<Film> findAllByName(String name) {
+    public List<Film> findAllByName(String name) {
         return this.filmRepository.findByNameContainingIgnoreCase(name);
     }
 

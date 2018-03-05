@@ -1,10 +1,11 @@
 package com.example.videorentalstore.film;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class FilmDataFixtures {
 
-    public static Iterable<Film> films() {
+    public static List<Film> films() {
         return Arrays.asList(
                 newReleaseFilm(),
                 new Film("Spider Man", ReleaseType.REGULAR_RELEASE),
@@ -12,7 +13,7 @@ public class FilmDataFixtures {
                 new Film("Out of Africa", ReleaseType.OLD_RELEASE));
     }
 
-    public static Iterable<Film> filmsWithSpiderMan() {
+    public static List<Film> filmsWithSpiderMan() {
         return Arrays.asList(
                 new Film("Spider Man", ReleaseType.REGULAR_RELEASE),
                 new Film("Spider Man 2", ReleaseType.REGULAR_RELEASE));

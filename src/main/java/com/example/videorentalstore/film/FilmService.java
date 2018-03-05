@@ -1,12 +1,13 @@
 package com.example.videorentalstore.film;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FilmService {
 
-    Iterable<Film> findAll();
+    List<Film> findAll();
 
-    Iterable<Film> findAllByName(String name);
+    List<Film> findAllByName(String name);
 
     Optional<Film> findById(Long id);
 

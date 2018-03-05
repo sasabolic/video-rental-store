@@ -1,8 +1,10 @@
 package com.example.videorentalstore.film;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FilmRepository extends CrudRepository<Film, Long> {
+import java.util.List;
 
-    Iterable<Film> findByNameContainingIgnoreCase(String name);
+public interface FilmRepository extends JpaRepository<Film, Long> {
+
+    List<Film> findByNameContainingIgnoreCase(String name);
 }
