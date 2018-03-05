@@ -65,19 +65,25 @@ public class Film {
         this.active = false;
     }
 
-    public void increaseBy(int quantity) {
+    public Film increaseBy(int quantity) {
         this.quantity = this.quantity + quantity;
+
+        return this;
     }
 
-    public void take() {
+    public Film take() {
         if (this.quantity == 0) {
             throw new RuntimeException("There is not any copy of the '" + this.name + "' film available");
         }
         this.quantity--;
+
+        return this;
     }
 
-    public void returnBack() {
+    public Film returnBack() {
         this.quantity++;
+
+        return this;
     }
 
     public BigDecimal calculatePrice(long daysRented) {
