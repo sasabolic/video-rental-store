@@ -38,7 +38,6 @@ public class Customer {
     @JoinColumn(name = "customer_id")
     private List<Rental> rentals = new ArrayList<>();
 
-
     public Customer(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -68,4 +67,5 @@ public class Customer {
                 .map(r -> r.calculateExtraCharges())
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }
+
 }
