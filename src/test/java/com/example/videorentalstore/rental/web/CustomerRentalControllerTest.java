@@ -3,7 +3,6 @@ package com.example.videorentalstore.rental.web;
 import com.example.videorentalstore.rental.RentalDataFixtures;
 import com.example.videorentalstore.rental.RentalResponse;
 import com.example.videorentalstore.rental.RentalService;
-import com.example.videorentalstore.rental.web.CustomerRentalController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +49,34 @@ public class CustomerRentalControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.amount", equalTo(250)));
+
+    }
+
+    @Test
+    public void whenReturnBackRentalsForCustomerThenReturnCorrectResponse() throws Exception {
+
+        doReturn(new RentalResponse(BigDecimal.valueOf(110), RentalDataFixtures.returnedRentals())).when(rentalService).returnBack(isA(Long.class), isA(List.class));
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .patch("/customers/{id}/rentals", 12)
+                .content(RentalDataFixtures.idsJson())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.amount", equalTo(110)))
+                .andExpect(jsonPath("$.rentals").isArray())
+                .andExpect(jsonPath("$.rentals", hasSize(4)))
+                .andExpect(jsonPath("$.rentals.[0].type", equalTo("RETURNED")))
+                .andExpect(jsonPath("$.rentals.[0].film.name", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$.rentals.[1].type", equalTo("RETURNED")))
+                .andExpect(jsonPath("$.rentals.[1].film.name", equalTo("Spider Man")))
+                .andExpect(jsonPath("$.rentals.[2].type", equalTo("RETURNED")))
+                .andExpect(jsonPath("$.rentals.[2].film.name", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$.rentals.[3].type", equalTo("RETURNED")))
+                .andExpect(jsonPath("$.rentals.[3].film.name", equalTo("Out of Africa")));
 
     }
 
