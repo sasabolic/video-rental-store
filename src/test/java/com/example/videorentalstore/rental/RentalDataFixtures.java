@@ -47,6 +47,19 @@ public class RentalDataFixtures {
         );
     }
 
+    public static List<Rental> returnedRentals() {
+        return Arrays.asList(
+                new Rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1).markReturned(),
+                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5).markReturned(),
+                new Rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2).markReturned(),
+                new Rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7).markReturned()
+        );
+    }
+
+    public static String idsJson() {
+        return "[\"1\", \"2\", \"3\", \"4\"]";
+    }
+
     public static String json() {
         return "[\n" +
                 "  {\n" +
