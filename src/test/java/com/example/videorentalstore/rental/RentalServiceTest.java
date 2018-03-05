@@ -35,12 +35,15 @@ public class RentalServiceTest {
     @Mock
     private FilmRepository filmRepository;
 
+    @Mock
+    private RentalRepository rentalRepository;
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() {
-        rentalService = new DefaultRentalService(customerRepository, filmRepository);
+        rentalService = new DefaultRentalService(customerRepository, filmRepository, rentalRepository);
     }
 
     @Test
