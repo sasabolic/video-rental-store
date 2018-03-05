@@ -57,10 +57,10 @@ public class Film {
         return active;
     }
 
-    public void process(UpdateFilmCmd updateFilmCmd) {
-        this.name = updateFilmCmd.getName();
-        this.type = ReleaseType.valueOf(updateFilmCmd.getType());
-        this.quantity = updateFilmCmd.getQuantity();
+    public void process(UpdateFilmCommand updateFilmCommand) {
+        this.name = updateFilmCommand.getName();
+        this.type = ReleaseType.valueOf(updateFilmCommand.getType());
+        this.quantity = updateFilmCommand.getQuantity();
     }
 
     public void deactivate() {

@@ -65,11 +65,11 @@ public class FilmServiceTest {
         final String type = "NEW_RELEASE";
         final int quantity = 10;
 
-        final CreateFilmCmd createFilmCmd = new CreateFilmCmd(name, type, quantity);
+        final CreateFilmCommand createFilmCommand = new CreateFilmCommand(name, type, quantity);
 
         doReturn(FilmDataFixtures.newReleaseFilm(name, quantity)).when(filmRepository).save(isA(Film.class));
 
-        final Film result = filmService.save(createFilmCmd);
+        final Film result = filmService.save(createFilmCommand);
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("name", name);
@@ -85,12 +85,12 @@ public class FilmServiceTest {
         final String newType = "REGULAR_RELEASE";
         final int quantity = 10;
 
-        final UpdateFilmCmd updateFilmCmd = new UpdateFilmCmd(5L, newName, newType, quantity);
+        final UpdateFilmCommand updateFilmCommand = new UpdateFilmCommand(5L, newName, newType, quantity);
 
         doReturn(Optional.of(FilmDataFixtures.newReleaseFilm(name, quantity))).when(filmRepository).findById(isA(Long.class));
         doReturn(FilmDataFixtures.regularReleaseFilm(newName, quantity)).when(filmRepository).save(isA(Film.class));
 
-        final Film result = filmService.update(updateFilmCmd);
+        final Film result = filmService.update(updateFilmCommand);
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("name", newName);
@@ -121,7 +121,7 @@ public class FilmServiceTest {
         doReturn(Optional.of(toBeReturned)).when(filmRepository).findById(isA(Long.class));
         doReturn(toBeReturned).when(filmRepository).save(isA(Film.class));
 
-        final Film result = filmService.updateQuantity(new UpdateFilmQuantityCmd(1L, 23));
+        final Film result = filmService.updateQuantity(new UpdateFilmQuantityCommand(1L, 23));
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("name", toBeReturned.getName());

@@ -10,12 +10,12 @@ public interface FilmService {
 
     Optional<Film> findById(Long id);
 
-    Film save(CreateFilmCmd createFilmCmd);
+    Film save(CreateFilmCommand createFilmCommand);
 
-    Film update(UpdateFilmCmd updateFilmCmd);
+    Film update(UpdateFilmCommand updateFilmCommand);
 
     Film delete(Long id);
 
-    Film updateQuantity(UpdateFilmQuantityCmd updateFilmQuantityCmd);
+    Film updateQuantity(UpdateFilmQuantityCommand updateFilmQuantityCommand);
 
 }

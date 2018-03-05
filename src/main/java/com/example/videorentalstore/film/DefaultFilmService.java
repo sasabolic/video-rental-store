@@ -29,18 +29,18 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Film save(CreateFilmCmd createFilmCmd) {
-        final Film film = new Film(createFilmCmd.getName(), ReleaseType.valueOf(createFilmCmd.getType()), createFilmCmd.getQuantity());
+    public Film save(CreateFilmCommand createFilmCommand) {
+        final Film film = new Film(createFilmCommand.getName(), ReleaseType.valueOf(createFilmCommand.getType()), createFilmCommand.getQuantity());
 
         return this.filmRepository.save(film);
     }
 
     @Override
-    public Film update(UpdateFilmCmd updateFilmCmd) {
-        final Film film = this.filmRepository.findById(updateFilmCmd.getId())
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmCmd.getId())));
+    public Film update(UpdateFilmCommand updateFilmCommand) {
+        final Film film = this.filmRepository.findById(updateFilmCommand.getId())
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmCommand.getId())));
 
-        film.process(updateFilmCmd);
+        film.process(updateFilmCommand);
 
         return this.filmRepository.save(film);
     }
@@ -56,11 +56,11 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Film updateQuantity(UpdateFilmQuantityCmd updateFilmQuantityCmd) {
-        final Film film = this.filmRepository.findById(updateFilmQuantityCmd.getId())
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmQuantityCmd.getId())));;
+    public Film updateQuantity(UpdateFilmQuantityCommand updateFilmQuantityCommand) {
+        final Film film = this.filmRepository.findById(updateFilmQuantityCommand.getId())
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmQuantityCommand.getId())));;
 
-        film.increaseBy(updateFilmQuantityCmd.getQuantity());
+        film.increaseBy(updateFilmQuantityCommand.getQuantity());
 
         return this.filmRepository.save(film);
     }
