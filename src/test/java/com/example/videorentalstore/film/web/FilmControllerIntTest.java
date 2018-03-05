@@ -8,11 +8,19 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class FilmControllerIntTest extends AbstractWebIntTest {
 
@@ -20,33 +28,65 @@ public class FilmControllerIntTest extends AbstractWebIntTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void whenRequestForFilmsThenReturnList() throws IOException, URISyntaxException {
-        final ResponseEntity<String> response = restTemplate.getForEntity(createURIWithPort("/films"), String.class);
+    public void whenRequestForFilmsThenReturnList() throws Exception {
 
-        System.out.println("Response: " + response);
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/films")
+                .accept(MediaType.APPLICATION_JSON);
 
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
-        assertThat(response.getHeaders().getContentType()).isEqualByComparingTo(MediaType.APPLICATION_JSON_UTF8);
-        assertThat(response.getBody()).isEqualTo(json("films.json"));
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].name", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$[0].type", equalTo("NEW_RELEASE")))
+                .andExpect(jsonPath("$[1].name", equalTo("Spider Man")))
+                .andExpect(jsonPath("$[1].type", equalTo("REGULAR_RELEASE")))
+                .andExpect(jsonPath("$[2].name", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$[2].type", equalTo("REGULAR_RELEASE")))
+                .andExpect(jsonPath("$[3].name", equalTo("Out of Africa")))
+                .andExpect(jsonPath("$[3].type", equalTo("OLD_RELEASE")));
+
     }
 
     @Test
-    public void whenQueryForSpecificFilmThenReturnListContainingThatName() throws IOException, URISyntaxException {
-        final ResponseEntity<String> response = restTemplate.getForEntity(createURIWithPort("/films?name={name}"), String.class, "spider");
+    public void whenQueryForSpecificFilmThenReturnListContainingThatName() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/films?name={name}", "spider")
+                .accept(MediaType.APPLICATION_JSON);
 
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
-        assertThat(response.getHeaders().getContentType()).isEqualByComparingTo(MediaType.APPLICATION_JSON_UTF8);
-        assertThat(response.getBody()).isEqualTo(json("films_spider.json"));
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", equalTo("Spider Man")))
+                .andExpect(jsonPath("$[0].type", equalTo("REGULAR_RELEASE")))
+                .andExpect(jsonPath("$[1].name", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$[1].type", equalTo("REGULAR_RELEASE")));
+
     }
 
     @Test
-    public void whenGetByIdThenRuntimeException() throws Exception {
+    public void whenGetByNonExistingIdThenRuntimeException() throws Exception {
+        final long nonExistingId = 10L;
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/films/{filmId}", nonExistingId)
+                .accept(MediaType.APPLICATION_JSON);
 
-        final ResponseEntity<String> response = restTemplate.getForEntity(createURIWithPort("/films/10"), String.class);
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(404)))
+                .andExpect(jsonPath("$.message", equalTo("Film with id '" + nonExistingId + "' does not exist")));
 
-        System.out.println("RESPONSE: " +response);
     }
 
 

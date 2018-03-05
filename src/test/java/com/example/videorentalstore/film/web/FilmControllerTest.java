@@ -94,7 +94,7 @@ public class FilmControllerTest {
     }
 
     @Test
-    public void whenGetByIdThenStatusNotFound() throws Exception {
+    public void whenGetByNonExistingIdThenStatusNotFound() throws Exception {
 
         given(this.filmService.findById(anyLong()))
                 .willReturn(Optional.ofNullable(null));
