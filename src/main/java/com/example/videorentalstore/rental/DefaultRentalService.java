@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -25,11 +26,18 @@ public class DefaultRentalService implements RentalService {
         this.filmRepository = filmRepository;
     }
 
-    public List<Rental> findAllForCustomer(Long customerId) {
+    public List<Rental> findAllRentedForCustomer(Long customerId) {
+        return findAllForCustomer(customerId, Rental.Status.RENTED);
+    }
+
+    public List<Rental> findAllForCustomer(Long customerId, Rental.Status status) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
-        return customer.getRentals();
+        if (status == null) {
+            return customer.getRentals();
+        }
+        return customer.getRentals().stream().filter(r -> status == r.getStatus()).collect(Collectors.toList());
     }
 
     @Override
@@ -90,6 +98,4 @@ public class DefaultRentalService implements RentalService {
         return new RentalResponse(customer.calculateExtraCharges(), customer.getRentals());
 
     }
-
-
 }

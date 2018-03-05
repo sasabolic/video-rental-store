@@ -95,7 +95,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetRentalsForCustomerThenReturnListOfFilms() throws Exception {
-        doReturn(RentalDataFixtures.rentals()).when(rentalService).findAllForCustomer(isA(Long.class));
+        doReturn(RentalDataFixtures.rentals()).when(rentalService).findAllRentedForCustomer(isA(Long.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{id}/rentals", 12)

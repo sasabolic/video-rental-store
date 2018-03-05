@@ -24,9 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
     private RentalService rentalService;
 
     @Autowired

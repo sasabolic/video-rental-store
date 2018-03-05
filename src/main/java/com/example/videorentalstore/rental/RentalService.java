@@ -4,7 +4,9 @@ import java.util.List;
 
 public interface RentalService {
 
-    List<Rental> findAllForCustomer(Long customerId);
+    List<Rental> findAllRentedForCustomer(Long customerId);
+
+    List<Rental> findAllForCustomer(Long customerId, Rental.Status status);
 
     RentalResponse create(CreateRentalsCommand createRentalsCommand);
 
