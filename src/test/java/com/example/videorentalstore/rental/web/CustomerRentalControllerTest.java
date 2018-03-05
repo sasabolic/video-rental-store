@@ -35,8 +35,7 @@ public class CustomerRentalControllerTest {
     private RentalService rentalService;
 
     @Test
-    public void whenCreateRentalsForCustomerThenReturnCorrectResponse() throws Exception {
-
+    public void whenCreateRentalsThenReturnCorrectResponse() throws Exception {
         doReturn(new RentalResponse(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(Long.class), isA(List.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -48,13 +47,26 @@ public class CustomerRentalControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.amount", equalTo(250)));
+                .andExpect(jsonPath("$.amount", equalTo(250)))
+                .andExpect(jsonPath("$.rentals").isArray())
+                .andExpect(jsonPath("$.rentals", hasSize(4)))
+                .andExpect(jsonPath("$.rentals[0].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$.rentals[0].daysRented", equalTo(1)))
+                .andExpect(jsonPath("$.rentals[0].film.name", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$.rentals[1].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$.rentals[1].daysRented", equalTo(5)))
+                .andExpect(jsonPath("$.rentals[1].film.name", equalTo("Spider Man")))
+                .andExpect(jsonPath("$.rentals[2].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$.rentals[2].daysRented", equalTo(2)))
+                .andExpect(jsonPath("$.rentals[2].film.name", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$.rentals[3].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$.rentals[3].daysRented", equalTo(7)))
+                .andExpect(jsonPath("$.rentals[3].film.name", equalTo("Out of Africa")));
 
     }
 
     @Test
-    public void whenReturnBackRentalsForCustomerThenReturnCorrectResponse() throws Exception {
-
+    public void whenReturnBackRentalsThenReturnCorrectResponse() throws Exception {
         doReturn(new RentalResponse(BigDecimal.valueOf(110), RentalDataFixtures.returnedRentals())).when(rentalService).returnBack(isA(Long.class), isA(List.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
