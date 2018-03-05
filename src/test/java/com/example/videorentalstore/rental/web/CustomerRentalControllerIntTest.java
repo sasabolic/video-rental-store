@@ -51,7 +51,7 @@ public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
     }
 
     @Test
-    public void whenRequestForCustomerRentalsThenReturnList() throws Exception {
+    public void whenGetRentalsForCustomerThenReturnListOfFilms() throws Exception {
         final Long customerId = 1L;
         final Long filmId = 1L;
         final int daysRented = 10;
@@ -70,8 +70,9 @@ public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].startDate").exists())
                 .andExpect(jsonPath("$[0].film.id", equalTo(filmId.intValue())))
+                .andExpect(jsonPath("$[0].film.name", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$[0].film.type", equalTo("NEW_RELEASE")))
+                .andExpect(jsonPath("$[0].film.quantity", equalTo(3)))
                 .andExpect(jsonPath("$[0].daysRented", equalTo(daysRented)));
-
-
     }
 }
