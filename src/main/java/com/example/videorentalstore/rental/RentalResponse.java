@@ -1,8 +1,11 @@
 package com.example.videorentalstore.rental;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.util.List;
 
+@Getter
 public class RentalResponse {
     private BigDecimal amount;
 
