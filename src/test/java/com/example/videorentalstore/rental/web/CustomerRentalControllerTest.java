@@ -1,8 +1,6 @@
 package com.example.videorentalstore.rental.web;
 
-import com.example.videorentalstore.rental.RentalDataFixtures;
-import com.example.videorentalstore.rental.RentalResponse;
-import com.example.videorentalstore.rental.RentalService;
+import com.example.videorentalstore.rental.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -36,7 +33,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenCreateRentalsThenReturnCorrectResponse() throws Exception {
-        doReturn(new RentalResponse(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(Long.class), isA(List.class));
+        doReturn(new RentalResponse(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(CreateRentalsCommand.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{id}/rentals", 12)
@@ -67,7 +64,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenReturnBackRentalsThenReturnCorrectResponse() throws Exception {
-        doReturn(new RentalResponse(BigDecimal.valueOf(110), RentalDataFixtures.returnedRentals())).when(rentalService).returnBack(isA(Long.class), isA(List.class));
+        doReturn(new RentalResponse(BigDecimal.valueOf(110), RentalDataFixtures.returnedRentals())).when(rentalService).returnBack(isA(ReturnRentalsCommand.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{id}/rentals", 12)
@@ -98,7 +95,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetRentalsForCustomerThenReturnListOfFilms() throws Exception {
-        doReturn(RentalDataFixtures.rentals()).when(rentalService).findAll(isA(Long.class));
+        doReturn(RentalDataFixtures.rentals()).when(rentalService).findAllForCustomer(isA(Long.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{id}/rentals", 12)

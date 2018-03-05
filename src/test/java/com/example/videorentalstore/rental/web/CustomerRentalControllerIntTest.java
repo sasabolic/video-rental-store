@@ -2,6 +2,8 @@ package com.example.videorentalstore.rental.web;
 
 import com.example.videorentalstore.AbstractWebIntTest;
 import com.example.videorentalstore.film.FilmRepository;
+import com.example.videorentalstore.rental.CreateRentalCommand;
+import com.example.videorentalstore.rental.CreateRentalsCommand;
 import com.example.videorentalstore.rental.RentalRepository;
 import com.example.videorentalstore.rental.RentalService;
 import org.junit.Before;
@@ -14,14 +16,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
 
@@ -50,7 +48,7 @@ public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
         final Long customerId = 1L;
         final Long filmId = 1L;
         final int daysRented = 10;
-        rentalService.create(customerId, Arrays.asList(new CreateRentalRequest(filmId, daysRented)));
+        rentalService.create(new CreateRentalsCommand(customerId, Arrays.asList(new CreateRentalCommand(filmId, daysRented))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{id}/rentals", customerId)

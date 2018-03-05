@@ -1,5 +1,6 @@
 package com.example.videorentalstore.rental.web;
 
+import com.example.videorentalstore.rental.CreateRentalCommand;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -17,5 +18,9 @@ public class CreateRentalRequest {
                                @JsonProperty("days_rented") int daysRented) {
         this.filmId = Long.valueOf(filmId);
         this.daysRented = daysRented;
+    }
+
+    public CreateRentalCommand toCreateRentalCommand() {
+        return new CreateRentalCommand(this.filmId, this.daysRented);
     }
 }

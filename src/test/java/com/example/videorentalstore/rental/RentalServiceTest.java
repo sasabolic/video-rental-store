@@ -52,13 +52,13 @@ public class RentalServiceTest {
         doReturn(Optional.of(FilmDataFixtures.regularReleaseFilm("Spider Man 2"))).when(filmRepository).findById(eq(3L));
         doReturn(Optional.of(FilmDataFixtures.oldReleaseFilm("Out of Africa"))).when(filmRepository).findById(eq(4L));
 
-        final List<CreateRentalRequest> createRentalRequests = Arrays.asList(
-                new CreateRentalRequest(1L, 1),
-                new CreateRentalRequest(2L, 5),
-                new CreateRentalRequest(3L, 2),
-                new CreateRentalRequest(4L, 7));
+        final List<CreateRentalCommand> createRentalCommands = Arrays.asList(
+                new CreateRentalCommand(1L, 1),
+                new CreateRentalCommand(2L, 5),
+                new CreateRentalCommand(3L, 2),
+                new CreateRentalCommand(4L, 7));
 
-        final RentalResponse rentalResponse = rentalService.create(1L, createRentalRequests);
+        final RentalResponse rentalResponse = rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
 
         assertThat(rentalResponse).isNotNull();
         assertThat(rentalResponse).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
@@ -72,7 +72,7 @@ public class RentalServiceTest {
     public void whenReturningBackRentalsThenReturnCorrectResult() {
         doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
 
-        final RentalResponse rentalResponse = rentalService.returnBack(1L, Arrays.asList(1L, 2L, 3L, 4L));
+        final RentalResponse rentalResponse = rentalService.returnBack(new ReturnRentalsCommand(1L, Arrays.asList(1L, 2L, 3L, 4L)));
 
         assertThat(rentalResponse).isNotNull();
         assertThat(rentalResponse).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
@@ -91,13 +91,13 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        final List<CreateRentalRequest> createRentalRequests = Arrays.asList(
-                new CreateRentalRequest(1L, 1),
-                new CreateRentalRequest(2L, 5),
-                new CreateRentalRequest(3L, 2),
-                new CreateRentalRequest(4L, 7));
+        final List<CreateRentalCommand> createRentalCommands = Arrays.asList(
+                new CreateRentalCommand(1L, 1),
+                new CreateRentalCommand(2L, 5),
+                new CreateRentalCommand(3L, 2),
+                new CreateRentalCommand(4L, 7));
 
-        rentalService.create(customerId, createRentalRequests);
+        rentalService.create(new CreateRentalsCommand(customerId, createRentalCommands));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        rentalService.returnBack(customerId, Arrays.asList(1L, 2L, 3L, 4L));
+        rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
     }
 
     @Test
@@ -118,15 +118,15 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(filmRepository).findById(anyLong());
 
-        final List<CreateRentalRequest> createRentalRequests = Arrays.asList(
-                new CreateRentalRequest(1L, 1),
-                new CreateRentalRequest(2L, 5),
-                new CreateRentalRequest(3L, 2),
-                new CreateRentalRequest(4L, 7));
+        final List<CreateRentalCommand> createRentalCommands = Arrays.asList(
+                new CreateRentalCommand(1L, 1),
+                new CreateRentalCommand(2L, 5),
+                new CreateRentalCommand(3L, 2),
+                new CreateRentalCommand(4L, 7));
 
         RentalResponse rentalResponse = null;
         try {
-            rentalResponse = rentalService.create(1L, createRentalRequests);
+            rentalResponse = rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
@@ -150,7 +150,7 @@ public class RentalServiceTest {
 
         RentalResponse rentalResponse = null;
         try {
-            rentalResponse = rentalService.returnBack(customerId, Arrays.asList(1L, 2L, 3L, 4L));
+            rentalResponse = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
@@ -174,7 +174,7 @@ public class RentalServiceTest {
 
         RentalResponse rentalResponse = null;
         try {
-            rentalResponse = rentalService.returnBack(customerId, Arrays.asList(1L, 2L, 3L, 4L));
+            rentalResponse = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
