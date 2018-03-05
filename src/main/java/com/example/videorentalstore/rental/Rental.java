@@ -26,6 +26,10 @@ public class Rental {
     @JoinColumn(name = "film_id")
     private Film film;
 
+    @JsonIgnore
+    @Column(name = "customer_id")
+    private Long customerId;
+
     @Column(name = "days_rented")
     private int daysRented;
 
