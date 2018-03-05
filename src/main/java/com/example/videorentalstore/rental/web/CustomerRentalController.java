@@ -17,8 +17,10 @@ public class CustomerRentalController {
     }
 
     @GetMapping("/customers/{id}/rentals")
-    public List<Rental> get(@PathVariable("id") long customerId) {
-        return this.rentalService.findAllRentedForCustomer(customerId);
+    public ResponseEntity<List<Rental>> get(@PathVariable("id") long customerId) {
+        final List<Rental> rentals = this.rentalService.findAllRentedForCustomer(customerId);
+
+        return ResponseEntity.ok(rentals);
     }
 
     @PostMapping("/customers/{id}/rentals")

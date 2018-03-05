@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface RentalService {
 
+    List<Rental> findAll();
+
     List<Rental> findAllRentedForCustomer(Long customerId);
 
     List<Rental> findAllForCustomer(Long customerId, Rental.Status status);

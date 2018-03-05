@@ -20,10 +20,16 @@ public class DefaultRentalService implements RentalService {
 
     private final CustomerRepository customerRepository;
     private final FilmRepository filmRepository;
+    private final RentalRepository rentalRepository;
 
-    public DefaultRentalService(CustomerRepository customerRepository, FilmRepository filmRepository) {
+    public DefaultRentalService(CustomerRepository customerRepository, FilmRepository filmRepository, RentalRepository rentalRepository) {
         this.customerRepository = customerRepository;
         this.filmRepository = filmRepository;
+        this.rentalRepository = rentalRepository;
+    }
+
+    public List<Rental> findAll() {
+        return this.rentalRepository.findAll();
     }
 
     public List<Rental> findAllRentedForCustomer(Long customerId) {
