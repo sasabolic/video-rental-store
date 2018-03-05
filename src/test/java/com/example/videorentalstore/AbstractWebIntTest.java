@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AbstractWebIntTest {
+public abstract class AbstractWebIntTest {
 
     @LocalServerPort
     private int port;
