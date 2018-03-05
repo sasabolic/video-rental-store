@@ -66,7 +66,11 @@ Add additional notes about how to deploy this on a live system
 
 * RequestDTO to Command object
 * BigDecimal to Money value object
+* Basic and Regular price should be read from app properties
 * Check naming of unit tests
+* Check naming of command objects
+* Check if all code covered with test
 * README file finish
 * Swagger
 * Hateoas
+* Switch test integration tests to H2 database
