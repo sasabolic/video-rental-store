@@ -57,7 +57,7 @@ public class FilmDataFixtures {
 
     public static String json(Film film) {
         return "{\n" +
-                "  \"title\": \"" + film.getName() + "\",\n" +
+                "  \"title\": \"" + film.getTitle() + "\",\n" +
                 "  \"type\": \"" + film.getType().name() + "\",\n" +
                 "  \"quantity\": " + film.getQuantity() + "\n" +
                 "}";

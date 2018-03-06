@@ -9,6 +9,6 @@ public class DefaultRentalResponseAssembler implements RentalResponseAssembler {
 
     @Override
     public RentalResponse of(Rental entity) {
-        return new RentalResponse(entity.getId(), entity.getFilm().getName(), entity.getDaysRented(), entity.getStartDate(), entity.getEndDate(), entity.getStatus().name());
+        return new RentalResponse(entity.getId(), entity.getFilm().getTitle(), entity.getDaysRented(), entity.getStartDate(), entity.getEndDate(), entity.getStatus().name());
     }
 }

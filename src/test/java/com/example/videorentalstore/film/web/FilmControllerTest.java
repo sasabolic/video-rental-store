@@ -58,20 +58,20 @@ public class FilmControllerTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andExpect(jsonPath("$").isArray())
 				.andExpect(jsonPath("$", hasSize(4)))
-				.andExpect(jsonPath("$[0].name", equalTo("Matrix 11")))
-				.andExpect(jsonPath("$[1].name", equalTo("Spider Man")))
-				.andExpect(jsonPath("$[2].name", equalTo("Spider Man 2")))
-				.andExpect(jsonPath("$[3].name", equalTo("Out of Africa")));
+				.andExpect(jsonPath("$[0].title", equalTo("Matrix 11")))
+				.andExpect(jsonPath("$[1].title", equalTo("Spider Man")))
+				.andExpect(jsonPath("$[2].title", equalTo("Spider Man 2")))
+				.andExpect(jsonPath("$[3].title", equalTo("Out of Africa")));
 
 	}
 
 	@Test
-	public void whenQueryByNameThenReturnListOfFilmsWithThatName() throws Exception {
-		given(this.filmService.findAllByName("spider"))
+	public void whenQueryByTitleThenReturnListOfFilmsWithThatTitle() throws Exception {
+		given(this.filmService.findAllByTitle("spider"))
 				.willReturn(FilmDataFixtures.filmsWithSpiderMan());
 
 		final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-				.get("/films?name=spider")
+				.get("/films?title=spider")
 				.accept(MediaType.APPLICATION_JSON);
 
 
@@ -80,16 +80,16 @@ public class FilmControllerTest {
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andExpect(jsonPath("$").isArray())
 				.andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[0].name", equalTo("Spider Man")))
-				.andExpect(jsonPath("$[1].name", equalTo("Spider Man 2")));
+				.andExpect(jsonPath("$[0].title", equalTo("Spider Man")))
+				.andExpect(jsonPath("$[1].title", equalTo("Spider Man 2")));
 	}
 
     @Test
     public void whenGetByIdThenReturnFilm() throws Exception {
-		final String name = "Matrix 11";
+		final String title = "Matrix 11";
 
 		given(this.filmService.findById(anyLong()))
-                .willReturn(FilmDataFixtures.newReleaseFilm(name));
+                .willReturn(FilmDataFixtures.newReleaseFilm(title));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/films/1")
@@ -100,7 +100,7 @@ public class FilmControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.name", equalTo(name)));
+                .andExpect(jsonPath("$.title", equalTo(title)));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class FilmControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andExpect(jsonPath("$").exists())
-				.andExpect(jsonPath("$.name", equalTo("Matrix 11")))
+				.andExpect(jsonPath("$.title", equalTo("Matrix 11")))
 				.andExpect(jsonPath("$.type", equalTo("NEW_RELEASE")))
 				.andExpect(jsonPath("$.quantity", equalTo(10)));
 	}
@@ -165,7 +165,7 @@ public class FilmControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andExpect(jsonPath("$").exists())
-				.andExpect(jsonPath("$.name", equalTo(film.getName())))
+				.andExpect(jsonPath("$.title", equalTo(film.getTitle())))
 				.andExpect(jsonPath("$.type", equalTo(film.getType().name())))
 				.andExpect(jsonPath("$.quantity", equalTo(film.getQuantity())));
 	}
@@ -189,7 +189,7 @@ public class FilmControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andExpect(jsonPath("$").exists())
-				.andExpect(jsonPath("$.name", equalTo(film.getName())))
+				.andExpect(jsonPath("$.title", equalTo(film.getTitle())))
 				.andExpect(jsonPath("$.type", equalTo(film.getType().name())))
 				.andExpect(jsonPath("$.quantity", equalTo(film.getQuantity())));
 	}

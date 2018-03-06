@@ -22,13 +22,13 @@ public class FilmController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FilmResponse>> getAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<FilmResponse>> getAll(@RequestParam(required = false) String title) {
         final List<Film> result;
 
-        if (name == null) {
+        if (title == null) {
             result = this.filmService.findAll();
         } else {
-            result = this.filmService.findAllByName(name);
+            result = this.filmService.findAllByTitle(title);
         }
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(result));

@@ -6,7 +6,7 @@ public interface FilmService {
 
     List<Film> findAll();
 
-    List<Film> findAllByName(String name);
+    List<Film> findAllByTitle(String title);
 
     Film findById(Long id);
 

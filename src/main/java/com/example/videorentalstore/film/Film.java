@@ -1,19 +1,23 @@
 package com.example.videorentalstore.film;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@ToString
 public class Film {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String title;
 
     @Enumerated(EnumType.STRING)
     private ReleaseType type;
@@ -22,41 +26,18 @@ public class Film {
 
     private boolean active = true;
 
-    public Film() {
-    }
-
-    public Film(String name, ReleaseType type) {
-        this.name = name;
+    public Film(String title, ReleaseType type) {
+        this.title = title;
         this.type = type;
     }
 
-    public Film(String name, ReleaseType type, int quantity) {
-        this(name, type);
+    public Film(String title, ReleaseType type, int quantity) {
+        this(title, type);
         this.quantity = quantity;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public ReleaseType getType() {
-        return type;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
     public void process(UpdateFilmCommand updateFilmCommand) {
-        this.name = updateFilmCommand.getName();
+        this.title = updateFilmCommand.getTitle();
         this.type = ReleaseType.valueOf(updateFilmCommand.getType());
         this.quantity = updateFilmCommand.getQuantity();
     }
@@ -73,7 +54,7 @@ public class Film {
 
     public Film take() {
         if (this.quantity == 0) {
-            throw new RuntimeException("There is not any copy of the '" + this.name + "' film available");
+            throw new RuntimeException("There is not any copy of the '" + this.title + "' film available");
         }
         this.quantity--;
 

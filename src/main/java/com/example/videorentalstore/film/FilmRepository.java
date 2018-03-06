@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FilmRepository extends JpaRepository<Film, Long> {
 
-    List<Film> findByNameContainingIgnoreCase(String name);
+    List<Film> findByTitleContainingIgnoreCase(String title);
 }

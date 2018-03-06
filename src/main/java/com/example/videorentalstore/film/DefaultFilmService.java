@@ -3,7 +3,6 @@ package com.example.videorentalstore.film;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DefaultFilmService implements FilmService {
@@ -20,8 +19,8 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public List<Film> findAllByName(String name) {
-        return this.filmRepository.findByNameContainingIgnoreCase(name);
+    public List<Film> findAllByTitle(String title) {
+        return this.filmRepository.findByTitleContainingIgnoreCase(title);
     }
 
     @Override
@@ -32,7 +31,7 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public Film save(CreateFilmCommand createFilmCommand) {
-        final Film film = new Film(createFilmCommand.getName(), ReleaseType.valueOf(createFilmCommand.getType()), createFilmCommand.getQuantity());
+        final Film film = new Film(createFilmCommand.getTitle(), ReleaseType.valueOf(createFilmCommand.getType()), createFilmCommand.getQuantity());
 
         return this.filmRepository.save(film);
     }

@@ -32,7 +32,7 @@ public class FilmRepositoryTest {
 
         assertThat(film).isNotNull();
         assertThat(film.isPresent()).isTrue();
-        assertThat(film.get()).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
+        assertThat(film.get()).hasFieldOrPropertyWithValue("title", "Murder on the Orient Express");
         assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", 2);
     }
 
@@ -56,7 +56,7 @@ public class FilmRepositoryTest {
 
         assertThat(film).isNotNull();
         assertThat(film.isPresent()).isTrue();
-        assertThat(film.get()).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
+        assertThat(film.get()).hasFieldOrPropertyWithValue("title", "Murder on the Orient Express");
         assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", quantity + 1);
     }
 
@@ -80,22 +80,22 @@ public class FilmRepositoryTest {
 
         assertThat(film).isNotNull();
         assertThat(film.isPresent()).isTrue();
-        assertThat(film.get()).hasFieldOrPropertyWithValue("name", "Murder on the Orient Express");
+        assertThat(film.get()).hasFieldOrPropertyWithValue("title", "Murder on the Orient Express");
         assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", quantity - 1);
     }
 
     @Test
-    public void whenFindByNameThenReturnCorrectResult() {
+    public void whenFindByTitleThenReturnCorrectResult() {
         final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, 2);
         entityManager.persist(newFilm);
         entityManager.flush();
 
-        final List<Film> films = filmRepository.findByNameContainingIgnoreCase("orient express");
+        final List<Film> films = filmRepository.findByTitleContainingIgnoreCase("orient express");
 
         assertThat(films).isNotNull();
         assertThat(films).isNotEmpty();
         assertThat(films).hasSize(1);
-        assertThat(films).extracting(Film::getName).containsExactly("Murder on the Orient Express");
+        assertThat(films).extracting(Film::getTitle).containsExactly("Murder on the Orient Express");
     }
 
     @Test
@@ -108,7 +108,7 @@ public class FilmRepositoryTest {
 
         assertThat(result).isNotNull();
         assertThat(result.isPresent()).isTrue();
-        assertThat(result.get().getName()).isEqualTo(newFilm.getName());
+        assertThat(result.get().getTitle()).isEqualTo(newFilm.getTitle());
         assertThat(result.get().getQuantity()).isEqualTo(newFilm.getQuantity());
 
     }

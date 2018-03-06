@@ -5,12 +5,12 @@ import lombok.Getter;
 @Getter
 public class CreateFilmCommand {
 
-    private String name;
+    private String title;
     private String type;
     private int quantity;
 
-    public CreateFilmCommand(String name, String type, int quantity) {
-        this.name = name;
+    public CreateFilmCommand(String title, String type, int quantity) {
+        this.title = title;
         this.type = type;
         this.quantity = quantity;
     }

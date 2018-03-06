@@ -9,6 +9,6 @@ public class DefaultFilmResponseAssembler implements FilmResponseAssembler {
 
     @Override
     public FilmResponse of(Film entity) {
-        return new FilmResponse(entity.getId(), entity.getName(), entity.getType().name(), entity.getQuantity());
+        return new FilmResponse(entity.getId(), entity.getTitle(), entity.getType().name(), entity.getQuantity());
     }
 }

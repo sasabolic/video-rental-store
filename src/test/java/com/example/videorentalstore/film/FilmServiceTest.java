@@ -40,10 +40,10 @@ public class FilmServiceTest {
     }
 
     @Test
-    public void whenFindAllByNameThenReturnListOfFilmsContainingName() {
-        doReturn(FilmDataFixtures.filmsWithSpiderMan()).when(filmRepository).findByNameContainingIgnoreCase(isA(String.class));
+    public void whenFindAllByTitleThenReturnListOfFilmsContainingTitle() {
+        doReturn(FilmDataFixtures.filmsWithSpiderMan()).when(filmRepository).findByTitleContainingIgnoreCase(isA(String.class));
 
-        final List<Film> result = filmService.findAllByName("Spider Man");
+        final List<Film> result = filmService.findAllByTitle("Spider Man");
 
         assertThat(result).isNotNull();
         assertThat(result).isNotEmpty();
@@ -61,18 +61,18 @@ public class FilmServiceTest {
 
     @Test
     public void whenCreatingNewReleaseFilmThenReturnSavedFilm() {
-        final String name = "Maze Runner: The Death Cure";
+        final String title = "Maze Runner: The Death Cure";
         final String type = "NEW_RELEASE";
         final int quantity = 10;
 
-        final CreateFilmCommand createFilmCommand = new CreateFilmCommand(name, type, quantity);
+        final CreateFilmCommand createFilmCommand = new CreateFilmCommand(title, type, quantity);
 
-        doReturn(FilmDataFixtures.newReleaseFilm(name, quantity)).when(filmRepository).save(isA(Film.class));
+        doReturn(FilmDataFixtures.newReleaseFilm(title, quantity)).when(filmRepository).save(isA(Film.class));
 
         final Film result = filmService.save(createFilmCommand);
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("name", name);
+        assertThat(result).hasFieldOrPropertyWithValue("title", title);
         assertThat(result).hasFieldOrPropertyWithValue("type", NEW_RELEASE);
         assertThat(result).hasFieldOrPropertyWithValue("quantity", quantity);
 
@@ -80,20 +80,20 @@ public class FilmServiceTest {
 
     @Test
     public void whenUpdatingFilmThenReturnSavedFilm() {
-        final String name = "Maze Runner: The Death Cure";
-        final String newName = "New Maze Runner: The Death Cure";
+        final String title = "Maze Runner: The Death Cure";
+        final String newTitle = "New Maze Runner: The Death Cure";
         final String newType = "REGULAR_RELEASE";
         final int quantity = 10;
 
-        final UpdateFilmCommand updateFilmCommand = new UpdateFilmCommand(5L, newName, newType, quantity);
+        final UpdateFilmCommand updateFilmCommand = new UpdateFilmCommand(5L, newTitle, newType, quantity);
 
-        doReturn(Optional.of(FilmDataFixtures.newReleaseFilm(name, quantity))).when(filmRepository).findById(isA(Long.class));
-        doReturn(FilmDataFixtures.regularReleaseFilm(newName, quantity)).when(filmRepository).save(isA(Film.class));
+        doReturn(Optional.of(FilmDataFixtures.newReleaseFilm(title, quantity))).when(filmRepository).findById(isA(Long.class));
+        doReturn(FilmDataFixtures.regularReleaseFilm(newTitle, quantity)).when(filmRepository).save(isA(Film.class));
 
         final Film result = filmService.update(updateFilmCommand);
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("name", newName);
+        assertThat(result).hasFieldOrPropertyWithValue("title", newTitle);
         assertThat(result).hasFieldOrPropertyWithValue("type", REGULAR_RELEASE);
         assertThat(result).hasFieldOrPropertyWithValue("quantity", quantity);
     }
@@ -107,7 +107,7 @@ public class FilmServiceTest {
         final Film result = filmService.delete(1L);
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("name", toBeReturned.getName());
+        assertThat(result).hasFieldOrPropertyWithValue("title", toBeReturned.getTitle());
         assertThat(result).hasFieldOrPropertyWithValue("type", toBeReturned.getType());
         assertThat(result).hasFieldOrPropertyWithValue("quantity", toBeReturned.getQuantity());
         assertThat(result).hasFieldOrPropertyWithValue("active", false);
@@ -124,7 +124,7 @@ public class FilmServiceTest {
         final Film result = filmService.updateQuantity(new UpdateFilmQuantityCommand(1L, 23));
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("name", toBeReturned.getName());
+        assertThat(result).hasFieldOrPropertyWithValue("title", toBeReturned.getTitle());
         assertThat(result).hasFieldOrPropertyWithValue("type", toBeReturned.getType());
         assertThat(result).hasFieldOrPropertyWithValue("quantity", oldQuantity + 23);
     }

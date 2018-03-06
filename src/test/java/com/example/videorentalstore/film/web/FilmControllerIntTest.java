@@ -27,21 +27,21 @@ public class FilmControllerIntTest extends AbstractWebIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(4)))
-                .andExpect(jsonPath("$[0].name", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$[0].title", equalTo("Matrix 11")))
                 .andExpect(jsonPath("$[0].type", equalTo("NEW_RELEASE")))
-                .andExpect(jsonPath("$[1].name", equalTo("Spider Man")))
+                .andExpect(jsonPath("$[1].title", equalTo("Spider Man")))
                 .andExpect(jsonPath("$[1].type", equalTo("REGULAR_RELEASE")))
-                .andExpect(jsonPath("$[2].name", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$[2].title", equalTo("Spider Man 2")))
                 .andExpect(jsonPath("$[2].type", equalTo("REGULAR_RELEASE")))
-                .andExpect(jsonPath("$[3].name", equalTo("Out of Africa")))
+                .andExpect(jsonPath("$[3].title", equalTo("Out of Africa")))
                 .andExpect(jsonPath("$[3].type", equalTo("OLD_RELEASE")));
 
     }
 
     @Test
-    public void whenQueryForSpecificFilmThenReturnListContainingThatName() throws Exception {
+    public void whenQueryForSpecificFilmThenReturnListContainingThatTitle() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/films?name={name}", "spider")
+                .get("/films?title={title}", "spider")
                 .accept(MediaType.APPLICATION_JSON);
 
 
@@ -51,9 +51,9 @@ public class FilmControllerIntTest extends AbstractWebIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].name", equalTo("Spider Man")))
+                .andExpect(jsonPath("$[0].title", equalTo("Spider Man")))
                 .andExpect(jsonPath("$[0].type", equalTo("REGULAR_RELEASE")))
-                .andExpect(jsonPath("$[1].name", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$[1].title", equalTo("Spider Man 2")))
                 .andExpect(jsonPath("$[1].type", equalTo("REGULAR_RELEASE")));
 
     }

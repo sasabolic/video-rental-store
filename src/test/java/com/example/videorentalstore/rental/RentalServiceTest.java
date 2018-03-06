@@ -65,7 +65,7 @@ public class RentalServiceTest {
         assertThat(receipt).isNotNull();
         assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
         assertThat(receipt.getRentals()).hasSize(4);
-        assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getName()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(receipt.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
         assertThat(receipt.getRentals()).extracting(r -> r.getStatus()).containsOnly(Rental.Status.RENTED);
     }
@@ -79,7 +79,7 @@ public class RentalServiceTest {
         assertThat(receipt).isNotNull();
         assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
         assertThat(receipt.getRentals()).hasSize(4);
-        assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getName()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(receipt.getRentals()).extracting(r -> r.getEndDate()).isNotNull();
         assertThat(receipt.getRentals()).extracting(r -> r.getStatus()).containsOnly(Rental.Status.RETURNED);
     }
