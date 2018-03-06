@@ -1,6 +1,5 @@
 package com.example.videorentalstore.film;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -21,7 +20,6 @@ public class Film {
 
     private int quantity;
 
-    @JsonIgnore
     private boolean active = true;
 
     public Film() {
