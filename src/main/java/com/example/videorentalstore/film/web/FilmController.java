@@ -21,7 +21,7 @@ public class FilmController {
         this.filmResponseAssembler = filmResponseAssembler;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping
     public ResponseEntity<List<FilmResponse>> getAll(@RequestParam(required = false) String name) {
         final List<Film> result;
 
@@ -41,10 +41,31 @@ public class FilmController {
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping
     public ResponseEntity<FilmResponse> create(@RequestBody WriteFilmRequest writeFilmRequest) {
-        final Film film = this.filmService.save(new CreateFilmCommand(writeFilmRequest.getName(), writeFilmRequest.getType(), writeFilmRequest.getQuantity()));
+        final Film film = this.filmService.save(new CreateFilmCommand(writeFilmRequest.getTitle(), writeFilmRequest.getType(), writeFilmRequest.getQuantity()));
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
+    }
+
+    @PutMapping(value = "/{filmId}")
+    public ResponseEntity<FilmResponse> update(@PathVariable Long filmId, @RequestBody WriteFilmRequest writeFilmRequest) {
+        final Film film = this.filmService.update(new UpdateFilmCommand(filmId, writeFilmRequest.getTitle(), writeFilmRequest.getType(), writeFilmRequest.getQuantity()));
+
+        return ResponseEntity.ok(this.filmResponseAssembler.of(film));
+    }
+
+    @PatchMapping(value = "/{filmId}")
+    public ResponseEntity<FilmResponse> updateQuantity(@PathVariable Long filmId, @RequestBody UpdateFilmQuantityRequest updateFilmQuantityRequest) {
+        final Film film = this.filmService.updateQuantity(new UpdateFilmQuantityCommand(filmId, updateFilmQuantityRequest.getQuantity()));
+
+        return ResponseEntity.ok(this.filmResponseAssembler.of(film));
+    }
+
+    @DeleteMapping(value = "/{filmId}")
+    public ResponseEntity<Void> delete(@PathVariable Long filmId) {
+        this.filmService.delete(filmId);
+
+        return ResponseEntity.noContent().build();
     }
 }

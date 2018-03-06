@@ -1,8 +1,6 @@
 package com.example.videorentalstore.film.web;
 
-import com.example.videorentalstore.film.FilmDataFixtures;
-import com.example.videorentalstore.film.FilmNotFoundException;
-import com.example.videorentalstore.film.FilmService;
+import com.example.videorentalstore.film.*;
 import com.example.videorentalstore.film.web.dto.assembler.DefaultFilmResponseAssembler;
 import com.example.videorentalstore.film.web.dto.assembler.FilmResponseAssembler;
 import org.junit.Test;
@@ -21,7 +19,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -124,4 +124,90 @@ public class FilmControllerTest {
                 .andExpect(jsonPath("$.status", equalTo(404)))
                 .andExpect(jsonPath("$.message", equalTo(message)));
     }
+
+	@Test
+	public void whenCreateFilmThenReturnCorrectResponse() throws Exception {
+		given(this.filmService.save(isA(CreateFilmCommand.class)))
+				.willReturn(FilmDataFixtures.newReleaseFilm());
+
+		final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/films")
+				.content(FilmDataFixtures.json())
+				.contentType(MediaType.APPLICATION_JSON);
+
+
+		mockMvc.perform(requestBuilder)
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"))
+				.andExpect(jsonPath("$").exists())
+				.andExpect(jsonPath("$.name", equalTo("Matrix 11")))
+				.andExpect(jsonPath("$.type", equalTo("NEW_RELEASE")))
+				.andExpect(jsonPath("$.quantity", equalTo(10)));
+	}
+
+	@Test
+	public void whenUpdateFilmThenReturnCorrectResponse() throws Exception {
+		final String filmId = "1";
+		final Film film = FilmDataFixtures.newReleaseFilm();
+
+		given(this.filmService.update(isA(UpdateFilmCommand.class)))
+				.willReturn(film);
+
+		final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+				.put("/films/" + filmId)
+				.content(FilmDataFixtures.json())
+				.contentType(MediaType.APPLICATION_JSON);
+
+
+		mockMvc.perform(requestBuilder)
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"))
+				.andExpect(jsonPath("$").exists())
+				.andExpect(jsonPath("$.name", equalTo(film.getName())))
+				.andExpect(jsonPath("$.type", equalTo(film.getType().name())))
+				.andExpect(jsonPath("$.quantity", equalTo(film.getQuantity())));
+	}
+
+	@Test
+	public void whenUpdateQuantityFilmThenReturnCorrectResponse() throws Exception {
+		final String filmId = "1";
+		final Film film = FilmDataFixtures.newReleaseFilm();
+
+		given(this.filmService.updateQuantity(isA(UpdateFilmQuantityCommand.class)))
+				.willReturn(film);
+
+		final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+				.patch("/films/" + filmId)
+				.content(FilmDataFixtures.jsonQuantity())
+				.contentType(MediaType.APPLICATION_JSON);
+
+
+		mockMvc.perform(requestBuilder)
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"))
+				.andExpect(jsonPath("$").exists())
+				.andExpect(jsonPath("$.name", equalTo(film.getName())))
+				.andExpect(jsonPath("$.type", equalTo(film.getType().name())))
+				.andExpect(jsonPath("$.quantity", equalTo(film.getQuantity())));
+	}
+
+	@Test
+	public void whenDeleteFilmThenStatusNoContentAndEmptyBody() throws Exception {
+		final String filmId = "1";
+		final Film film = FilmDataFixtures.newReleaseFilm();
+
+		given(this.filmService.delete(isA(Long.class)))
+				.willReturn(film);
+
+		final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+				.delete("/films/" + filmId);
+
+		mockMvc.perform(requestBuilder)
+				.andDo(print())
+				.andExpect(status().isNoContent())
+				.andExpect(jsonPath("$").doesNotExist());
+	}
 }

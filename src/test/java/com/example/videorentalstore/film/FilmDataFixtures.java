@@ -55,4 +55,25 @@ public class FilmDataFixtures {
         return new Film(name, ReleaseType.OLD_RELEASE, quantity);
     }
 
+    public static String json(Film film) {
+        return "{\n" +
+                "  \"title\": \"" + film.getName() + "\",\n" +
+                "  \"type\": \"" + film.getType().name() + "\",\n" +
+                "  \"quantity\": " + film.getQuantity() + "\n" +
+                "}";
+    }
+
+    public static String json() {
+        return "{\n" +
+                "  \"title\": \"Matrix 11\",\n" +
+                "  \"type\": \"NEW_RELEASE\",\n" +
+                "  \"quantity\": 10\n" +
+                "}";
+    }
+
+    public static String jsonQuantity() {
+        return "{\n" +
+                "  \"quantity\": 2\n" +
+                "}";
+    }
 }

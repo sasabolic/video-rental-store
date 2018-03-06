@@ -7,17 +7,15 @@ import lombok.Getter;
 @Getter
 public class WriteFilmRequest {
 
-    private String name;
-
+    private String title;
     private String type;
-
     private int quantity;
 
     @JsonCreator
-    public WriteFilmRequest(@JsonProperty("name") String name,
+    public WriteFilmRequest(@JsonProperty("title") String title,
                             @JsonProperty("type") String type,
                             @JsonProperty("quantity") Integer quantity) {
-        this.name = name;
+        this.title = title;
         this.type = type;
         this.quantity = quantity;
     }
