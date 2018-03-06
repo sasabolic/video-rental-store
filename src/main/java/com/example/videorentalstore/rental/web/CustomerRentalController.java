@@ -17,7 +17,7 @@ public class CustomerRentalController {
     }
 
     @GetMapping("/customers/{id}/rentals")
-    public ResponseEntity<List<Rental>> get(@PathVariable("id") long customerId) {
+    public ResponseEntity<List<Rental>> getAll(@PathVariable("id") long customerId) {
         final List<Rental> rentals = this.rentalService.findAllRentedForCustomer(customerId);
 
         return ResponseEntity.ok(rentals);
@@ -40,5 +40,4 @@ public class CustomerRentalController {
 
         return ResponseEntity.ok(response);
     }
-
 }

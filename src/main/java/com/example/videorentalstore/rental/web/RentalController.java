@@ -19,7 +19,7 @@ public class RentalController {
     }
 
     @GetMapping("/rentals")
-    public ResponseEntity<List<Rental>> get(@PathVariable("id") long customerId) {
+    public ResponseEntity<List<Rental>> getAll(@PathVariable("id") long customerId) {
         final List<Rental> rentals = this.rentalService.findAll();
 
         return ResponseEntity.ok(rentals);
