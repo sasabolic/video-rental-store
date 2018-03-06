@@ -3,7 +3,6 @@ package com.example.videorentalstore.rental;
 import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.customer.CustomerRepository;
-import com.example.videorentalstore.rental.web.CreateRentalRequest;
 import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.film.FilmRepository;
@@ -47,7 +46,7 @@ public class DefaultRentalService implements RentalService {
     }
 
     @Override
-    public RentalResponse create(CreateRentalsCommand createRentalsCommand) {
+    public Receipt create(CreateRentalsCommand createRentalsCommand) {
         Customer customer = customerRepository.findById(createRentalsCommand.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", createRentalsCommand.getCustomerId())));
 
@@ -71,11 +70,11 @@ public class DefaultRentalService implements RentalService {
 
         customerRepository.save(customer);
 
-        return new RentalResponse(customer.calculate(), customer.getRentals());
+        return new Receipt(customer.calculate(), customer.getRentals());
     }
 
     @Override
-    public RentalResponse returnBack(ReturnRentalsCommand returnRentalsCommand) {
+    public Receipt returnBack(ReturnRentalsCommand returnRentalsCommand) {
         Customer customer = customerRepository.findById(returnRentalsCommand.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", returnRentalsCommand.getCustomerId())));
 
@@ -101,7 +100,7 @@ public class DefaultRentalService implements RentalService {
 
         customerRepository.save(customer);
 
-        return new RentalResponse(customer.calculateExtraCharges(), customer.getRentals());
+        return new Receipt(customer.calculateExtraCharges(), customer.getRentals());
 
     }
 }

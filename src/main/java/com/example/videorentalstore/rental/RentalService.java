@@ -10,7 +10,7 @@ public interface RentalService {
 
     List<Rental> findAllForCustomer(Long customerId, Rental.Status status);
 
-    RentalResponse create(CreateRentalsCommand createRentalsCommand);
+    Receipt create(CreateRentalsCommand createRentalsCommand);
 
-    RentalResponse returnBack(ReturnRentalsCommand returnRentalsCommand);
+    Receipt returnBack(ReturnRentalsCommand returnRentalsCommand);
 }

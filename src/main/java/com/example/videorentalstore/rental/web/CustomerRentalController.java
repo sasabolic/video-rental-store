@@ -24,19 +24,19 @@ public class CustomerRentalController {
     }
 
     @PostMapping("/customers/{id}/rentals")
-    public ResponseEntity<RentalResponse> create(@PathVariable("id") long customerId, @RequestBody List<CreateRentalRequest> createRentalRequests) {
+    public ResponseEntity<Receipt> create(@PathVariable("id") long customerId, @RequestBody List<CreateRentalRequest> createRentalRequests) {
         CreateRentalsCommand createRentalsCommand = new CreateRentalsCommand(customerId, createRentalRequests.stream().map(r -> r.toCreateRentalCommand()).collect(Collectors.toList()));
 
-        final RentalResponse response = rentalService.create(createRentalsCommand);
+        final Receipt response = rentalService.create(createRentalsCommand);
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/customers/{id}/rentals")
-    public ResponseEntity<RentalResponse> update(@PathVariable("id") long customerId, @RequestBody List<Long> rentalIds) {
+    public ResponseEntity<Receipt> update(@PathVariable("id") long customerId, @RequestBody List<Long> rentalIds) {
         ReturnRentalsCommand returnRentalsCommand = new ReturnRentalsCommand(customerId, rentalIds);
 
-        final RentalResponse response = this.rentalService.returnBack(returnRentalsCommand);
+        final Receipt response = this.rentalService.returnBack(returnRentalsCommand);
 
         return ResponseEntity.ok(response);
     }

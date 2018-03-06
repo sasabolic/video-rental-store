@@ -3,7 +3,6 @@ package com.example.videorentalstore.rental;
 import com.example.videorentalstore.customer.CustomerDataFixtures;
 import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.customer.CustomerRepository;
-import com.example.videorentalstore.rental.web.CreateRentalRequest;
 import com.example.videorentalstore.film.FilmDataFixtures;
 import com.example.videorentalstore.film.FilmRepository;
 import org.junit.Before;
@@ -61,28 +60,28 @@ public class RentalServiceTest {
                 new CreateRentalCommand(3L, 2),
                 new CreateRentalCommand(4L, 7));
 
-        final RentalResponse rentalResponse = rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
+        final Receipt receipt = rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
 
-        assertThat(rentalResponse).isNotNull();
-        assertThat(rentalResponse).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
-        assertThat(rentalResponse.getRentals()).hasSize(4);
-        assertThat(rentalResponse.getRentals()).extracting(r -> r.getFilm().getName()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(rentalResponse.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
-        assertThat(rentalResponse.getRentals()).extracting(r -> r.getStatus()).containsOnly(Rental.Status.RENTED);
+        assertThat(receipt).isNotNull();
+        assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
+        assertThat(receipt.getRentals()).hasSize(4);
+        assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getName()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(receipt.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
+        assertThat(receipt.getRentals()).extracting(r -> r.getStatus()).containsOnly(Rental.Status.RENTED);
     }
 
     @Test
     public void whenReturningBackRentalsThenReturnCorrectResult() {
         doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
 
-        final RentalResponse rentalResponse = rentalService.returnBack(new ReturnRentalsCommand(1L, Arrays.asList(1L, 2L, 3L, 4L)));
+        final Receipt receipt = rentalService.returnBack(new ReturnRentalsCommand(1L, Arrays.asList(1L, 2L, 3L, 4L)));
 
-        assertThat(rentalResponse).isNotNull();
-        assertThat(rentalResponse).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
-        assertThat(rentalResponse.getRentals()).hasSize(4);
-        assertThat(rentalResponse.getRentals()).extracting(r -> r.getFilm().getName()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(rentalResponse.getRentals()).extracting(r -> r.getEndDate()).isNotNull();
-        assertThat(rentalResponse.getRentals()).extracting(r -> r.getStatus()).containsOnly(Rental.Status.RETURNED);
+        assertThat(receipt).isNotNull();
+        assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
+        assertThat(receipt.getRentals()).hasSize(4);
+        assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getName()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(receipt.getRentals()).extracting(r -> r.getEndDate()).isNotNull();
+        assertThat(receipt.getRentals()).extracting(r -> r.getStatus()).containsOnly(Rental.Status.RETURNED);
     }
 
     @Test
@@ -127,9 +126,9 @@ public class RentalServiceTest {
                 new CreateRentalCommand(3L, 2),
                 new CreateRentalCommand(4L, 7));
 
-        RentalResponse rentalResponse = null;
+        Receipt receipt = null;
         try {
-            rentalResponse = rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
+            receipt = rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
@@ -143,7 +142,7 @@ public class RentalServiceTest {
                     );
         }
 
-        assertThat(rentalResponse).isNull();
+        assertThat(receipt).isNull();
     }
 
     @Test
@@ -151,9 +150,9 @@ public class RentalServiceTest {
         final long customerId = 1L;
         doReturn(Optional.of(CustomerDataFixtures.customer())).when(customerRepository).findById(anyLong());
 
-        RentalResponse rentalResponse = null;
+        Receipt receipt = null;
         try {
-            rentalResponse = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
+            receipt = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
@@ -167,7 +166,7 @@ public class RentalServiceTest {
                     );
         }
 
-        assertThat(rentalResponse).isNull();
+        assertThat(receipt).isNull();
     }
 
     @Test
@@ -175,9 +174,9 @@ public class RentalServiceTest {
         final long customerId = 1L;
         doReturn(Optional.of(CustomerDataFixtures.customerWithReturnedRentals())).when(customerRepository).findById(anyLong());
 
-        RentalResponse rentalResponse = null;
+        Receipt receipt = null;
         try {
-            rentalResponse = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
+            receipt = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
@@ -191,6 +190,6 @@ public class RentalServiceTest {
                     );
         }
 
-        assertThat(rentalResponse).isNull();
+        assertThat(receipt).isNull();
     }
 }

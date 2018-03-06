@@ -33,7 +33,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenCreateRentalsThenReturnCorrectResponse() throws Exception {
-        doReturn(new RentalResponse(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(CreateRentalsCommand.class));
+        doReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(CreateRentalsCommand.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{id}/rentals", 12)
@@ -64,7 +64,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenReturnBackRentalsThenReturnCorrectResponse() throws Exception {
-        doReturn(new RentalResponse(BigDecimal.valueOf(110), RentalDataFixtures.returnedRentals())).when(rentalService).returnBack(isA(ReturnRentalsCommand.class));
+        doReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.returnedRentals())).when(rentalService).returnBack(isA(ReturnRentalsCommand.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{id}/rentals", 12)
