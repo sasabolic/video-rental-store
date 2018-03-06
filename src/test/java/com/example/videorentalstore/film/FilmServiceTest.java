@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.videorentalstore.film.ReleaseType.NEW_RELEASE;
@@ -31,7 +32,7 @@ public class FilmServiceTest {
     public void whenFindAllThenReturnListOfFilms() {
         doReturn(FilmDataFixtures.films()).when(filmRepository).findAll();
 
-        final Iterable<Film> result = filmService.findAll();
+        final List<Film> result = filmService.findAll();
 
         assertThat(result).isNotNull();
         assertThat(result).isNotEmpty();
@@ -42,7 +43,7 @@ public class FilmServiceTest {
     public void whenFindAllByNameThenReturnListOfFilmsContainingName() {
         doReturn(FilmDataFixtures.filmsWithSpiderMan()).when(filmRepository).findByNameContainingIgnoreCase(isA(String.class));
 
-        final Iterable<Film> result = filmService.findAllByName("Spider Man");
+        final List<Film> result = filmService.findAllByName("Spider Man");
 
         assertThat(result).isNotNull();
         assertThat(result).isNotEmpty();
