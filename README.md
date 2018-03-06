@@ -72,6 +72,8 @@ Add additional notes about how to deploy this on a live system
 * Check if all code covered with test
 * README file finish
 * Introduce DTO objects for controllers
+* Liquibase table constraints
+* Docker for project
 * Swagger
 * Hateoas
 * Switch test integration tests to H2 database
