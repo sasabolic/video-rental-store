@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -85,7 +86,7 @@ public class CustomerRepositoryTest {
 
         Customer customer = customerRepository.save(CustomerDataFixtures.customer());
 
-        Iterable<Customer> result = customerRepository.findAll();
+        List<Customer> result = customerRepository.findAll();
 
         assertThat(result).hasSize(before.intValue() + 1);
         assertThat(result).contains(customer);
@@ -115,7 +116,7 @@ public class CustomerRepositoryTest {
     @Test
     public void whenSearchByNameThenReturnResult() {
 
-        final Iterable<Customer> customers = customerRepository.findByNameContainingIgnoreCase("tes");
+        final List<Customer> customers = customerRepository.findByNameContainingIgnoreCase("tes");
 
         assertThat(customers).isNotEmpty();
         assertThat(customers).hasSize(1);
@@ -125,7 +126,7 @@ public class CustomerRepositoryTest {
     @Test
     public void whenSearchAllThenReturnResult() {
 
-        final Iterable<Customer> customers = customerRepository.findAll();
+        final List<Customer> customers = customerRepository.findAll();
 
         assertThat(customers).isNotEmpty();
     }

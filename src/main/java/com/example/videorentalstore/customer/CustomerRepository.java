@@ -1,11 +1,13 @@
 package com.example.videorentalstore.customer;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
-public interface CustomerRepository extends CrudRepository<Customer, Long> {
+import java.util.List;
+
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query("SELECT c FROM Customer c WHERE UPPER(c.firstName) LIKE UPPER(concat('%', ?1,'%')) OR UPPER(c.lastName) LIKE UPPER(concat('%', ?1,'%'))")
-    Iterable<Customer> findByNameContainingIgnoreCase(String name);
+    List<Customer> findByNameContainingIgnoreCase(String name);
 
 }
