@@ -25,8 +25,9 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Optional<Film> findById(Long id) {
-        return this.filmRepository.findById(id);
+    public Film findById(Long id) {
+        return this.filmRepository.findById(id)
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", id)));
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.example.videorentalstore.film.web;
 
 import com.example.videorentalstore.film.Film;
-import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.film.FilmService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-
 
     private final FilmService filmService;
 
@@ -30,8 +28,8 @@ public class FilmController {
 
     @GetMapping(value = "/{filmId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Film> get(@PathVariable Long filmId) {
-        final Film film = this.filmService.findById(filmId)
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", filmId)));
+        final Film film = this.filmService.findById(filmId);
+
         return ResponseEntity.ok(film);
     }
 

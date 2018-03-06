@@ -1,7 +1,6 @@
 package com.example.videorentalstore.film;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FilmService {
 
@@ -9,7 +8,7 @@ public interface FilmService {
 
     List<Film> findAllByName(String name);
 
-    Optional<Film> findById(Long id);
+    Film findById(Long id);
 
     Film save(CreateFilmCommand createFilmCommand);
 
