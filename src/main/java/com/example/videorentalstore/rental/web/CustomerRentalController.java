@@ -1,6 +1,8 @@
 package com.example.videorentalstore.rental.web;
 
 import com.example.videorentalstore.rental.*;
+import com.example.videorentalstore.rental.web.dto.ReceiptDto;
+import com.example.videorentalstore.rental.web.dto.RentalDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,27 +19,38 @@ public class CustomerRentalController {
     }
 
     @GetMapping("/customers/{id}/rentals")
-    public ResponseEntity<List<Rental>> getAll(@PathVariable("id") long customerId) {
+    public ResponseEntity<List<RentalDto>> getAll(@PathVariable("id") long customerId) {
         final List<Rental> rentals = this.rentalService.findAllRentedForCustomer(customerId);
 
-        return ResponseEntity.ok(rentals);
+        return ResponseEntity.ok(convertToRentalDtos(rentals));
     }
 
     @PostMapping("/customers/{id}/rentals")
-    public ResponseEntity<Receipt> create(@PathVariable("id") long customerId, @RequestBody List<CreateRentalRequest> createRentalRequests) {
+    public ResponseEntity<ReceiptDto> create(@PathVariable("id") long customerId, @RequestBody List<CreateRentalRequest> createRentalRequests) {
         CreateRentalsCommand createRentalsCommand = new CreateRentalsCommand(customerId, createRentalRequests.stream().map(r -> r.toCreateRentalCommand()).collect(Collectors.toList()));
 
-        final Receipt response = rentalService.create(createRentalsCommand);
+        final Receipt receipt = rentalService.create(createRentalsCommand);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(covertToReceiptDto(receipt));
     }
 
     @PatchMapping("/customers/{id}/rentals")
-    public ResponseEntity<Receipt> update(@PathVariable("id") long customerId, @RequestBody List<Long> rentalIds) {
+    public ResponseEntity<ReceiptDto> update(@PathVariable("id") long customerId, @RequestBody List<Long> rentalIds) {
         ReturnRentalsCommand returnRentalsCommand = new ReturnRentalsCommand(customerId, rentalIds);
 
-        final Receipt response = this.rentalService.returnBack(returnRentalsCommand);
+        final Receipt receipt = this.rentalService.returnBack(returnRentalsCommand);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(covertToReceiptDto(receipt));
+    }
+
+    private ReceiptDto covertToReceiptDto(Receipt receipt) {
+        final List<RentalDto> rentalDtos = convertToRentalDtos(receipt.getRentals());
+
+        return new ReceiptDto(receipt.getAmount(), rentalDtos);
+    }
+
+    private List<RentalDto> convertToRentalDtos(List<Rental> rentals) {
+        return rentals.stream()
+                .map(r -> new RentalDto(r.getId(), r.getFilm().getName(), r.getDaysRented(), r.getStartDate(), r.getEndDate(), r.getStatus().name())).collect(Collectors.toList());
     }
 }

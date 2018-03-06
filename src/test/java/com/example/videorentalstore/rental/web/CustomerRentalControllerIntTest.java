@@ -58,11 +58,8 @@ public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].startDate").exists())
-                .andExpect(jsonPath("$[0].film.id", equalTo(filmId.intValue())))
-                .andExpect(jsonPath("$[0].film.name", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$[0].film.type", equalTo("NEW_RELEASE")))
-                .andExpect(jsonPath("$[0].film.quantity", equalTo(3)))
-                .andExpect(jsonPath("$[0].daysRented", equalTo(daysRented)));
+                .andExpect(jsonPath("$[0].start_date").exists())
+                .andExpect(jsonPath("$[0].film_title", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$[0].days_rented", equalTo(daysRented)));
     }
 }

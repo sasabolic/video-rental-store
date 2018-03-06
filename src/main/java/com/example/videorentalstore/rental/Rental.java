@@ -1,7 +1,6 @@
 package com.example.videorentalstore.rental;
 
 import com.example.videorentalstore.film.Film;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -25,10 +24,6 @@ public class Rental {
     @OneToOne
     @JoinColumn(name = "film_id")
     private Film film;
-
-    @JsonIgnore
-    @Column(name = "customer_id")
-    private Long customerId;
 
     @Column(name = "days_rented")
     private int daysRented;
@@ -63,7 +58,6 @@ public class Rental {
         this.id = id;
     }
 
-    @JsonIgnore
     public boolean isNew() {
         return this.status == Status.RENTED;
     }
