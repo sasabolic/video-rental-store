@@ -14,7 +14,7 @@ public class RentalDto {
     private Long id;
 
     @JsonProperty("film_title")
-    private String filmName;
+    private String filmTitle;
 
     @JsonProperty("days_rented")
     private int daysRented;
