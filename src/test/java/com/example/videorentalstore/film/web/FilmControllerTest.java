@@ -14,12 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Optional;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,7 +32,6 @@ public class FilmControllerTest {
 
 	@Test
 	public void whenGetAllThenReturnListOfFilms() throws Exception {
-
 		given(this.filmService.findAll())
 				.willReturn(FilmDataFixtures.films());
 
@@ -57,7 +54,6 @@ public class FilmControllerTest {
 
 	@Test
 	public void whenQueryByNameThenReturnListOfFilmsWithThatName() throws Exception {
-
 		given(this.filmService.findAllByName("spider"))
 				.willReturn(FilmDataFixtures.filmsWithSpiderMan());
 
@@ -73,14 +69,14 @@ public class FilmControllerTest {
 				.andExpect(jsonPath("$", hasSize(2)))
 				.andExpect(jsonPath("$[0].name", equalTo("Spider Man")))
 				.andExpect(jsonPath("$[1].name", equalTo("Spider Man 2")));
-
 	}
 
     @Test
     public void whenGetByIdThenReturnFilm() throws Exception {
+		final String name = "Matrix 11";
 
-        given(this.filmService.findById(anyLong()))
-                .willReturn(FilmDataFixtures.newReleaseFilm("Matrix 11"));
+		given(this.filmService.findById(anyLong()))
+                .willReturn(FilmDataFixtures.newReleaseFilm(name));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/films/1")
@@ -91,17 +87,19 @@ public class FilmControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.name", equalTo("Matrix 11")));
+                .andExpect(jsonPath("$.name", equalTo(name)));
     }
 
     @Test
     public void whenGetByNonExistingIdThenStatusNotFound() throws Exception {
+		final String filmId = "1";
+		final String message = "Film with id '" + filmId + "' does not exist";
 
-        given(this.filmService.findById(anyLong()))
-                .willThrow(new FilmNotFoundException("Film with id '1' does not exist"));
+		given(this.filmService.findById(anyLong()))
+                .willThrow(new FilmNotFoundException(message));
 
-        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/films/1")
+		final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/films/" + filmId)
                 .accept(MediaType.APPLICATION_JSON);
 
 
@@ -111,6 +109,6 @@ public class FilmControllerTest {
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(404)))
-                .andExpect(jsonPath("$.message", equalTo("Film with id '1' does not exist")));
+                .andExpect(jsonPath("$.message", equalTo(message)));
     }
 }
