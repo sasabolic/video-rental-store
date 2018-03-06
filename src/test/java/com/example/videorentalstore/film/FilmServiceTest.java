@@ -54,10 +54,9 @@ public class FilmServiceTest {
     public void whenFindingByIdThenReturnOneResult() {
         doReturn(Optional.of(FilmDataFixtures.oldReleaseFilm())).when(filmRepository).findById(isA(Long.class));
 
-        final Optional<Film> result = filmService.findById(4L);
+        final Film result = filmService.findById(4L);
 
         assertThat(result).isNotNull();
-        assertThat(result.isPresent()).isTrue();
     }
 
     @Test

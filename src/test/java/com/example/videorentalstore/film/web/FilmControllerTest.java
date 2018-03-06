@@ -1,6 +1,7 @@
 package com.example.videorentalstore.film.web;
 
 import com.example.videorentalstore.film.FilmDataFixtures;
+import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.film.FilmService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,7 +80,7 @@ public class FilmControllerTest {
     public void whenGetByIdThenReturnFilm() throws Exception {
 
         given(this.filmService.findById(anyLong()))
-                .willReturn(Optional.of(FilmDataFixtures.newReleaseFilm("Matrix 11")));
+                .willReturn(FilmDataFixtures.newReleaseFilm("Matrix 11"));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/films/1")
@@ -97,7 +98,7 @@ public class FilmControllerTest {
     public void whenGetByNonExistingIdThenStatusNotFound() throws Exception {
 
         given(this.filmService.findById(anyLong()))
-                .willReturn(Optional.ofNullable(null));
+                .willThrow(new FilmNotFoundException("Film with id '1' does not exist"));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/films/1")
@@ -112,7 +113,4 @@ public class FilmControllerTest {
                 .andExpect(jsonPath("$.status", equalTo(404)))
                 .andExpect(jsonPath("$.message", equalTo("Film with id '1' does not exist")));
     }
-
-
-
 }
