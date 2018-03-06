@@ -22,7 +22,7 @@ public class CustomerRentalController {
     public ResponseEntity<List<RentalDto>> getAll(@PathVariable("id") long customerId) {
         final List<Rental> rentals = this.rentalService.findAllRentedForCustomer(customerId);
 
-        return ResponseEntity.ok(convertToRentalDtos(rentals));
+        return ResponseEntity.ok(convertToRentalDtoList(rentals));
     }
 
     @PostMapping("/customers/{id}/rentals")
@@ -44,12 +44,12 @@ public class CustomerRentalController {
     }
 
     private ReceiptDto covertToReceiptDto(Receipt receipt) {
-        final List<RentalDto> rentalDtos = convertToRentalDtos(receipt.getRentals());
+        final List<RentalDto> rentalDtos = convertToRentalDtoList(receipt.getRentals());
 
         return new ReceiptDto(receipt.getAmount(), rentalDtos);
     }
 
-    private List<RentalDto> convertToRentalDtos(List<Rental> rentals) {
+    private List<RentalDto> convertToRentalDtoList(List<Rental> rentals) {
         return rentals.stream()
                 .map(r -> new RentalDto(r.getId(), r.getFilm().getName(), r.getDaysRented(), r.getStartDate(), r.getEndDate(), r.getStatus().name())).collect(Collectors.toList());
     }
