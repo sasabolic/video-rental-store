@@ -3,11 +3,15 @@ package com.example.videorentalstore.film.web;
 import com.example.videorentalstore.film.FilmDataFixtures;
 import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.film.FilmService;
+import com.example.videorentalstore.film.web.dto.assembler.DefaultFilmResponseAssembler;
+import com.example.videorentalstore.film.web.dto.assembler.FilmResponseAssembler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +27,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(value = FilmController.class)
 public class FilmControllerTest {
+
+	@TestConfiguration
+	static class TestConfig {
+
+		@Bean
+		public FilmResponseAssembler filmResponseAssembler() {
+			return new DefaultFilmResponseAssembler();
+		}
+	}
 
     @Autowired
 	private MockMvc mockMvc;
