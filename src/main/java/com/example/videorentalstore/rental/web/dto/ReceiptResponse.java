@@ -8,8 +8,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class ReceiptDto {
+public class ReceiptResponse {
 
     private BigDecimal amount;
-    private List<RentalDto> rentals;
+    private List<RentalResponse> rentals;
 }

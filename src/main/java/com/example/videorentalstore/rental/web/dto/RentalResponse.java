@@ -9,7 +9,7 @@ import java.time.Instant;
 
 @AllArgsConstructor
 @Getter
-public class RentalDto {
+public class RentalResponse {
 
     private Long id;
 
@@ -26,5 +26,4 @@ public class RentalDto {
     private Instant endDate;
 
     private String status;
-
 }
