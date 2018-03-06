@@ -67,6 +67,7 @@ Add additional notes about how to deploy this on a live system
 * RequestDTO to Command object
 * Validation of request DTOs
 * CORS
+* Move WEB integration tests to new module 
 * BigDecimal to Money value object
 * Basic and Regular price should be read from app properties
 * Check naming of unit tests
