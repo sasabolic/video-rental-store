@@ -1,5 +1,6 @@
 package com.example.videorentalstore.core;
 
+import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.rental.RentalException;
 import lombok.Data;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-    @ExceptionHandler({FilmNotFoundException.class})
+    @ExceptionHandler({FilmNotFoundException.class, CustomerNotFoundException.class})
     public ResponseEntity<Object> handleNotFound(Exception e) {
         return buildResponseEntity(RestError.of(HttpStatus.NOT_FOUND, e));
     }
