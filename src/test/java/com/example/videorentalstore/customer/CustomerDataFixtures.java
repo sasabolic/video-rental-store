@@ -35,4 +35,11 @@ public class CustomerDataFixtures {
 
         return customer;
     }
+
+    public static String json() {
+        return "{\n" +
+                "  \"first_name\": \"John\",\n" +
+                "  \"last_name\": \"Smith\"\n" +
+                "}";
+    }
 }
