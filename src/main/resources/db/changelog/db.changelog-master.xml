@@ -36,7 +36,6 @@
             </column>
             <column name="first_name" type="varchar(255)"/>
             <column name="last_name" type="varchar(255)"/>
-            <column name="title" type="varchar(255)"/>
             <column name="bonus_points" type="int" defaultValueNumeric="0"/>
             <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
