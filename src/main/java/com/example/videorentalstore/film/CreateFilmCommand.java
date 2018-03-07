@@ -14,5 +14,4 @@ public class CreateFilmCommand {
         this.type = type;
         this.quantity = quantity;
     }
-
 }

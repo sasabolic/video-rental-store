@@ -3,17 +3,12 @@ package com.example.videorentalstore.film;
 import lombok.Getter;
 
 @Getter
-public class UpdateFilmCommand {
+public class UpdateFilmCommand extends CreateFilmCommand {
 
     private Long id;
-    private String title;
-    private String type;
-    private int quantity;
 
     public UpdateFilmCommand(Long id, String title, String type, int quantity) {
+        super(title, type, quantity);
         this.id = id;
-        this.title = title;
-        this.type = type;
-        this.quantity = quantity;
     }
 }
