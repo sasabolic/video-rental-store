@@ -2,7 +2,9 @@ package com.example.videorentalstore.customer.web.dto.assembler;
 
 import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.customer.web.dto.CustomerResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DefaultCustomerResponseAssembler implements CustomerResponseAssembler {
 
     @Override

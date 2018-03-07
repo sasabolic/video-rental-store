@@ -2,9 +2,9 @@ package com.example.videorentalstore.rental.web.dto.assembler;
 
 import com.example.videorentalstore.rental.Receipt;
 import com.example.videorentalstore.rental.web.dto.ReceiptResponse;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class DefaultReceiptResponseAssembler implements ReceiptResponseAssembler {
 
     private final RentalResponseAssembler rentalConverter;

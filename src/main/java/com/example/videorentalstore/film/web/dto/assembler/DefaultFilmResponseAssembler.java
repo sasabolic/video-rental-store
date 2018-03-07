@@ -2,9 +2,9 @@ package com.example.videorentalstore.film.web.dto.assembler;
 
 import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.web.dto.FilmResponse;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class DefaultFilmResponseAssembler implements FilmResponseAssembler {
 
     @Override
