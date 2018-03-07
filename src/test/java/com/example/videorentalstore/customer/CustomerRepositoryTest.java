@@ -28,6 +28,32 @@ public class CustomerRepositoryTest {
     private FilmRepository filmRepository;
 
     @Test
+    public void whenSaveThenReturnCorrectResult() {
+        final Customer customer = CustomerDataFixtures.customer();
+
+        final Customer saved = customerRepository.save(customer);
+
+        assertThat(saved).isNotNull();
+        assertThat(saved.getFirstName()).isEqualTo(customer.getFirstName());
+        assertThat(saved.getLastName()).isEqualTo(customer.getLastName());
+        assertThat(saved.getBonusPoints()).isEqualTo(customer.getBonusPoints());
+        assertThat(saved.getRentals()).isEqualTo(customer.getRentals());
+    }
+
+    @Test
+    public void whenSaveThenCustomerSizeIncreased() {
+        final int before = this.customerRepository.findAll().size();
+
+
+        customerRepository.save(CustomerDataFixtures.customer());
+
+        final int after = this.customerRepository.findAll().size();
+
+        assertThat(after).isGreaterThan(0);
+        assertThat(after).isEqualTo(before + 1);
+    }
+
+    @Test
     public void whenRentalsAddedThenRentalsSizeIncreased() {
         Rental rental1 = new Rental(filmRepository.findById(1L).get(), 3);
         Rental rental2 = new Rental(filmRepository.findById(2L).get(), 5);
