@@ -35,7 +35,8 @@ public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
     public void setUp() {
         rentalRepository.deleteAll();
         filmRepository.findAll().forEach(f -> {
-            filmRepository.save(f.increaseBy(1));
+            f.increaseBy(1);
+            filmRepository.save(f);
         });
     }
 
