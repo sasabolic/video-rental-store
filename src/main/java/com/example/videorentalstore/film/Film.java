@@ -26,13 +26,9 @@ public class Film {
 
     private boolean active = true;
 
-    public Film(String title, ReleaseType type) {
+    public Film(String title, ReleaseType type, int quantity) {
         this.title = title;
         this.type = type;
-    }
-
-    public Film(String title, ReleaseType type, int quantity) {
-        this(title, type);
         this.quantity = quantity;
     }
 

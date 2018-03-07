@@ -8,13 +8,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FilmTest {
 
-    private int daysRented = 10;
-
     @Test
     public void givenNewReleaseWhenCalculatePriceThenReturnCorrectResult() {
         final Film newReleaseFilm = FilmDataFixtures.newReleaseFilm("Matrix 11");
 
-        final BigDecimal result = newReleaseFilm.calculatePrice(daysRented);
+        final BigDecimal result = newReleaseFilm.calculatePrice(10);
 
         assertThat(result).isNotNull();
         assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(400));
@@ -24,7 +22,7 @@ public class FilmTest {
     public void givenRegularReleaseWhenCalculatePriceThenReturnCorrectResult() {
         final Film regularReleaseFilm = FilmDataFixtures.regularReleaseFilm("Spider Man");
 
-        final BigDecimal result = regularReleaseFilm.calculatePrice(daysRented);
+        final BigDecimal result = regularReleaseFilm.calculatePrice(10);
 
         assertThat(result).isNotNull();
         assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(240));
@@ -34,7 +32,7 @@ public class FilmTest {
     public void givenOldReleaseWhenCalculatePriceThenReturnCorrectResult() {
         final Film oldReleaseFilm = FilmDataFixtures.oldReleaseFilm("Out of Africa");
 
-        final BigDecimal result = oldReleaseFilm.calculatePrice(daysRented);
+        final BigDecimal result = oldReleaseFilm.calculatePrice(10);
 
         assertThat(result).isNotNull();
         assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(180));

@@ -8,51 +8,55 @@ public class FilmDataFixtures {
     public static List<Film> films() {
         return Arrays.asList(
                 newReleaseFilm(),
-                new Film("Spider Man", ReleaseType.REGULAR_RELEASE),
-                new Film("Spider Man 2", ReleaseType.REGULAR_RELEASE),
-                new Film("Out of Africa", ReleaseType.OLD_RELEASE));
+                regularReleaseFilm("Spider Man"),
+                regularReleaseFilm("Spider Man 2"),
+                oldReleaseFilm("Out of Africa"));
     }
 
     public static List<Film> filmsWithTitleSpiderMan() {
         return Arrays.asList(
-                new Film("Spider Man", ReleaseType.REGULAR_RELEASE),
-                new Film("Spider Man 2", ReleaseType.REGULAR_RELEASE));
+                regularReleaseFilm("Spider Man"),
+                regularReleaseFilm("Spider Man 2"));
+    }
+
+    public static Film film(String title, ReleaseType type, int quantity) {
+        return new Film(title, type, quantity);
     }
 
     public static Film newReleaseFilm() {
-        return new Film("Matrix 11", ReleaseType.NEW_RELEASE, 10);
+        return film("Matrix 11", ReleaseType.NEW_RELEASE, 10);
     }
 
-    public static Film newReleaseFilm(String name) {
-        return new Film(name, ReleaseType.NEW_RELEASE, 10);
+    public static Film newReleaseFilm(String title) {
+        return film(title, ReleaseType.NEW_RELEASE, 10);
     }
 
-    public static Film newReleaseFilm(String name, int quantity) {
-        return new Film(name, ReleaseType.NEW_RELEASE, quantity);
+    public static Film newReleaseFilm(String title, int quantity) {
+        return film(title, ReleaseType.NEW_RELEASE, quantity);
     }
 
     public static Film regularReleaseFilm() {
-        return new Film("Spider Man", ReleaseType.REGULAR_RELEASE, 10);
+        return film("Spider Man", ReleaseType.REGULAR_RELEASE, 10);
     }
 
-    public static Film regularReleaseFilm(String name) {
-        return new Film(name, ReleaseType.REGULAR_RELEASE, 10);
+    public static Film regularReleaseFilm(String title) {
+        return film(title, ReleaseType.REGULAR_RELEASE, 10);
     }
 
-    public static Film regularReleaseFilm(String name, int quantity) {
-        return new Film(name, ReleaseType.REGULAR_RELEASE, quantity);
+    public static Film regularReleaseFilm(String title, int quantity) {
+        return film(title, ReleaseType.REGULAR_RELEASE, quantity);
     }
 
     public static Film oldReleaseFilm() {
-        return new Film("Out of Africa", ReleaseType.OLD_RELEASE, 10);
+        return film("Out of Africa", ReleaseType.OLD_RELEASE, 10);
     }
 
-    public static Film oldReleaseFilm(String name) {
-        return new Film(name, ReleaseType.OLD_RELEASE, 10);
+    public static Film oldReleaseFilm(String title) {
+        return film(title, ReleaseType.OLD_RELEASE, 10);
     }
 
-    public static Film oldReleaseFilm(String name, int quantity) {
-        return new Film(name, ReleaseType.OLD_RELEASE, quantity);
+    public static Film oldReleaseFilm(String title, int quantity) {
+        return film(title, ReleaseType.OLD_RELEASE, quantity);
     }
 
     public static String json(Film film) {
