@@ -2,6 +2,7 @@ package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalDataFixtures;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -11,12 +12,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CustomerTest {
 
-    private Customer customer = CustomerDataFixtures.customer();
+    private Customer customer;
+
+    @Before
+    public void setUp()  {
+        customer = CustomerDataFixtures.customer();
+    }
 
     @Test
     public void whenNewInstanceThenIsActiveReturnsTrue() {
-        customer = new Customer("John", "Smith");
-
         assertThat(customer.isActive()).isTrue();
     }
 
