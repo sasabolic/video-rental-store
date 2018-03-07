@@ -30,7 +30,7 @@ public class FilmController {
         return ResponseEntity.ok(this.filmResponseAssembler.of(films));
     }
 
-    @GetMapping(value = "/{filmId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/{filmId}")
     public ResponseEntity<FilmResponse> get(@PathVariable Long filmId) {
         final Film film = this.filmService.findById(filmId);
 
