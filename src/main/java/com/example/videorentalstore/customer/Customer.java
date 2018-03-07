@@ -1,7 +1,6 @@
 package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.rental.Rental;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -10,7 +9,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Getter
@@ -31,7 +29,6 @@ public class Customer {
     @Column(name = "bonus_points")
     private long bonusPoints;
 
-    @JsonIgnore
     private boolean active = true;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -39,6 +36,11 @@ public class Customer {
     private List<Rental> rentals = new ArrayList<>();
 
     public Customer(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public void update(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }

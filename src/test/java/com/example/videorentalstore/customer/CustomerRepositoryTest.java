@@ -72,7 +72,7 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void whenRentalsAddedThenCalculateExtraChargesReturnsZeroResult() {
+    public void whenRentalsAddedThenCalculateExtraChargesReturnsAmountZero() {
         Rental rental1 = new Rental(filmRepository.findById(1L).get(), 3);
         Rental rental2 = new Rental(filmRepository.findById(2L).get(), 5);
 
@@ -90,7 +90,7 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void whenRentalsAddedThenCalculateReturnsResult() {
+    public void whenRentalsAddedThenCalculateReturnsCorrectAmount() {
         Rental rental1 = new Rental(filmRepository.findById(1L).get(), 3);
         Rental rental2 = new Rental(filmRepository.findById(2L).get(), 5);
 

@@ -2,9 +2,11 @@ package com.example.videorentalstore.film;
 
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class DefaultFilmService implements FilmService {
 
     private final FilmRepository filmRepository;
