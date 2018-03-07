@@ -41,7 +41,7 @@ public class DefaultFilmService implements FilmService {
         final Film film = this.filmRepository.findById(updateFilmCommand.getId())
                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmCommand.getId())));
 
-        film.process(updateFilmCommand);
+        film.update(updateFilmCommand.getTitle(), updateFilmCommand.getType(), updateFilmCommand.getQuantity());
 
         return this.filmRepository.save(film);
     }
