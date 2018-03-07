@@ -66,6 +66,7 @@ Add additional notes about how to deploy this on a live system
 
 * RequestDTO to Command object
 * Validation of request DTOs
+* Refactor mvc tests
 * CORS
 * Move WEB integration tests to new module 
 * BigDecimal to Money value object
