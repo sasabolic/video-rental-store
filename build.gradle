@@ -51,3 +51,21 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('com.h2database:h2')
 }
+
+task buildDocker(type: Exec) {
+    doFirst {
+        copy {
+            from "src/main/docker/"
+            into "build/docker/"
+            include "*"
+        }
+        copy {
+            from "build/libs"
+            into "build/docker/"
+            include "*.jar*"
+        }
+    }
+    commandLine 'docker', 'image', 'build', '-f', 'build/docker/Dockerfile', '-t', project.name, 'build/docker/'
+}
+
+buildDocker.dependsOn build

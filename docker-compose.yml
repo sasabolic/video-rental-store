@@ -11,3 +11,8 @@ services:
       MYSQL_PASSWORD: TheP@ssw0rd
     ports:
       - "3306:3306"
+  app:
+    depends_on:
+      - mysql
+    image: video-rental-store:latest
+    restart: always
