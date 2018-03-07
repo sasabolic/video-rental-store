@@ -64,20 +64,20 @@ Add additional notes about how to deploy this on a live system
 
 ## TODO List
 
-* RequestDTO to Command object
+* ~~RequestDTO to Command object~~
+* Check naming of unit tests
+* Check naming of command objects
 * Validation of request DTOs
 * Refactor mvc tests
 * CORS
 * Move WEB integration tests to new module 
 * BigDecimal to Money value object
 * Basic and Regular price should be read from app properties
-* Check naming of unit tests
-* Check naming of command objects
 * Check if all code covered with test
 * README file finish
-* Introduce DTO objects for controllers
+* ~~Introduce DTO objects for controllers~~
 * Liquibase table constraints
-* Docker for project
+* ~~Docker for project~~
 * Swagger
 * Hateoas
 * Switch test integration tests to H2 database
