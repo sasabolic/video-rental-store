@@ -14,6 +14,31 @@ public class CustomerTest {
     private Customer customer = CustomerDataFixtures.customer();
 
     @Test
+    public void whenNewInstanceThenIsActiveReturnsTrue() {
+        customer = new Customer("John", "Smith");
+
+        assertThat(customer.isActive()).isTrue();
+    }
+
+    @Test
+    public void whenDeactivateThenIsActiveReturnsFalse() {
+        customer.deactivate();
+
+        assertThat(customer.isActive()).isFalse();
+    }
+
+    @Test
+    public void whenUpdateThenFieldsChanged() {
+        final String newFirstName = "New";
+        final String newLastName = "Newish";
+
+        customer.update(newFirstName, newLastName);
+
+        assertThat(customer).hasFieldOrPropertyWithValue("firstName", newFirstName);
+        assertThat(customer).hasFieldOrPropertyWithValue("lastName", newLastName);
+    }
+
+    @Test
     public void whenCalculateThenReturnCorrectAmount() {
         RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
 
@@ -23,7 +48,18 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalsAddedThenBonusPointsAreAdded() {
+    public void whenRentalsAddedThenRentalsSizeIncreased() {
+        final long before = customer.getRentals().size();
+
+        RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
+
+        final long result = customer.getRentals().size();
+
+        assertThat(result).isEqualByComparingTo(before + 4);
+    }
+
+    @Test
+    public void whenRentalsAddedThenBonusPointsAdded() {
         final long before = customer.getBonusPoints();
 
         RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
@@ -34,7 +70,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalsReturnedThenBonusPointsAreNotAdded() {
+    public void whenRentalsReturnedThenBonusPointsNotAdded() {
         final long before = customer.getBonusPoints();
 
         final List<Rental> rentals = RentalDataFixtures.rentals();
@@ -48,7 +84,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalsReturnedSameDayThenCalculateExtraChargesReturnsCorrectAmount() {
+    public void whenRentalsReturnedSameDayThenCalculateExtraChargesReturnsZeroAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
         rentals.stream().forEach(Rental::markReturned);
 
@@ -70,6 +106,7 @@ public class CustomerTest {
 
         assertThat(totalAmount).isEqualByComparingTo(BigDecimal.valueOf(110));
     }
+
     @Test
     public void whenRentalsReturnedThenCalculateReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
