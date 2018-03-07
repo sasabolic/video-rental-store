@@ -106,8 +106,7 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void whenCreateNewCustomerThenReturnResult() {
-
+    public void whenCreateNewCustomerThenCustomerSizeIncreased() {
         Long before = customerRepository.count();
 
         Customer customer = customerRepository.save(CustomerDataFixtures.customer());
@@ -120,7 +119,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenCreateNewCustomerThenActiveIsTrue() {
-
         Customer customer = customerRepository.save(CustomerDataFixtures.customer());
 
         assertThat(customer).isNotNull();
@@ -129,7 +127,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenDeactivateCustomerThenActiveIsFalse() {
-
         Customer customer = customerRepository.save(CustomerDataFixtures.customer());
         customer.deactivate();
 
@@ -140,8 +137,7 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void whenSearchByNameThenReturnResult() {
-
+    public void whenSearchByNameThenReturnListContainingThatName() {
         final List<Customer> customers = customerRepository.findByNameContainingIgnoreCase("tes");
 
         assertThat(customers).isNotEmpty();
@@ -150,12 +146,16 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void whenSearchAllThenReturnResult() {
+    public void whenSearchByNonExistingNameThenReturnEmptyList() {
+        final List<Customer> customers = customerRepository.findByNameContainingIgnoreCase("non-existing");
 
+        assertThat(customers).isEmpty();
+    }
+
+    @Test
+    public void whenSearchAllThenReturnResult() {
         final List<Customer> customers = customerRepository.findAll();
 
         assertThat(customers).isNotEmpty();
     }
-
-
 }
