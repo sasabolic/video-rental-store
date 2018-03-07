@@ -68,7 +68,7 @@ public class FilmControllerTest {
 	@Test
 	public void whenQueryByTitleThenReturnListOfFilmsWithThatTitle() throws Exception {
 		given(this.filmService.findAll("spider"))
-				.willReturn(FilmDataFixtures.filmsWithSpiderMan());
+				.willReturn(FilmDataFixtures.filmsWithTitleSpiderMan());
 
 		final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
 				.get("/films?title=spider")

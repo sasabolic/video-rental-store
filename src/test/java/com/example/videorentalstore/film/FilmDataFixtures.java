@@ -13,7 +13,7 @@ public class FilmDataFixtures {
                 new Film("Out of Africa", ReleaseType.OLD_RELEASE));
     }
 
-    public static List<Film> filmsWithSpiderMan() {
+    public static List<Film> filmsWithTitleSpiderMan() {
         return Arrays.asList(
                 new Film("Spider Man", ReleaseType.REGULAR_RELEASE),
                 new Film("Spider Man 2", ReleaseType.REGULAR_RELEASE));

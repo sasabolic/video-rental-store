@@ -41,7 +41,7 @@ public class FilmServiceTest {
 
     @Test
     public void whenFindAllByTitleThenReturnListOfFilmsContainingTitle() {
-        doReturn(FilmDataFixtures.filmsWithSpiderMan()).when(filmRepository).findByTitleContainingIgnoreCase(isA(String.class));
+        doReturn(FilmDataFixtures.filmsWithTitleSpiderMan()).when(filmRepository).findByTitleContainingIgnoreCase(isA(String.class));
 
         final List<Film> result = filmService.findAll("Spider Man");
 
