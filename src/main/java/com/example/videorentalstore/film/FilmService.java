@@ -4,9 +4,7 @@ import java.util.List;
 
 public interface FilmService {
 
-    List<Film> findAll();
-
-    List<Film> findAllByTitle(String title);
+    List<Film> findAll(String title);
 
     Film findById(Long id);
 

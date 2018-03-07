@@ -1,7 +1,9 @@
 package com.example.videorentalstore.film.web;
 
 import com.example.videorentalstore.film.*;
-import com.example.videorentalstore.film.web.dto.*;
+import com.example.videorentalstore.film.web.dto.FilmResponse;
+import com.example.videorentalstore.film.web.dto.UpdateFilmQuantityRequest;
+import com.example.videorentalstore.film.web.dto.WriteFilmRequest;
 import com.example.videorentalstore.film.web.dto.assembler.FilmResponseAssembler;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +25,9 @@ public class FilmController {
 
     @GetMapping
     public ResponseEntity<List<FilmResponse>> getAll(@RequestParam(required = false) String title) {
-        final List<Film> result;
+        final List<Film> films = this.filmService.findAll(title);
 
-        if (title == null) {
-            result = this.filmService.findAll();
-        } else {
-            result = this.filmService.findAllByTitle(title);
-        }
-
-        return ResponseEntity.ok(this.filmResponseAssembler.of(result));
+        return ResponseEntity.ok(this.filmResponseAssembler.of(films));
     }
 
     @GetMapping(value = "/{filmId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

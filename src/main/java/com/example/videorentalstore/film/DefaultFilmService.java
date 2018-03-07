@@ -14,12 +14,10 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public List<Film> findAll() {
-        return this.filmRepository.findAll();
-    }
-
-    @Override
-    public List<Film> findAllByTitle(String title) {
+    public List<Film> findAll(String title) {
+        if (title == null) {
+            return this.filmRepository.findAll();
+        }
         return this.filmRepository.findByTitleContainingIgnoreCase(title);
     }
 

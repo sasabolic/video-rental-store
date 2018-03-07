@@ -45,7 +45,7 @@ public class FilmControllerTest {
 
 	@Test
 	public void whenGetAllThenReturnListOfFilms() throws Exception {
-		given(this.filmService.findAll())
+		given(this.filmService.findAll(null))
 				.willReturn(FilmDataFixtures.films());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -67,7 +67,7 @@ public class FilmControllerTest {
 
 	@Test
 	public void whenQueryByTitleThenReturnListOfFilmsWithThatTitle() throws Exception {
-		given(this.filmService.findAllByTitle("spider"))
+		given(this.filmService.findAll("spider"))
 				.willReturn(FilmDataFixtures.filmsWithSpiderMan());
 
 		final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders

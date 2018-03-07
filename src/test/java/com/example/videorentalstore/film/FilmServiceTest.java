@@ -32,7 +32,7 @@ public class FilmServiceTest {
     public void whenFindAllThenReturnListOfFilms() {
         doReturn(FilmDataFixtures.films()).when(filmRepository).findAll();
 
-        final List<Film> result = filmService.findAll();
+        final List<Film> result = filmService.findAll(null);
 
         assertThat(result).isNotNull();
         assertThat(result).isNotEmpty();
@@ -43,7 +43,7 @@ public class FilmServiceTest {
     public void whenFindAllByTitleThenReturnListOfFilmsContainingTitle() {
         doReturn(FilmDataFixtures.filmsWithSpiderMan()).when(filmRepository).findByTitleContainingIgnoreCase(isA(String.class));
 
-        final List<Film> result = filmService.findAllByTitle("Spider Man");
+        final List<Film> result = filmService.findAll("Spider Man");
 
         assertThat(result).isNotNull();
         assertThat(result).isNotEmpty();
