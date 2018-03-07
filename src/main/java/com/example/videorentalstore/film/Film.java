@@ -36,35 +36,29 @@ public class Film {
         this.quantity = quantity;
     }
 
-    public void process(UpdateFilmCommand updateFilmCommand) {
-        this.title = updateFilmCommand.getTitle();
-        this.type = ReleaseType.valueOf(updateFilmCommand.getType());
-        this.quantity = updateFilmCommand.getQuantity();
+    public void update(String title, String type, int quantity) {
+        this.title = title;
+        this.type = ReleaseType.valueOf(type);
+        this.quantity = quantity;
     }
 
     public void deactivate() {
         this.active = false;
     }
 
-    public Film increaseBy(int quantity) {
+    public void increaseBy(int quantity) {
         this.quantity = this.quantity + quantity;
-
-        return this;
     }
 
-    public Film take() {
+    public void take() {
         if (this.quantity == 0) {
             throw new RuntimeException("There is not any copy of the '" + this.title + "' film available");
         }
         this.quantity--;
-
-        return this;
     }
 
-    public Film returnBack() {
+    public void returnBack() {
         this.quantity++;
-
-        return this;
     }
 
     public BigDecimal calculatePrice(long daysRented) {
@@ -74,5 +68,4 @@ public class Film {
     public int calculateBonusPoints() {
         return type.calculateBonusPoints();
     }
-
 }
