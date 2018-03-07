@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CustomerTest {
 
-
     private Customer customer = CustomerDataFixtures.customer();
 
     @Test
