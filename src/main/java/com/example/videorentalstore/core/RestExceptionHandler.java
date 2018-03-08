@@ -1,10 +1,12 @@
 package com.example.videorentalstore.core;
 
 import com.example.videorentalstore.customer.CustomerNotFoundException;
+import com.example.videorentalstore.film.FilmUniqueViolationException;
 import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.rental.RentalException;
 import lombok.Data;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +22,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Rest exception handler.
+ */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-
 
     @ExceptionHandler({FilmNotFoundException.class, CustomerNotFoundException.class})
     public ResponseEntity<Object> handleNotFound(Exception e) {
         return buildResponseEntity(RestError.of(HttpStatus.NOT_FOUND, e));
+    }
+
+    @ExceptionHandler({FilmUniqueViolationException.class, DataIntegrityViolationException.class})
+    public ResponseEntity<Object> handleAlreadyExist(Exception e) {
+        return buildResponseEntity(RestError.of(HttpStatus.CONFLICT, e));
+    }
+
+    @ExceptionHandler({RentalException.class})
+    protected ResponseEntity<Object> handleRentalException(RentalException ex) {
+        RestError restError = RestError.of(HttpStatus.BAD_REQUEST, ex, ex.getMessage());
+        restError.addErrors(ex.getExceptions());
+
+        return buildResponseEntity(restError);
     }
 
     @Override
@@ -35,14 +52,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         RestError restError = RestError.of(status, ex, "Validation failed");
         restError.addValidationErrors(bindingResult.getAllErrors());
-
-        return buildResponseEntity(restError);
-    }
-
-    @ExceptionHandler({RentalException.class})
-    protected ResponseEntity<Object> handleRentalException(RentalException ex) {
-        RestError restError = RestError.of(HttpStatus.BAD_REQUEST, ex, ex.getMessage());
-        restError.addErrors(ex.getExceptions());
 
         return buildResponseEntity(restError);
     }
