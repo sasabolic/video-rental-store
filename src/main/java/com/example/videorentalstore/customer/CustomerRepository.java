@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface to manage {@code Customer} instances.
+ */
 @Transactional(readOnly = true)
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
@@ -18,6 +21,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Override
     Optional<Customer> findById(Long id);
 
-    @Query("SELECT c FROM Customer c WHERE UPPER(c.firstName) LIKE UPPER(concat('%', ?1,'%')) OR UPPER(c.lastName) LIKE UPPER(concat('%', ?1,'%'))")
+    @Query("SELECT c FROM Customer c WHERE (UPPER(c.firstName) LIKE UPPER(concat('%', ?1,'%')) OR UPPER(c.lastName) LIKE UPPER(concat('%', ?1,'%'))) AND c.active = true")
     List<Customer> findByName(String name);
+
+    @Query("SELECT COUNT(c) FROM Customer c WHERE c.active = true")
+    @Override
+    long count();
 }

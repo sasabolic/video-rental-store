@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -125,6 +126,69 @@ public class CustomerRepositoryTest {
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("active", false);
+    }
+
+    @Test
+    public void whenDeactivateThenSizeDecreased() {
+        final Customer customer = CustomerDataFixtures.customer();
+        entityManager.persist(customer);
+        entityManager.flush();
+
+        Long before = customerRepository.count();
+
+        customer.deactivate();
+
+        customerRepository.save(customer);
+
+        Long result = customerRepository.count();
+
+        assertThat(result).isEqualTo(before.intValue() - 1);
+    }
+
+    @Test
+    public void whenDeactivateThenSearchAllReturnsCorrectResult() {
+        final Customer customer = CustomerDataFixtures.customer();
+        entityManager.persist(customer);
+        entityManager.flush();
+
+        customer.deactivate();
+
+        customerRepository.save(customer);
+
+        final List<Customer> result = customerRepository.findAll();
+
+        assertThat(result).isNotEmpty();
+        assertThat(result).extracting(Customer::isActive).containsOnly(true);
+    }
+
+    @Test
+    public void whenDeactivateThenSearchByIdReturnsCorrectResult() {
+        final Customer customer = CustomerDataFixtures.customer();
+        entityManager.persist(customer);
+        entityManager.flush();
+
+        customer.deactivate();
+
+        customerRepository.save(customer);
+
+        final Optional<Customer> result = customerRepository.findById(customer.getId());
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void whenDeactivateThenSearchByNameReturnsCorrectResult() {
+        final Customer customer = CustomerDataFixtures.customer("John", "Smith");
+        entityManager.persist(customer);
+        entityManager.flush();
+
+        customer.deactivate();
+
+        customerRepository.save(customer);
+
+        final List<Customer> result = customerRepository.findByName("john");
+
+        assertThat(result).isEmpty();
     }
 
     @Test
