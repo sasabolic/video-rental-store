@@ -5,8 +5,14 @@ import java.math.BigDecimal;
 import static com.example.videorentalstore.film.Price.BASIC_PRICE;
 import static com.example.videorentalstore.film.Price.PREMIUM_PRICE;
 
+/**
+ * Release type of {@link Film} used for calculation of price and bonus points.
+ */
 public enum ReleaseType {
 
+    /**
+     * The New release.
+     */
     NEW_RELEASE {
         @Override
         public BigDecimal calculatePrice(long daysRented) {
@@ -17,11 +23,17 @@ public enum ReleaseType {
         }
 
         @Override
-        public int calculateBonusPoints() {
+        public int calculateBonusPoints(long daysRented) {
+            if (daysRented <= 0) {
+                return 0;
+            }
             return 2;
         }
     },
 
+    /**
+     * The Regular release.
+     */
     REGULAR_RELEASE {
         @Override
         public BigDecimal calculatePrice(long daysRented) {
@@ -38,11 +50,17 @@ public enum ReleaseType {
         }
 
         @Override
-        public int calculateBonusPoints() {
+        public int calculateBonusPoints(long daysRented) {
+            if (daysRented <= 0) {
+                return 0;
+            }
             return 1;
         }
     },
 
+    /**
+     * The Old release.
+     */
     OLD_RELEASE {
         @Override
         public BigDecimal calculatePrice(long daysRented) {
@@ -59,12 +77,27 @@ public enum ReleaseType {
         }
 
         @Override
-        public int calculateBonusPoints() {
+        public int calculateBonusPoints(long daysRented) {
+            if (daysRented <= 0) {
+                return 0;
+            }
             return 1;
         }
     };
 
+    /**
+     * Calculates price.
+     *
+     * @param daysRented the days rented
+     * @return the big decimal
+     */
     public abstract BigDecimal calculatePrice(long daysRented);
 
-    public abstract int calculateBonusPoints();
+    /**
+     * Calculates bonus points.
+     *
+     * @param daysRented the days rented
+     * @return the int
+     */
+    public abstract int calculateBonusPoints(long daysRented);
 }
