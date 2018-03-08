@@ -55,7 +55,21 @@ public class CustomerRentalControllerTest {
     private RentalService rentalService;
 
     @Test
-    public void whenCreateRentalsThenReturnCorrectResponse() throws Exception {
+    public void whenCreateThenReturnStatusOK() throws Exception {
+        doReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(CreateRentalsCommand.class));
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers/{id}/rentals", 12)
+                .content(RentalDataFixtures.json())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenCreateThenReturnJson() throws Exception {
         doReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(CreateRentalsCommand.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -87,7 +101,72 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
                 .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")));
+    }
 
+    @Test
+    public void whenCreateEmptyRequestThenReturnStatusBadRequest() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers/{customerId}/rentals", 12)
+                .content("[]")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenUpdateEmptyRequestThenReturnJsonError() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers/{customerId}/rentals", 12)
+                .content("[]")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(400)))
+                .andExpect(jsonPath("$.message", equalTo("Validation failed")))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(1)));
+    }
+
+    @Test
+    public void whenCreateRequestWithInvalidFieldsThenReturnStatusBadRequest() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers/{customerId}/rentals", 12)
+                .content("[\n" +
+                        "  {\"film_id\": null, \"days_rented\": 0}\n" +
+                        "]")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenCreateRequestWithInvalidFieldsThenReturnJsonError() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers/{customerId}/rentals", 12)
+                .content("[\n" +
+                        "  {\"film_id\": null, \"days_rented\": 0}\n" +
+                        "]")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(400)))
+                .andExpect(jsonPath("$.message", equalTo("Validation failed")))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(2)));
     }
 
     @Test

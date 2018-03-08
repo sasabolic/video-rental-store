@@ -7,9 +7,13 @@ import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssem
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * REST customer's rental resources.
+ */
 @RestController
 public class CustomerRentalController {
 
@@ -31,8 +35,8 @@ public class CustomerRentalController {
     }
 
     @PostMapping("/customers/{id}/rentals")
-    public ResponseEntity<ReceiptResponse> create(@PathVariable("id") long customerId, @RequestBody List<CreateRentalRequest> createRentalRequests) {
-        CreateRentalsCommand createRentalsCommand = new CreateRentalsCommand(customerId, createRentalRequests.stream().map(r -> r.toCreateRentalCommand()).collect(Collectors.toList()));
+    public ResponseEntity<ReceiptResponse> create(@PathVariable("id") long customerId, @RequestBody @Valid CreateRentalListRequest createRentalListRequests) {
+        CreateRentalsCommand createRentalsCommand = new CreateRentalsCommand(customerId, createRentalListRequests.getCreateRentalRequests().stream().map(r -> r.toCreateRentalCommand()).collect(Collectors.toList()));
 
         final Receipt receipt = rentalService.create(createRentalsCommand);
 
@@ -40,7 +44,7 @@ public class CustomerRentalController {
     }
 
     @PatchMapping("/customers/{id}/rentals")
-    public ResponseEntity<ReceiptResponse> update(@PathVariable("id") long customerId, @RequestBody List<Long> rentalIds) {
+    public ResponseEntity<ReceiptResponse> returnBack(@PathVariable("id") long customerId, @RequestBody List<Long> rentalIds) {
         ReturnRentalsCommand returnRentalsCommand = new ReturnRentalsCommand(customerId, rentalIds);
 
         final Receipt receipt = this.rentalService.returnBack(returnRentalsCommand);
