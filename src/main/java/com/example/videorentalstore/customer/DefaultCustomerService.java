@@ -2,11 +2,9 @@ package com.example.videorentalstore.customer;
 
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class DefaultCustomerService implements CustomerService {
 
     private final CustomerRepository customerRepository;
@@ -20,7 +18,7 @@ public class DefaultCustomerService implements CustomerService {
         if (name == null) {
             return this.customerRepository.findAll();
         }
-        return this.customerRepository.findByNameContainingIgnoreCase(name);
+        return this.customerRepository.findByName(name);
     }
 
     @Override

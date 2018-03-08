@@ -105,7 +105,7 @@ public class CustomerControllerTest {
 
     @Test
     public void whenGetAllByNonExistingNameThenReturnEmptyJsonList() throws Exception {
-        final String name = "smith";
+        final String name = "non-existing";
 
         given(this.customerService.findAll(name)).willReturn(Collections.emptyList());
 

@@ -86,7 +86,7 @@ public class Rental {
     }
 
     public int calculateBonusPoints() {
-        return this.film.calculateBonusPoints();
+        return this.film.calculateBonusPoints(this.daysRented);
     }
 
     public enum Status {

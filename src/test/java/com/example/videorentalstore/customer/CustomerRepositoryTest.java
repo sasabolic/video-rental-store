@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
@@ -16,6 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class CustomerRepositoryTest {
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -112,7 +116,7 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void whenDeactivateThenActiveIsFalse() {
+    public void whenDeactivateThenActiveFalse() {
         Customer customer = CustomerDataFixtures.customer();
 
         customer.deactivate();
@@ -124,17 +128,41 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void whenSearchByNameThenReturnListContainingThatName() {
-        final List<Customer> customers = customerRepository.findByNameContainingIgnoreCase("tes");
+    public void whenSearchByIdThenReturnCorrectResult() {
+        final Customer customer = CustomerDataFixtures.customer();
+        entityManager.persist(customer);
+        entityManager.flush();
 
-        assertThat(customers).isNotEmpty();
-        assertThat(customers).hasSize(1);
-        assertThat(customers).extracting(Customer::getLastName).containsExactly("Tesla");
+        final Customer result = customerRepository.findById(customer.getId()).get();
+
+        assertThat(result).isNotNull();
+        assertThat(result.getFirstName()).isEqualTo(customer.getFirstName());
+        assertThat(result.getLastName()).isEqualTo(customer.getLastName());
+        assertThat(result.getBonusPoints()).isEqualTo(customer.getBonusPoints());
+        assertThat(result.getRentals()).isEqualTo(customer.getRentals());
+    }
+
+    @Test
+    public void whenSearchByNameThenReturnCorrectResult() {
+        final List<Customer> result = customerRepository.findByName("tes");
+
+        assertThat(result).isNotEmpty();
+        assertThat(result).hasSize(1);
+        assertThat(result).extracting(Customer::getLastName).containsExactly("Tesla");
+    }
+
+    @Test
+    public void whenSearchByNameThenReturnListContainingThatName() {
+        final List<Customer> result = customerRepository.findByName("tes");
+
+        assertThat(result).isNotEmpty();
+        assertThat(result).hasSize(1);
+        assertThat(result).extracting(Customer::getLastName).containsExactly("Tesla");
     }
 
     @Test
     public void whenSearchByNonExistingNameThenReturnEmptyList() {
-        final List<Customer> result = customerRepository.findByNameContainingIgnoreCase("non-existing");
+        final List<Customer> result = customerRepository.findByName("non-existing");
 
         assertThat(result).isEmpty();
     }

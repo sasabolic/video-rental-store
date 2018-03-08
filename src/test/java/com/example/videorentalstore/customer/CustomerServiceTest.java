@@ -45,7 +45,8 @@ public class CustomerServiceTest {
     @Test
     public void whenFindAllByNameThenReturnListOfCustomersContainingName() {
         final String name = "smith";
-        doReturn(CustomerDataFixtures.customers()).when(customerRepository).findByNameContainingIgnoreCase(name);
+
+        doReturn(CustomerDataFixtures.customers()).when(customerRepository).findByName(name);
 
         final List<Customer> result = customerService.findAll(name);
 
@@ -105,7 +106,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void whenUpdatingCustomerThenReturnUpdatedCustomer() {
+    public void whenUpdatingCustomerThenReturnCustomer() {
         final String firstName = "Dzoni";
         final String lastName = "Teslic";
         final String newFirstName = "Nikola";
@@ -125,12 +126,13 @@ public class CustomerServiceTest {
 
     @Test
     public void whenUpdatingNonExistingCustomerThenThrowException() {
+        final Customer customer = CustomerDataFixtures.customer();
         final long customerId = 1L;
 
         thrown.expect(CustomerNotFoundException.class);
         thrown.expectMessage("Customer with id '" + customerId + "' does not exist");
 
-        final UpdateCustomerCommand updateCustomerCommand = new UpdateCustomerCommand(customerId, "John", "Smith");
+        final UpdateCustomerCommand updateCustomerCommand = new UpdateCustomerCommand(customerId, customer.getFirstName(), customer.getLastName());
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(isA(Long.class));
 
@@ -138,7 +140,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void whenDeletingCustomerThenActiveIsFalse() {
+    public void whenDeletingCustomerThenActiveFalse() {
         final Customer customer = CustomerDataFixtures.customer();
 
         doReturn(Optional.of(customer)).when(customerRepository).findById(isA(Long.class));

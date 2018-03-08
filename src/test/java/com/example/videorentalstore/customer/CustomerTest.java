@@ -20,12 +20,12 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenNewInstanceThenIsActiveReturnsTrue() {
+    public void whenNewInstanceThenActiveTrue() {
         assertThat(customer.isActive()).isTrue();
     }
 
     @Test
-    public void whenDeactivateThenIsActiveReturnsFalse() {
+    public void whenDeactivateThenActiveFalse() {
         customer.deactivate();
 
         assertThat(customer.isActive()).isFalse();
