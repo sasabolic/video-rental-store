@@ -13,10 +13,13 @@
             <column name="title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="varchar(50)"/>
+            <column name="type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
             <column name="quantity" type="int"/>
             <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
+        <addUniqueConstraint tableName="film" columnNames="title,active"/>
 
         <createTable tableName="rental">
             <column name="id" type="int" autoIncrement="true">
