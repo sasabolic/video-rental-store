@@ -60,7 +60,7 @@ public class Rental {
         this.id = id;
     }
 
-    public boolean isNew() {
+    public boolean isActive() {
         return this.status == Status.RENTED;
     }
 
