@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -27,6 +28,11 @@ public class Film {
     private boolean active = true;
 
     public Film(String title, ReleaseType type, int quantity) {
+        Objects.requireNonNull(title, "Film title cannot be null!");
+        Objects.requireNonNull(type, "Film type cannot be null!");
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Number of film copies cannot be negative!");
+        }
         this.title = title;
         this.type = type;
         this.quantity = quantity;
@@ -42,13 +48,17 @@ public class Film {
         this.active = false;
     }
 
-    public void increaseBy(int quantity) {
-        this.quantity = this.quantity + quantity;
+    public void changeQuantityBy(int quantity) {
+        final int newQuantity = this.quantity + quantity;
+        if (newQuantity < 0) {
+            throw new IllegalStateException("Number of film copies cannot be negative!");
+        }
+        this.quantity = newQuantity;
     }
 
     public void take() {
         if (this.quantity == 0) {
-            throw new RuntimeException("There is not any copy of the '" + this.title + "' film available");
+            throw new IllegalStateException(String.format("There is not any available copy of the film '%s'", this.title));
         }
         this.quantity--;
     }
@@ -61,7 +71,7 @@ public class Film {
         return type.calculatePrice(daysRented);
     }
 
-    public int calculateBonusPoints() {
-        return type.calculateBonusPoints();
+    public int calculateBonusPoints(long daysRented) {
+        return type.calculateBonusPoints(daysRented);
     }
 }
