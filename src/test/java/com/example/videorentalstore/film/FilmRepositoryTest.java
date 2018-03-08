@@ -23,93 +23,179 @@ public class FilmRepositoryTest {
     private FilmRepository filmRepository;
 
     @Test
-    public void whenFindOneThenReturnCorrectResult() {
-        final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, 2);
-        entityManager.persist(newFilm);
-        entityManager.flush();
-
-        final Optional<Film> film = filmRepository.findById(5L);
-
-        assertThat(film).isNotNull();
-        assertThat(film.isPresent()).isTrue();
-        assertThat(film.get()).hasFieldOrPropertyWithValue("title", "Murder on the Orient Express");
-        assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", 2);
-    }
-
-    @Test
-    public void whenReturnBackThenQuantityIsIncremented() {
+    public void whenReturnBackThenQuantityIncreased() {
         final int quantity = 2;
-        final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, quantity);
-        entityManager.persist(newFilm);
+        final Film film = FilmDataFixtures.newReleaseFilm("Murder on the Orient Express", quantity);
+        entityManager.persist(film);
         entityManager.flush();
 
-        Optional<Film> film = filmRepository.findById(newFilm.getId());
-        if (film.isPresent()) {
-            final Film saved = film.get();
-            saved.returnBack();
+        film.returnBack();
 
-            entityManager.persist(saved);
-            entityManager.flush();
-        }
+        final Film result = filmRepository.save(film);
 
-        film = filmRepository.findById(newFilm.getId());
-
-        assertThat(film).isNotNull();
-        assertThat(film.isPresent()).isTrue();
-        assertThat(film.get()).hasFieldOrPropertyWithValue("title", "Murder on the Orient Express");
-        assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", quantity + 1);
+        assertThat(result).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("quantity", quantity + 1);
     }
 
     @Test
-    public void whenTakeThenQuantityIsDecremented() {
+    public void whenTakeThenQuantityDecreased() {
         final int quantity = 2;
-        final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, quantity);
-        entityManager.persist(newFilm);
+        final Film film = FilmDataFixtures.newReleaseFilm("Murder on the Orient Express", quantity);
+        entityManager.persist(film);
         entityManager.flush();
 
-        Optional<Film> film = filmRepository.findById(newFilm.getId());
-        if (film.isPresent()) {
-            final Film saved = film.get();
-            saved.take();
+        film.take();
 
-            entityManager.persist(saved);
-            entityManager.flush();
-        }
+        final Film result = filmRepository.save(film);
 
-        film = filmRepository.findById(newFilm.getId());
-
-        assertThat(film).isNotNull();
-        assertThat(film.isPresent()).isTrue();
-        assertThat(film.get()).hasFieldOrPropertyWithValue("title", "Murder on the Orient Express");
-        assertThat(film.get()).hasFieldOrPropertyWithValue("quantity", quantity - 1);
+        assertThat(result).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("quantity", quantity - 1);
     }
 
     @Test
-    public void whenFindByTitleThenReturnCorrectResult() {
-        final Film newFilm = new Film("Murder on the Orient Express", ReleaseType.NEW_RELEASE, 2);
-        entityManager.persist(newFilm);
-        entityManager.flush();
+    public void whenSaveThenSizeIncreased() {
+        Long before = filmRepository.count();
 
-        final List<Film> films = filmRepository.findByTitleContainingIgnoreCase("orient express");
+        filmRepository.save(FilmDataFixtures.newReleaseFilm("Maze Runner: The Death Cure", 6));
 
-        assertThat(films).isNotNull();
-        assertThat(films).isNotEmpty();
-        assertThat(films).hasSize(1);
-        assertThat(films).extracting(Film::getTitle).containsExactly("Murder on the Orient Express");
+        Long result = filmRepository.count();
+
+        assertThat(result).isEqualTo(before.intValue() + 1);
+    }
+
+    @Test
+    public void whenSaveThenSearchAllContainsSavedResult() {
+        Long before = filmRepository.count();
+
+        Film film = filmRepository.save(FilmDataFixtures.newReleaseFilm());
+
+        List<Film> result = filmRepository.findAll();
+
+        assertThat(result).hasSize(before.intValue() + 1);
+        assertThat(result).contains(film);
     }
 
     @Test
     public void whenSaveThenReturnCorrectResult() {
-        final Film newFilm = new Film("Maze Runner: The Death Cure", ReleaseType.NEW_RELEASE, 6);
+        final Film film = FilmDataFixtures.newReleaseFilm();
 
-        final Film savedFilm = filmRepository.save(newFilm);
-
-        final Optional<Film> result = filmRepository.findById(savedFilm.getId());
+        final Film result = filmRepository.save(film);
 
         assertThat(result).isNotNull();
-        assertThat(result.isPresent()).isTrue();
-        assertThat(result.get().getTitle()).isEqualTo(newFilm.getTitle());
-        assertThat(result.get().getQuantity()).isEqualTo(newFilm.getQuantity());
+        assertThat(result.getTitle()).isEqualTo(film.getTitle());
+        assertThat(result.getType()).isEqualTo(film.getType());
+        assertThat(result.getQuantity()).isEqualTo(film.getQuantity());
+    }
 
+    @Test
+    public void whenDeactivateThenActiveIsFalse() {
+        Film film = FilmDataFixtures.newReleaseFilm();
+
+        film.deactivate();
+
+        final Film result = filmRepository.save(film);
+
+        assertThat(result).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("active", false);
+    }
+
+    @Test
+    public void whenDeactivateThenSizeDecreased() {
+        final Film film = FilmDataFixtures.newReleaseFilm();
+        entityManager.persist(film);
+        entityManager.flush();
+
+        Long before = filmRepository.count();
+
+        film.deactivate();
+
+        filmRepository.save(film);
+
+        Long result = filmRepository.count();
+
+        assertThat(result).isEqualTo(before.intValue() - 1);
+    }
+
+    @Test
+    public void whenDeactivateThenSearchAllReturnsCorrectResult() {
+        final Film film = FilmDataFixtures.newReleaseFilm();
+        entityManager.persist(film);
+        entityManager.flush();
+
+        film.deactivate();
+
+        filmRepository.save(film);
+
+        final List<Film> result = filmRepository.findAll();
+
+        assertThat(result).isNotEmpty();
+        assertThat(result).extracting(Film::isActive).containsOnly(true);
+    }
+
+    @Test
+    public void whenDeactivateThenSearchByIdReturnsCorrectResult() {
+        final Film film = FilmDataFixtures.newReleaseFilm();
+        entityManager.persist(film);
+        entityManager.flush();
+
+        film.deactivate();
+
+        filmRepository.save(film);
+
+        final Optional<Film> result = filmRepository.findById(film.getId());
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void whenDeactivateThenSearchByTitleReturnsCorrectResult() {
+        final Film film = FilmDataFixtures.newReleaseFilm("Murder on the Orient Express");
+        entityManager.persist(film);
+        entityManager.flush();
+
+        film.deactivate();
+
+        filmRepository.save(film);
+
+        final List<Film> result = filmRepository.findByTitle("orient express");
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void whenSearchByIdThenReturnCorrectResult() {
+        final Film film = FilmDataFixtures.newReleaseFilm();
+        entityManager.persist(film);
+        entityManager.flush();
+
+        final Film result = filmRepository.findById(film.getId()).get();
+
+        assertThat(result).isNotNull();
+        assertThat(result.getTitle()).isEqualTo(film.getTitle());
+        assertThat(result.getType()).isEqualTo(film.getType());
+        assertThat(result.getQuantity()).isEqualTo(film.getQuantity());
+    }
+
+    @Test
+    public void whenSearchByTitleThenReturnListContainingThatTitle() {
+        final List<Film> result = filmRepository.findByTitle("spider");
+
+        assertThat(result).isNotEmpty();
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(Film::getTitle).containsExactly("Spider Man", "Spider Man 2");
+    }
+
+    @Test
+    public void whenSearchByNonExistingTitleThenReturnEmptyList() {
+        final List<Film> result = filmRepository.findByTitle("non-existing");
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void whenSearchAllThenReturnResult() {
+        final List<Film> result = filmRepository.findAll();
+
+        assertThat(result).isNotEmpty();
     }
 }
