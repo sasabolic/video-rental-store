@@ -269,6 +269,18 @@ public class FilmControllerTest {
     }
 
     @Test
+    public void whenCreateEmptyRequestThenReturnStatusBadRequest() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/films")
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void whenCreateEmptyRequestThenReturnJsonError() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/films")
@@ -285,18 +297,6 @@ public class FilmControllerTest {
                 .andExpect(jsonPath("$.message", equalTo("Validation failed")))
                 .andExpect(jsonPath("$.errors").isArray())
                 .andExpect(jsonPath("$.errors", hasSize(3)));
-    }
-
-    @Test
-    public void whenCreateEmptyRequestThenReturnStatusBadRequest() throws Exception {
-        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/films")
-                .content("{}")
-                .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isBadRequest());
     }
 
     @Test
