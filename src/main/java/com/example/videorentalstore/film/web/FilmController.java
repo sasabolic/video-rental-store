@@ -9,8 +9,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+
+/**
+ * REST film resources.
+ */
 @RestController
 @RequestMapping("/films")
 public class FilmController {
@@ -38,21 +43,21 @@ public class FilmController {
     }
 
     @PostMapping
-    public ResponseEntity<FilmResponse> create(@RequestBody WriteFilmRequest writeFilmRequest) {
+    public ResponseEntity<FilmResponse> create(@RequestBody @Valid WriteFilmRequest writeFilmRequest) {
         final Film film = this.filmService.save(new CreateFilmCommand(writeFilmRequest.getTitle(), writeFilmRequest.getType(), writeFilmRequest.getQuantity()));
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
 
     @PutMapping(value = "/{filmId}")
-    public ResponseEntity<FilmResponse> update(@PathVariable Long filmId, @RequestBody WriteFilmRequest writeFilmRequest) {
+    public ResponseEntity<FilmResponse> update(@PathVariable Long filmId, @RequestBody @Valid WriteFilmRequest writeFilmRequest) {
         final Film film = this.filmService.update(new UpdateFilmCommand(filmId, writeFilmRequest.getTitle(), writeFilmRequest.getType(), writeFilmRequest.getQuantity()));
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
 
     @PatchMapping(value = "/{filmId}")
-    public ResponseEntity<FilmResponse> updateQuantity(@PathVariable Long filmId, @RequestBody UpdateFilmQuantityRequest updateFilmQuantityRequest) {
+    public ResponseEntity<FilmResponse> updateQuantity(@PathVariable Long filmId, @RequestBody @Valid UpdateFilmQuantityRequest updateFilmQuantityRequest) {
         final Film film = this.filmService.updateQuantity(new UpdateFilmQuantityCommand(filmId, updateFilmQuantityRequest.getQuantity()));
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
