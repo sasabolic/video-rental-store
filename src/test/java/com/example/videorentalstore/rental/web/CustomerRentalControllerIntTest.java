@@ -45,6 +45,7 @@ public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
         final Long customerId = 1L;
         final Long filmId = 1L;
         final int daysRented = 10;
+
         rentalService.create(new CreateRentalsCommand(customerId, Arrays.asList(new CreateRentalCommand(filmId, daysRented))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
