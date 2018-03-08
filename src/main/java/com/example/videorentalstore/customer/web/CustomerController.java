@@ -11,8 +11,12 @@ import com.example.videorentalstore.customer.web.dto.assembler.CustomerResponseA
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * REST customer resources.
+ */
 @RestController
 @RequestMapping("/customers")
 public class CustomerController {
@@ -40,14 +44,14 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerResponse> create(@RequestBody WriteCustomerRequest writeCustomerRequest) {
+    public ResponseEntity<CustomerResponse> create(@RequestBody @Valid WriteCustomerRequest writeCustomerRequest) {
         final Customer result = this.customerService.save(new CreateCustomerCommand(writeCustomerRequest.getFirstName(), writeCustomerRequest.getLastName()));
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
     }
 
     @PutMapping(value = "/{customerId}")
-    public ResponseEntity<CustomerResponse> update(@PathVariable Long customerId, @RequestBody WriteCustomerRequest writeCustomerRequest) {
+    public ResponseEntity<CustomerResponse> update(@PathVariable Long customerId, @RequestBody @Valid WriteCustomerRequest writeCustomerRequest) {
         final Customer result = this.customerService.update(new UpdateCustomerCommand(customerId, writeCustomerRequest.getFirstName(), writeCustomerRequest.getLastName()));
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));

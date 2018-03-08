@@ -231,6 +231,37 @@ public class CustomerControllerTest {
     }
 
     @Test
+    public void whenCreateEmptyRequestThenReturnStatusBadRequest() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers")
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenCreateEmptyRequestThenReturnJsonError() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers")
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(400)))
+                .andExpect(jsonPath("$.message", equalTo("Validation failed")))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(2)));
+    }
+
+    @Test
     public void whenUpdateThenReturnStatusOK() throws Exception {
         given(this.customerService.update(isA(UpdateCustomerCommand.class)))
                 .willReturn(CustomerDataFixtures.customer());
@@ -304,6 +335,37 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(404)))
                 .andExpect(jsonPath("$.message", equalTo(message)));
+    }
+
+    @Test
+    public void whenUpdateEmptyRequestThenReturnStatusBadRequest() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/customers/{customerId}", 1L)
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenUpdateEmptyRequestThenReturnJsonError() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put("/customers/{customerId}", 1L)
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(400)))
+                .andExpect(jsonPath("$.message", equalTo("Validation failed")))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(2)));
     }
 
     @Test
