@@ -6,17 +6,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Create rental request DTO.
+ */
 @Getter
 @ToString
 public class CreateRentalRequest {
 
+    @NotNull(message = "Film id cannot be null")
     private Long filmId;
-    private int daysRented;
+
+    @NotNull(message = "Days rented cannot be null")
+    @Min(value = 1, message = "Days rented must have minimum value of: 1")
+    private Integer daysRented;
 
     @JsonCreator
     public CreateRentalRequest(@JsonProperty("film_id") Long filmId,
-                               @JsonProperty("days_rented") int daysRented) {
-        this.filmId = Long.valueOf(filmId);
+                               @JsonProperty("days_rented") Integer daysRented) {
+        this.filmId = filmId;
         this.daysRented = daysRented;
     }
 
