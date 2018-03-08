@@ -2,11 +2,12 @@ package com.example.videorentalstore.film;
 
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * Implementation of {@link FilmService} delegating persistence operations to {@link FilmRepository}.
+ */
 @Service
-@Transactional
 public class DefaultFilmService implements FilmService {
 
     private final FilmRepository filmRepository;
@@ -20,7 +21,7 @@ public class DefaultFilmService implements FilmService {
         if (title == null) {
             return this.filmRepository.findAll();
         }
-        return this.filmRepository.findByTitleContainingIgnoreCase(title);
+        return this.filmRepository.findByTitle(title);
     }
 
     @Override
@@ -31,6 +32,11 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public Film save(CreateFilmCommand createFilmCommand) {
+        this.filmRepository.findByTitle(createFilmCommand.getTitle()).stream()
+                .findAny().ifPresent(f -> {
+                    throw new FilmUniqueViolationException(String.format("Film with title '%s' already exits", createFilmCommand.getTitle()));
+                });
+
         final Film film = new Film(createFilmCommand.getTitle(), ReleaseType.valueOf(createFilmCommand.getType()), createFilmCommand.getQuantity());
 
         return this.filmRepository.save(film);
@@ -38,6 +44,12 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public Film update(UpdateFilmCommand updateFilmCommand) {
+        this.filmRepository.findByTitle(updateFilmCommand.getTitle()).stream()
+                .filter(f -> !f.getId().equals(updateFilmCommand.getId()))
+                .findAny().ifPresent(f -> {
+                    throw new FilmUniqueViolationException(String.format("Film with title '%s' already exits", updateFilmCommand.getTitle()));
+                });
+
         final Film film = this.filmRepository.findById(updateFilmCommand.getId())
                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmCommand.getId())));
 
@@ -59,9 +71,9 @@ public class DefaultFilmService implements FilmService {
     @Override
     public Film updateQuantity(UpdateFilmQuantityCommand updateFilmQuantityCommand) {
         final Film film = this.filmRepository.findById(updateFilmQuantityCommand.getId())
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmQuantityCommand.getId())));;
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmQuantityCommand.getId())));
 
-        film.increaseBy(updateFilmQuantityCommand.getQuantity());
+        film.changeQuantityBy(updateFilmQuantityCommand.getQuantity());
 
         return this.filmRepository.save(film);
     }

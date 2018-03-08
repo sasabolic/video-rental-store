@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface to manage {@code Film} instances.
+ */
 @Transactional(readOnly = true)
 public interface FilmRepository extends JpaRepository<Film, Long> {
 
