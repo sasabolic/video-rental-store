@@ -7,7 +7,7 @@ public class FilmDataFixtures {
 
     public static List<Film> films() {
         return Arrays.asList(
-                newReleaseFilm(),
+                newReleaseFilm("Matrix 11"),
                 regularReleaseFilm("Spider Man"),
                 regularReleaseFilm("Spider Man 2"),
                 oldReleaseFilm("Out of Africa"));
@@ -24,7 +24,7 @@ public class FilmDataFixtures {
     }
 
     public static Film newReleaseFilm() {
-        return film("Matrix 11", ReleaseType.NEW_RELEASE, 10);
+        return film("Maze Runner: The Death Cure", ReleaseType.NEW_RELEASE, 10);
     }
 
     public static Film newReleaseFilm(String title) {
