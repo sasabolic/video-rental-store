@@ -65,7 +65,7 @@ public class Customer {
 
     public BigDecimal calculate() {
         return this.rentals.stream()
-                .filter(r -> Rental.Status.RENTED.equals(r.getStatus()))
+                .filter(r -> Rental.Status.ACTIVE.equals(r.getStatus()))
                 .map(r -> r.calculatePrice())
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }

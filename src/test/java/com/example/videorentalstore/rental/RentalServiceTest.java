@@ -67,7 +67,7 @@ public class RentalServiceTest {
         assertThat(receipt.getRentals()).hasSize(4);
         assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(receipt.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
-        assertThat(receipt.getRentals()).extracting(r -> r.getStatus()).containsOnly(Rental.Status.RENTED);
+        assertThat(receipt.getRentals()).extracting(r -> r.getStatus()).containsOnly(Rental.Status.ACTIVE);
     }
 
     @Test
@@ -183,10 +183,10 @@ public class RentalServiceTest {
             assertThat(ex.getExceptions()).hasSize(4);
             assertThat(ex.getExceptions()).extracting(Exception::getMessage)
                     .containsExactly(
-                            "Cannot mark rental with id '1' as RETURNED that is currently not RENTED! Current status: RETURNED.",
-                            "Cannot mark rental with id '2' as RETURNED that is currently not RENTED! Current status: RETURNED.",
-                            "Cannot mark rental with id '3' as RETURNED that is currently not RENTED! Current status: RETURNED.",
-                            "Cannot mark rental with id '4' as RETURNED that is currently not RENTED! Current status: RETURNED."
+                            "Cannot mark rental with id '1' as RETURNED that is currently not ACTIVE! Current status: RETURNED.",
+                            "Cannot mark rental with id '2' as RETURNED that is currently not ACTIVE! Current status: RETURNED.",
+                            "Cannot mark rental with id '3' as RETURNED that is currently not ACTIVE! Current status: RETURNED.",
+                            "Cannot mark rental with id '4' as RETURNED that is currently not ACTIVE! Current status: RETURNED."
                     );
         }
 

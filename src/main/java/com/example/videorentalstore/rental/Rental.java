@@ -47,7 +47,7 @@ public class Rental {
 
         this.daysRented = daysRented;
         this.startDate = startDate;
-        this.status = Status.RENTED;
+        this.status = Status.ACTIVE;
     }
 
     public Rental(long id, Film film, int daysRented, Instant startDate) {
@@ -61,13 +61,13 @@ public class Rental {
     }
 
     public boolean isActive() {
-        return this.status == Status.RENTED;
+        return this.status == Status.ACTIVE;
     }
 
     public Rental markReturned() {
-        if (this.status != Status.RENTED) {
+        if (this.status != Status.ACTIVE) {
             throw new IllegalStateException(
-                    String.format("Cannot mark rental with id '%d' as RETURNED that is currently not RENTED! Current status: %s.", this.id, this.status));
+                    String.format("Cannot mark rental with id '%d' as RETURNED that is currently not ACTIVE! Current status: %s.", this.id, this.status));
         }
 
         this.endDate = Instant.now();
@@ -90,7 +90,7 @@ public class Rental {
     }
 
     public enum Status {
-        RENTED,
+        ACTIVE,
 
         RETURNED
     }

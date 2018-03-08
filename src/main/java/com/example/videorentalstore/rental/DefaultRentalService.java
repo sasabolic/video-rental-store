@@ -31,8 +31,8 @@ public class DefaultRentalService implements RentalService {
         return this.rentalRepository.findAll();
     }
 
-    public List<Rental> findAllRentedForCustomer(Long customerId) {
-        return findAllForCustomer(customerId, Rental.Status.RENTED);
+    public List<Rental> findAllActiveForCustomer(Long customerId) {
+        return findAllForCustomer(customerId, Rental.Status.ACTIVE);
     }
 
     public List<Rental> findAllForCustomer(Long customerId, Rental.Status status) {

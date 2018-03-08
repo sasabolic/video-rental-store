@@ -70,20 +70,20 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.amount", equalTo(250)))
                 .andExpect(jsonPath("$.rentals").isArray())
                 .andExpect(jsonPath("$.rentals", hasSize(4)))
-                .andExpect(jsonPath("$.rentals[0].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$.rentals[0].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
                 .andExpect(jsonPath("$.rentals[0].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[0].end_date", is(nullValue())))
                 .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$.rentals[1].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$.rentals[1].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
                 .andExpect(jsonPath("$.rentals[1].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$.rentals[2].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$.rentals[2].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
                 .andExpect(jsonPath("$.rentals[2].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$.rentals[3].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$.rentals[3].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
                 .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")));
@@ -131,7 +131,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetRentalsForCustomerThenReturnListOfFilms() throws Exception {
-        doReturn(RentalDataFixtures.rentals()).when(rentalService).findAllRentedForCustomer(isA(Long.class));
+        doReturn(RentalDataFixtures.rentals()).when(rentalService).findAllActiveForCustomer(isA(Long.class));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{id}/rentals", 12)
@@ -144,16 +144,16 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$[0].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$[0].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$[0].days_rented", equalTo(1)))
                 .andExpect(jsonPath("$[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$[1].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$[1].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$[1].days_rented", equalTo(5)))
                 .andExpect(jsonPath("$[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$[2].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$[2].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$[2].days_rented", equalTo(2)))
                 .andExpect(jsonPath("$[3].film_title", equalTo("Out of Africa")))
-                .andExpect(jsonPath("$[3].status", equalTo("RENTED")))
+                .andExpect(jsonPath("$[3].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$[3].days_rented", equalTo(7)));
 
     }

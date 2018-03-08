@@ -25,7 +25,7 @@ public class CustomerRentalController {
 
     @GetMapping("/customers/{id}/rentals")
     public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("id") long customerId) {
-        final List<Rental> rentals = this.rentalService.findAllRentedForCustomer(customerId);
+        final List<Rental> rentals = this.rentalService.findAllActiveForCustomer(customerId);
 
         return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
     }
