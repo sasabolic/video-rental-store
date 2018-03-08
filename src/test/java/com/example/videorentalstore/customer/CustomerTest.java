@@ -3,7 +3,9 @@ package com.example.videorentalstore.customer;
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalDataFixtures;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,6 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CustomerTest {
 
     private Customer customer;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp()  {
@@ -25,10 +30,19 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenDeactivateThenActiveFalse() {
-        customer.deactivate();
+    public void givenFirstNameNullWhenNewInstanceThenThrowException() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Customer's first name cannot be null!");
 
-        assertThat(customer.isActive()).isFalse();
+        customer = CustomerDataFixtures.customer(null, "Smith");
+    }
+
+    @Test
+    public void givenLastNameNullWhenNewInstanceThenThrowException() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Customer's last name cannot be null!");
+
+        customer = CustomerDataFixtures.customer("John", null);
     }
 
     @Test
@@ -40,6 +54,31 @@ public class CustomerTest {
 
         assertThat(customer).hasFieldOrPropertyWithValue("firstName", newFirstName);
         assertThat(customer).hasFieldOrPropertyWithValue("lastName", newLastName);
+    }
+
+    @Test
+    public void whenDeactivateThenActiveFalse() {
+        customer.deactivate();
+
+        assertThat(customer.isActive()).isFalse();
+    }
+
+    @Test
+    public void whenDeactivateWithActiveRentalsThenThrowException() {
+        thrown.expect(IllegalStateException.class);
+
+        RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
+
+        customer.deactivate();
+    }
+
+    @Test
+    public void whenDeactivateWithCompletedRentalsThenActiveFalse() {
+        RentalDataFixtures.rentals().stream().map(Rental::markReturned).forEach(r -> customer.addRental(r));
+
+        customer.deactivate();
+
+        assertThat(customer.isActive()).isFalse();
     }
 
     @Test
