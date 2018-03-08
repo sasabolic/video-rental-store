@@ -66,6 +66,7 @@ Add additional notes about how to deploy this on a live system
 
 * ~~RequestDTO to Command object~~
 * Check naming of unit tests
+* Check if all code covered with test
 * ~~Check naming of command objects~~
 * Validation of request DTOs
 * Refactor mvc tests
@@ -73,7 +74,6 @@ Add additional notes about how to deploy this on a live system
 * Move WEB integration tests to new module 
 * BigDecimal to Money value object
 * Basic and Regular price should be read from app properties
-* Check if all code covered with test
 * README file finish
 * ~~Introduce DTO objects for controllers~~
 * Liquibase table constraints (unique film title)
