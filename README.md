@@ -80,4 +80,5 @@ Add additional notes about how to deploy this on a live system
 * ~~Docker for project~~
 * Swagger
 * Hateoas
+* verify method called in tests
 * Switch test integration tests to H2 database
