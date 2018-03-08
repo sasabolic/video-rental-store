@@ -37,7 +37,7 @@ public class FilmTest {
     @Test
     public void givenTitleNullWhenNewInstanceThenThrowException() {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("Film title cannot be null!");
+        thrown.expectMessage("Film's title cannot be null!");
 
         film = FilmDataFixtures.newReleaseFilm(null);
     }
@@ -45,7 +45,7 @@ public class FilmTest {
     @Test
     public void givenTypeNullWhenNewInstanceThenThrowException() {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("Film type cannot be null!");
+        thrown.expectMessage("Film's type cannot be null!");
 
         film = FilmDataFixtures.film("Matrix 11", null, 10);
     }
