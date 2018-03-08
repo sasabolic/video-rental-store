@@ -76,5 +76,4 @@ public class Customer {
                 .map(r -> r.calculateExtraCharges())
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }
-
 }
