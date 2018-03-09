@@ -73,7 +73,7 @@ public class DefaultRentalService implements RentalService {
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", returnRentalsCommand.getCustomerId())));
 
         List<Exception> exceptions = new ArrayList<>();
-        returnRentalsCommand.getReturnRentalCommands().stream()
+        returnRentalsCommand.getRentalCommands().stream()
                 .forEach(returnRentalCommand -> {
                     try {
                         final Rental rental = customer.getRentals().stream()

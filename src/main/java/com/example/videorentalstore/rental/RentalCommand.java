@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ReturnRentalCommand {
+public class RentalCommand {
 
     private Long rentalId;
 }
