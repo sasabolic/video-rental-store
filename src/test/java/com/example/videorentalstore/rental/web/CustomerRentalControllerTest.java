@@ -474,7 +474,12 @@ public class CustomerRentalControllerTest {
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
-                .content("[1, 2, " + rentalId1 + ", " + rentalId2 + "]")
+                .content("[\n" +
+                        "  {\"rental_id\": 1},\n" +
+                        "  {\"rental_id\": 2},\n" +
+                        "  {\"rental_id\": " + rentalId1 + "},\n" +
+                        "  {\"rental_id\": " + rentalId2 + "}\n" +
+                        "]")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -487,5 +492,71 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.message", equalTo(message)))
                 .andExpect(jsonPath("$.errors").isArray())
                 .andExpect(jsonPath("$.errors", hasSize(2)));
+    }
+
+    @Test
+    public void whenReturnBackForCustomerEmptyRequestThenReturnStatusBadRequest() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .patch("/customers/{customerId}/rentals", 12)
+                .content("[]")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenReturnBackForCustomerEmptyRequestThenReturnJsonError() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .patch("/customers/{customerId}/rentals", 12)
+                .content("[]")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(400)))
+                .andExpect(jsonPath("$.message", equalTo("Validation failed")))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(1)));
+    }
+
+    @Test
+    public void whenReturnBackForCustomerWithInvalidFieldsThenReturnStatusBadRequest() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .patch("/customers/{customerId}/rentals", 12)
+                .content("[\n" +
+                        "  {\"rental_id\": null}\n" +
+                        "]")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenReturnBackForCustomerWithInvalidFieldsThenReturnJsonError() throws Exception {
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .patch("/customers/{customerId}/rentals", 12)
+                .content("[\n" +
+                        "  {\"rental_id\": null}\n" +
+                        "]")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(400)))
+                .andExpect(jsonPath("$.message", equalTo("Validation failed")))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(1)));
     }
 }

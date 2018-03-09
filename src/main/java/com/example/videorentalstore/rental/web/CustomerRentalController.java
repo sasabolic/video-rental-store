@@ -36,7 +36,7 @@ public class CustomerRentalController {
 
     @PostMapping("/customers/{id}/rentals")
     public ResponseEntity<ReceiptResponse> create(@PathVariable("id") long customerId, @RequestBody @Valid CreateRentalRequestList createRentalRequestList) {
-        CreateRentalsCommand createRentalsCommand = new CreateRentalsCommand(customerId, createRentalRequestList.stream().map(r -> r.toCreateRentalCommand()).collect(Collectors.toList()));
+        CreateRentalsCommand createRentalsCommand = new CreateRentalsCommand(customerId, createRentalRequestList.stream().map(CreateRentalRequest::toCreateRentalCommand).collect(Collectors.toList()));
 
         final Receipt receipt = rentalService.create(createRentalsCommand);
 
@@ -44,8 +44,8 @@ public class CustomerRentalController {
     }
 
     @PatchMapping("/customers/{id}/rentals")
-    public ResponseEntity<ReceiptResponse> returnBack(@PathVariable("id") long customerId, @RequestBody List<Long> rentalIds) {
-        ReturnRentalsCommand returnRentalsCommand = new ReturnRentalsCommand(customerId, rentalIds);
+    public ResponseEntity<ReceiptResponse> returnBack(@PathVariable("id") long customerId, @RequestBody @Valid ReturnBackRentalRequestList returnBackRentalRequestList) {
+        ReturnRentalsCommand returnRentalsCommand = new ReturnRentalsCommand(customerId, returnBackRentalRequestList.stream().map(ReturnBackRentalRequest::toReturnRentalCommand).collect(Collectors.toList()));
 
         final Receipt receipt = this.rentalService.returnBack(returnRentalsCommand);
 

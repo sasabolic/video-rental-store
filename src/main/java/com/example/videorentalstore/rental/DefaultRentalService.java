@@ -79,13 +79,13 @@ public class DefaultRentalService implements RentalService {
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", returnRentalsCommand.getCustomerId())));
 
         List<Exception> exceptions = new ArrayList<>();
-        returnRentalsCommand.getRentalIds().stream()
-                .forEach(rId -> {
+        returnRentalsCommand.getReturnRentalCommands().stream()
+                .forEach(returnRentalCommand -> {
                     try {
                         final Rental rental = customer.getRentals().stream()
-                                .filter(r -> rId.equals(r.getId()))
+                                .filter(r -> returnRentalCommand.getRentalId().equals(r.getId()))
                                 .findAny()
-                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rId, returnRentalsCommand.getCustomerId())));
+                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", returnRentalCommand.getRentalId(), returnRentalsCommand.getCustomerId())));
 
                         rental.markReturned();
                     } catch(RentalNotFoundException | IllegalStateException ex) {

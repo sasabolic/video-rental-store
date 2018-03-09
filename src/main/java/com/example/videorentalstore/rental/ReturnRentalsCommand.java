@@ -10,5 +10,5 @@ import java.util.List;
 public class ReturnRentalsCommand {
 
     private Long customerId;
-    private List<Long> rentalIds;
+    private List<ReturnRentalCommand> returnRentalCommands;
 }

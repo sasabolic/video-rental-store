@@ -74,7 +74,7 @@ public class RentalServiceTest {
     public void whenReturningBackRentalsThenReturnCorrectResult() {
         doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
 
-        final Receipt receipt = rentalService.returnBack(new ReturnRentalsCommand(1L, Arrays.asList(1L, 2L, 3L, 4L)));
+        final Receipt receipt = rentalService.returnBack(new ReturnRentalsCommand(1L, Arrays.asList(new ReturnRentalCommand(1L), new ReturnRentalCommand(2L), new ReturnRentalCommand(3L), new ReturnRentalCommand(4L))));
 
         assertThat(receipt).isNotNull();
         assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
@@ -111,7 +111,7 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
+        rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(new ReturnRentalCommand(1L), new ReturnRentalCommand(2L), new ReturnRentalCommand(3L), new ReturnRentalCommand(4L))));
     }
 
     @Test
@@ -152,7 +152,7 @@ public class RentalServiceTest {
 
         Receipt receipt = null;
         try {
-            receipt = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
+            receipt = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(new ReturnRentalCommand(1L), new ReturnRentalCommand(2L), new ReturnRentalCommand(3L), new ReturnRentalCommand(4L))));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
@@ -176,7 +176,7 @@ public class RentalServiceTest {
 
         Receipt receipt = null;
         try {
-            receipt = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(1L, 2L, 3L, 4L)));
+            receipt = rentalService.returnBack(new ReturnRentalsCommand(customerId, Arrays.asList(new ReturnRentalCommand(1L), new ReturnRentalCommand(2L), new ReturnRentalCommand(3L), new ReturnRentalCommand(4L))));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
