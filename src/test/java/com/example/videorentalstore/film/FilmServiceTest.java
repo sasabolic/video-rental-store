@@ -35,7 +35,7 @@ public class FilmServiceTest {
     }
 
     @Test
-    public void whenFindAllThenReturnListOfFilms() {
+    public void whenFindingAllThenReturnListOfFilms() {
         doReturn(FilmDataFixtures.films()).when(filmRepository).findAll();
 
         final List<Film> result = filmService.findAll(null);
@@ -46,7 +46,7 @@ public class FilmServiceTest {
     }
 
     @Test
-    public void whenFindAllByTitleThenReturnListOfFilmsContainingTitle() {
+    public void whenFindingAllByTitleThenReturnListOfFilmsContainingTitle() {
         doReturn(FilmDataFixtures.filmsWithTitleSpiderMan()).when(filmRepository).findByTitle(isA(String.class));
 
         final List<Film> result = filmService.findAll("Spider Man");
