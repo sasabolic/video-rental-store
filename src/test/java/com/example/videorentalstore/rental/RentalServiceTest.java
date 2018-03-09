@@ -90,13 +90,13 @@ public class RentalServiceTest {
         doReturn(Optional.of(FilmDataFixtures.regularReleaseFilm("Spider Man 2"))).when(filmRepository).findById(eq(3L));
         doReturn(Optional.of(FilmDataFixtures.oldReleaseFilm("Out of Africa"))).when(filmRepository).findById(eq(4L));
 
-        final List<CreateRentalCommand> createRentalCommands = Arrays.asList(
-                new CreateRentalCommand(1L, 1),
-                new CreateRentalCommand(2L, 5),
-                new CreateRentalCommand(3L, 2),
-                new CreateRentalCommand(4L, 7));
+        final List<RentalInfo> rentalInfos = Arrays.asList(
+                new RentalInfo(1L, 1),
+                new RentalInfo(2L, 5),
+                new RentalInfo(3L, 2),
+                new RentalInfo(4L, 7));
 
-        final Receipt receipt = rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
+        final Receipt receipt = rentalService.create(new BatchRentalCreateCommand(1L, rentalInfos));
 
         assertThat(receipt).isNotNull();
         assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
@@ -115,13 +115,13 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        final List<CreateRentalCommand> createRentalCommands = Arrays.asList(
-                new CreateRentalCommand(1L, 1),
-                new CreateRentalCommand(2L, 5),
-                new CreateRentalCommand(3L, 2),
-                new CreateRentalCommand(4L, 7));
+        final List<RentalInfo> rentalInfos = Arrays.asList(
+                new RentalInfo(1L, 1),
+                new RentalInfo(2L, 5),
+                new RentalInfo(3L, 2),
+                new RentalInfo(4L, 7));
 
-        rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
+        rentalService.create(new BatchRentalCreateCommand(1L, rentalInfos));
     }
 
     @Test
@@ -130,15 +130,15 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(filmRepository).findById(anyLong());
 
-        final List<CreateRentalCommand> createRentalCommands = Arrays.asList(
-                new CreateRentalCommand(1L, 1),
-                new CreateRentalCommand(2L, 5),
-                new CreateRentalCommand(3L, 2),
-                new CreateRentalCommand(4L, 7));
+        final List<RentalInfo> rentalInfos = Arrays.asList(
+                new RentalInfo(1L, 1),
+                new RentalInfo(2L, 5),
+                new RentalInfo(3L, 2),
+                new RentalInfo(4L, 7));
 
         Receipt receipt = null;
         try {
-            receipt = rentalService.create(new CreateRentalsCommand(1L, createRentalCommands));
+            receipt = rentalService.create(new BatchRentalCreateCommand(1L, rentalInfos));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();

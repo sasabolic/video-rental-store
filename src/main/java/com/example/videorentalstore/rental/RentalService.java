@@ -8,7 +8,7 @@ public interface RentalService {
 
     List<Rental> findAllForCustomer(Long customerId);
 
-    Receipt create(CreateRentalsCommand createRentalsCommand);
+    Receipt create(BatchRentalCreateCommand batchRentalCreateCommand);
 
     Receipt process(BatchRentalCommand batchRentalCommand);
 }

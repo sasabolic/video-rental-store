@@ -5,10 +5,13 @@ import lombok.Getter;
 
 import java.util.List;
 
+/**
+ * Batch rental create command.
+ */
 @AllArgsConstructor
 @Getter
-public class CreateRentalsCommand {
+public class BatchRentalCreateCommand {
 
     private Long customerId;
-    private List<CreateRentalCommand> createRentalCommands;
+    private List<RentalInfo> rentalInfos;
 }

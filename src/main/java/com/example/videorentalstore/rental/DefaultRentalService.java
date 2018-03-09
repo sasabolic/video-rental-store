@@ -40,18 +40,18 @@ public class DefaultRentalService implements RentalService {
     }
 
     @Override
-    public Receipt create(CreateRentalsCommand createRentalsCommand) {
-        Customer customer = customerRepository.findById(createRentalsCommand.getCustomerId())
-                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", createRentalsCommand.getCustomerId())));
+    public Receipt create(BatchRentalCreateCommand batchRentalCreateCommand) {
+        Customer customer = customerRepository.findById(batchRentalCreateCommand.getCustomerId())
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", batchRentalCreateCommand.getCustomerId())));
 
         List<Exception> exceptions = new ArrayList<>();
-        createRentalsCommand.getCreateRentalCommands().stream()
-                .forEach(createRentalCommand -> {
+        batchRentalCreateCommand.getRentalInfos().stream()
+                .forEach(rentalInfo -> {
                     try {
-                        final Film film = filmRepository.findById(createRentalCommand.getFilmId())
-                                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", createRentalCommand.getFilmId())));
+                        final Film film = filmRepository.findById(rentalInfo.getFilmId())
+                                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", rentalInfo.getFilmId())));
 
-                        customer.addRental(new Rental(film, createRentalCommand.getDaysRented()));
+                        customer.addRental(new Rental(film, rentalInfo.getDaysRented()));
                     } catch (FilmNotFoundException ex) {
                         exceptions.add(ex);
                     }

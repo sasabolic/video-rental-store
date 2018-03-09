@@ -1,6 +1,6 @@
 package com.example.videorentalstore.rental.web.dto;
 
-import com.example.videorentalstore.rental.CreateRentalCommand;
+import com.example.videorentalstore.rental.RentalInfo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
@@ -32,7 +32,7 @@ public class CreateRentalRequest {
         this.daysRented = daysRented;
     }
 
-    public CreateRentalCommand toCreateRentalCommand() {
-        return new CreateRentalCommand(this.filmId, this.daysRented);
+    public RentalInfo toRentalInfo() {
+        return new RentalInfo(this.filmId, this.daysRented);
     }
 }

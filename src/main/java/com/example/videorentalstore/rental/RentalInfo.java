@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class CreateRentalCommand {
+public class RentalInfo {
 
     private Long filmId;
     private int daysRented;

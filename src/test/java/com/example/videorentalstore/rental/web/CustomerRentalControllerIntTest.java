@@ -2,8 +2,8 @@ package com.example.videorentalstore.rental.web;
 
 import com.example.videorentalstore.AbstractWebIntTest;
 import com.example.videorentalstore.film.FilmRepository;
-import com.example.videorentalstore.rental.CreateRentalCommand;
-import com.example.videorentalstore.rental.CreateRentalsCommand;
+import com.example.videorentalstore.rental.RentalInfo;
+import com.example.videorentalstore.rental.BatchRentalCreateCommand;
 import com.example.videorentalstore.rental.RentalRepository;
 import com.example.videorentalstore.rental.RentalService;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public class CustomerRentalControllerIntTest extends AbstractWebIntTest {
         final Long filmId = 1L;
         final int daysRented = 10;
 
-        rentalService.create(new CreateRentalsCommand(customerId, Arrays.asList(new CreateRentalCommand(filmId, daysRented))));
+        rentalService.create(new BatchRentalCreateCommand(customerId, Arrays.asList(new RentalInfo(filmId, daysRented))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{id}/rentals", customerId)
