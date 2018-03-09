@@ -35,6 +35,9 @@ public class Rental {
     @Column(name = "end_date")
     private Instant endDate;
 
+//    @Enumerated(EnumType.STRING)
+//    private Status status;
+
     private boolean active = true;
 
     public Rental(Film film, int daysRented) {
@@ -74,10 +77,22 @@ public class Rental {
         if (this.endDate == null) {
             return BigDecimal.ZERO;
         }
-        return this.film.calculatePrice(DAYS.between(this.startDate, this.endDate) - this.daysRented);
+        return this.film.calculateExtraCharges(DAYS.between(this.startDate, this.endDate) - this.daysRented);
     }
 
     public int calculateBonusPoints() {
         return this.film.calculateBonusPoints(this.daysRented);
     }
+
+//    enum Status {
+//        DRAFT,
+//
+//        PAID,
+//
+//        ACTIVE,
+//
+//        EXTRA_PAID,
+//
+//        FINISHED
+//    }
 }
