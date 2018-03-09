@@ -3,6 +3,7 @@ package com.example.videorentalstore.rental.web;
 import com.example.videorentalstore.rental.CreateRentalCommand;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @ToString
+@EqualsAndHashCode
 public class CreateRentalRequest {
 
     @NotNull(message = "Film id cannot be null")
