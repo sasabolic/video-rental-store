@@ -339,12 +339,12 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenReturnBackThenReturnStatusOK() throws Exception {
-        given(rentalService.returnBack(isA(ReturnRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.finishedRentals()));
+    public void whenPayThenReturnStatusOK() throws Exception {
+        given(rentalService.returnBack(isA(ReturnRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content(RentalDataFixtures.idsJson())
+                .content(RentalDataFixtures.payJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -353,12 +353,12 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenReturnBackThenReturnJson() throws Exception {
-        given(rentalService.returnBack(isA(ReturnRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.finishedRentals()));
+    public void whenPayThenReturnJson() throws Exception {
+        given(rentalService.returnBack(isA(ReturnRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content(RentalDataFixtures.idsJson())
+                .content(RentalDataFixtures.payJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -371,23 +371,23 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
                 .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
                 .andExpect(jsonPath("$.rentals[0].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[0].end_date", is(notNullValue())))
+//                .andExpect(jsonPath("$.rentals[0].end_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
                 .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
                 .andExpect(jsonPath("$.rentals[1].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[1].end_date", is(notNullValue())))
+//                .andExpect(jsonPath("$.rentals[1].end_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
                 .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
                 .andExpect(jsonPath("$.rentals[2].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[2].end_date", is(notNullValue())))
+//                .andExpect(jsonPath("$.rentals[2].end_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
                 .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")))
-                .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[3].end_date", is(notNullValue())));
+                .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())));
+//                .andExpect(jsonPath("$.rentals[3].end_date", is(notNullValue())));
     }
 
     @Test
-    public void whenReturnBackForNonExistingCustomerThenReturnStatusNotFound() throws Exception {
+    public void whenPayForNonExistingCustomerThenReturnStatusNotFound() throws Exception {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
@@ -395,7 +395,7 @@ public class CustomerRentalControllerTest {
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", customerId)
-                .content(RentalDataFixtures.idsJson())
+                .content(RentalDataFixtures.payJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -404,7 +404,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenReturnBackForNonExistingCustomerThenReturnJsonError() throws Exception {
+    public void whenPayForNonExistingCustomerThenReturnJsonError() throws Exception {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
@@ -412,7 +412,7 @@ public class CustomerRentalControllerTest {
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", customerId)
-                .content(RentalDataFixtures.idsJson())
+                .content(RentalDataFixtures.payJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -426,7 +426,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenReturnBackForCustomerNonExistingRentalsThenReturnStatusBadRequest() throws Exception {
+    public void whenPatchRequestForCustomerNonExistingRentalsThenReturnStatusBadRequest() throws Exception {
         final Long rentalId1 = 10L;
         final Long rentalId2 = 23L;
         final String message = "Could not create rentals";
@@ -438,7 +438,15 @@ public class CustomerRentalControllerTest {
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
-                .content("[1, 2, " + rentalId1 + ", " + rentalId2 + "]")
+                .content("{\n" +
+                        "  \"action\": \"PAY\",\n" +
+                        "  \"rentals\": [\n" +
+                        "    {\"rental_id\": 1},\n" +
+                        "    {\"rental_id\": 2},\n" +
+                        "    {\"rental_id\": " + rentalId1 + "},\n" +
+                        "    {\"rental_id\": " + rentalId2 + "}\n" +
+                        "  ]\n" +
+                        "}")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -447,7 +455,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenReturnBackForCustomerNonExistingRentalsThenReturnJsonError() throws Exception {
+    public void whenPatchRequestForCustomerNonExistingRentalsThenReturnJsonError() throws Exception {
         final Long rentalId1 = 10L;
         final Long rentalId2 = 23L;
         final String message = "Could not create rentals";
@@ -459,12 +467,15 @@ public class CustomerRentalControllerTest {
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
-                .content("[\n" +
-                        "  {\"rental_id\": 1},\n" +
-                        "  {\"rental_id\": 2},\n" +
-                        "  {\"rental_id\": " + rentalId1 + "},\n" +
-                        "  {\"rental_id\": " + rentalId2 + "}\n" +
-                        "]")
+                .content("{\n" +
+                        "  \"action\": \"PAY\",\n" +
+                        "  \"rentals\": [\n" +
+                        "    {\"rental_id\": 1},\n" +
+                        "    {\"rental_id\": 2},\n" +
+                        "    {\"rental_id\": " + rentalId1 + "},\n" +
+                        "    {\"rental_id\": " + rentalId2 + "}\n" +
+                        "  ]\n" +
+                        "}")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -480,7 +491,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenReturnBackForCustomerEmptyRequestThenReturnStatusBadRequest() throws Exception {
+    public void whenPatchRequestForCustomerEmptyRequestThenReturnStatusBadRequest() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
                 .content("[]")
@@ -492,10 +503,10 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenReturnBackForCustomerEmptyRequestThenReturnJsonError() throws Exception {
+    public void whenPatchRequestForCustomerEmptyRequestThenReturnJsonError() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content("[]")
+                .content("{}")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -507,16 +518,19 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.status", equalTo(400)))
                 .andExpect(jsonPath("$.message", equalTo("Validation failed")))
                 .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors", hasSize(1)));
+                .andExpect(jsonPath("$.errors", hasSize(2)));
     }
 
     @Test
-    public void whenReturnBackForCustomerWithInvalidFieldsThenReturnStatusBadRequest() throws Exception {
+    public void whenPatchRequestForCustomerWithInvalidFieldsThenReturnStatusBadRequest() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content("[\n" +
-                        "  {\"rental_id\": null}\n" +
-                        "]")
+                .content("{\n" +
+                        "  \"action\": \"PAY\",\n" +
+                        "  \"rentals\": [\n" +
+                        "    {\"rental_id\": null}\n" +
+                        "  ]\n" +
+                        "}")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -528,9 +542,12 @@ public class CustomerRentalControllerTest {
     public void whenReturnBackForCustomerWithInvalidFieldsThenReturnJsonError() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content("[\n" +
-                        "  {\"rental_id\": null}\n" +
-                        "]")
+                .content("{\n" +
+                        "  \"action\": \"PAY\",\n" +
+                        "  \"rentals\": [\n" +
+                        "    {\"rental_id\": null}\n" +
+                        "  ]\n" +
+                        "}")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
