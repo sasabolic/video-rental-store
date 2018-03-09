@@ -14,7 +14,7 @@ public class BatchRentalCommand {
 
     private Long customerId;
     private Action action;
-    private List<RentalCommand> rentalCommands;
+    private List<Long> rentalIds;
 
     /**
      * Enumeration for all the actions of {@code BatchRentalCommand}.

@@ -1,6 +1,5 @@
 package com.example.videorentalstore.rental.web.dto;
 
-import com.example.videorentalstore.rental.RentalCommand;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -21,9 +20,5 @@ public class RentalRequest {
     @JsonCreator
     public RentalRequest(@JsonProperty("rental_id") Long rentalId) {
         this.rentalId = rentalId;
-    }
-
-    public RentalCommand toRentalCommand() {
-        return new RentalCommand(this.rentalId);
     }
 }

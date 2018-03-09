@@ -175,7 +175,7 @@ public class RentalServiceTest {
         doReturn(3L).when(regularReleaseRental1).getId();
         doReturn(4L).when(oldReleaseRental).getId();
 
-        final Receipt receipt = rentalService.process(new BatchRentalCommand(1L, BatchRentalCommand.Action.EXTRA_PAY, Arrays.asList(new RentalCommand(1L), new RentalCommand(2L), new RentalCommand(3L), new RentalCommand(4L))));
+        final Receipt receipt = rentalService.process(new BatchRentalCommand(1L, BatchRentalCommand.Action.EXTRA_PAY, Arrays.asList(1L, 2L, 3L, 4L)));
 
         assertThat(receipt).isNotNull();
         assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
@@ -194,7 +194,7 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        rentalService.process(new BatchRentalCommand(customerId, BatchRentalCommand.Action.RETURN, Arrays.asList(new RentalCommand(1L), new RentalCommand(2L), new RentalCommand(3L), new RentalCommand(4L))));
+        rentalService.process(new BatchRentalCommand(customerId, BatchRentalCommand.Action.RETURN, Arrays.asList(1L, 2L, 3L, 4L)));
     }
 
     @Test
@@ -207,7 +207,7 @@ public class RentalServiceTest {
 
         Receipt receipt = null;
         try {
-            receipt = rentalService.process(new BatchRentalCommand(customerId, BatchRentalCommand.Action.RETURN, Arrays.asList(new RentalCommand(1L), new RentalCommand(2L), new RentalCommand(3L), new RentalCommand(4L))));
+            receipt = rentalService.process(new BatchRentalCommand(customerId, BatchRentalCommand.Action.RETURN, Arrays.asList(1L, 2L, 3L, 4L)));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
