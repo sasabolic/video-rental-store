@@ -75,7 +75,7 @@ public class CustomerRepositoryTest {
 
         final Customer result = customerRepository.save(customer);
 
-        final BigDecimal amount = result.calculate();
+        final BigDecimal amount = result.calculatePrice();
 
         assertThat(amount).isEqualByComparingTo(BigDecimal.valueOf(210));
     }

@@ -90,7 +90,7 @@ public class CustomerTest {
     public void whenCalculateThenReturnCorrectAmount() {
         RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
 
-        final BigDecimal totalAmount = customer.calculate();
+        final BigDecimal totalAmount = customer.calculatePrice();
 
         assertThat(totalAmount).isEqualByComparingTo(BigDecimal.valueOf(250));
     }
@@ -170,7 +170,7 @@ public class CustomerTest {
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
-        final BigDecimal totalAmount = customer.calculate();
+        final BigDecimal totalAmount = customer.calculatePrice();
 
         assertThat(totalAmount).isEqualByComparingTo(BigDecimal.ZERO);
     }

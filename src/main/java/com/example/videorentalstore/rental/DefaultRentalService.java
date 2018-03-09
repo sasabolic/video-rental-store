@@ -64,7 +64,7 @@ public class DefaultRentalService implements RentalService {
 
         customerRepository.save(customer);
 
-        return new Receipt(customer.calculate(), customer.getRentals());
+        return new Receipt(customer.calculatePrice(), customer.getRentals());
     }
 
     @Override
