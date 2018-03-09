@@ -24,11 +24,6 @@ public class CreateRentalRequestList implements List<CreateRentalRequest> {
     @Valid
     private List<CreateRentalRequest> createRentalRequests = new ArrayList<>();
 
-    // TODO: 3/9/18 Cleanup code
-//    public CreateRentalRequestList() {
-//        this.createRentalRequests = new ArrayList<>();
-//    }
-
     public CreateRentalRequestList(List<CreateRentalRequest> createRentalRequests) {
         this.createRentalRequests = createRentalRequests;
     }
