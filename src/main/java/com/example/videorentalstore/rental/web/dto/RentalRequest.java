@@ -8,15 +8,18 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Rental request DTO.
+ */
 @Getter
 @ToString
-public class ReturnBackRentalRequest {
+public class RentalRequest {
 
     @NotNull(message = "Rental id cannot be null")
     private Long rentalId;
 
     @JsonCreator
-    public ReturnBackRentalRequest(@JsonProperty("rental_id") Long rentalId) {
+    public RentalRequest(@JsonProperty("rental_id") Long rentalId) {
         this.rentalId = rentalId;
     }
 

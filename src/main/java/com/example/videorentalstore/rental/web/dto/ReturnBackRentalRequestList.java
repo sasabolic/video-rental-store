@@ -9,22 +9,22 @@ import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
- * List of {@link ReturnBackRentalRequest} DTO.
+ * List of {@link RentalRequest} DTO.
  */
 @Getter
 @ToString
-public class ReturnBackRentalRequestList implements List<ReturnBackRentalRequest> {
+public class ReturnBackRentalRequestList implements List<RentalRequest> {
 
     @NotNull(message = "List of return rental requests cannot be null")
     @NotEmpty(message = "List of return rental requests cannot be empty")
     @Valid
-    private List<ReturnBackRentalRequest> rentalIds;
+    private List<RentalRequest> rentalIds;
 
     public ReturnBackRentalRequestList() {
         this.rentalIds = new ArrayList<>();
     }
 
-    public ReturnBackRentalRequestList(List<ReturnBackRentalRequest> rentalIds) {
+    public ReturnBackRentalRequestList(List<RentalRequest> rentalIds) {
         this.rentalIds = rentalIds;
     }
 
@@ -44,7 +44,7 @@ public class ReturnBackRentalRequestList implements List<ReturnBackRentalRequest
     }
 
     @Override
-    public Iterator<ReturnBackRentalRequest> iterator() {
+    public Iterator<RentalRequest> iterator() {
         return this.rentalIds.iterator();
     }
 
@@ -59,7 +59,7 @@ public class ReturnBackRentalRequestList implements List<ReturnBackRentalRequest
     }
 
     @Override
-    public boolean add(ReturnBackRentalRequest createRentalRequest) {
+    public boolean add(RentalRequest createRentalRequest) {
         return this.rentalIds.add(createRentalRequest);
     }
 
@@ -74,12 +74,12 @@ public class ReturnBackRentalRequestList implements List<ReturnBackRentalRequest
     }
 
     @Override
-    public boolean addAll(Collection<? extends ReturnBackRentalRequest> c) {
+    public boolean addAll(Collection<? extends RentalRequest> c) {
         return this.rentalIds.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends ReturnBackRentalRequest> c) {
+    public boolean addAll(int index, Collection<? extends RentalRequest> c) {
         return this.rentalIds.addAll(index, c);
     }
 
@@ -99,22 +99,22 @@ public class ReturnBackRentalRequestList implements List<ReturnBackRentalRequest
     }
 
     @Override
-    public ReturnBackRentalRequest get(int index) {
+    public RentalRequest get(int index) {
         return this.rentalIds.get(index);
     }
 
     @Override
-    public ReturnBackRentalRequest set(int index, ReturnBackRentalRequest element) {
+    public RentalRequest set(int index, RentalRequest element) {
         return this.rentalIds.set(index, element);
     }
 
     @Override
-    public void add(int index, ReturnBackRentalRequest element) {
+    public void add(int index, RentalRequest element) {
         this.rentalIds.add(index, element);
     }
 
     @Override
-    public ReturnBackRentalRequest remove(int index) {
+    public RentalRequest remove(int index) {
         return this.rentalIds.remove(index);
     }
 
@@ -129,17 +129,17 @@ public class ReturnBackRentalRequestList implements List<ReturnBackRentalRequest
     }
 
     @Override
-    public ListIterator<ReturnBackRentalRequest> listIterator() {
+    public ListIterator<RentalRequest> listIterator() {
         return this.rentalIds.listIterator();
     }
 
     @Override
-    public ListIterator<ReturnBackRentalRequest> listIterator(int index) {
+    public ListIterator<RentalRequest> listIterator(int index) {
         return this.rentalIds.listIterator(index);
     }
 
     @Override
-    public List<ReturnBackRentalRequest> subList(int fromIndex, int toIndex) {
+    public List<RentalRequest> subList(int fromIndex, int toIndex) {
         return this.rentalIds.subList(fromIndex, toIndex);
     }
 }

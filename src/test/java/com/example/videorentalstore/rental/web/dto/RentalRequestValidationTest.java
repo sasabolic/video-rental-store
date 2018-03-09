@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ReturnBackRentalRequestValidationTest {
+public class RentalRequestValidationTest {
 
     private static Validator validator;
 
@@ -23,16 +23,16 @@ public class ReturnBackRentalRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        ReturnBackRentalRequest request = new ReturnBackRentalRequest(1L);
-        final Set<ConstraintViolation<ReturnBackRentalRequest>> validate = validator.validate(request);
+        RentalRequest request = new RentalRequest(1L);
+        final Set<ConstraintViolation<RentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
     }
 
     @Test
     public void whenRequestInvalidThenViolationListNotEmpty() {
-        ReturnBackRentalRequest request = new ReturnBackRentalRequest(null);
-        final Set<ConstraintViolation<ReturnBackRentalRequest>> validate = validator.validate(request);
+        RentalRequest request = new RentalRequest(null);
+        final Set<ConstraintViolation<RentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);

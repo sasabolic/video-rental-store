@@ -28,11 +28,11 @@ public class BatchRentalRequest {
 
     @NotEmpty(message = "List of rental requests cannot be empty")
     @Valid
-    private List<ReturnBackRentalRequest> rentals;
+    private List<RentalRequest> rentals;
 
     @JsonCreator
     public BatchRentalRequest(@JsonProperty("action") String action,
-                              @JsonProperty("rentals") List<ReturnBackRentalRequest> rentals) {
+                              @JsonProperty("rentals") List<RentalRequest> rentals) {
         this.action = action;
         this.rentals = rentals;
     }

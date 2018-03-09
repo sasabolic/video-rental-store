@@ -25,7 +25,7 @@ public class BatchRentalRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        BatchRentalRequest request = new BatchRentalRequest(BatchRentalRequest.Action.PAY.name(), Arrays.asList(new ReturnBackRentalRequest(1L)));
+        BatchRentalRequest request = new BatchRentalRequest(BatchRentalRequest.Action.PAY.name(), Arrays.asList(new RentalRequest(1L)));
         final Set<ConstraintViolation<BatchRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
@@ -33,7 +33,7 @@ public class BatchRentalRequestValidationTest {
 
     @Test
     public void whenRequestInvalidActionThenViolationForAction() {
-        BatchRentalRequest request = new BatchRentalRequest(null, Arrays.asList(new ReturnBackRentalRequest(1L)));
+        BatchRentalRequest request = new BatchRentalRequest(null, Arrays.asList(new RentalRequest(1L)));
         final Set<ConstraintViolation<BatchRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();

@@ -1,8 +1,8 @@
 package com.example.videorentalstore.core;
 
 import com.example.videorentalstore.customer.CustomerNotFoundException;
-import com.example.videorentalstore.film.FilmUniqueViolationException;
 import com.example.videorentalstore.film.FilmNotFoundException;
+import com.example.videorentalstore.film.FilmUniqueViolationException;
 import com.example.videorentalstore.rental.RentalException;
 import lombok.Data;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

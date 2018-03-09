@@ -1,6 +1,5 @@
 package com.example.videorentalstore.film.web.dto;
 
-import com.example.videorentalstore.film.web.dto.WriteFilmRequest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

@@ -1,6 +1,5 @@
 package com.example.videorentalstore.film;
 
-import com.example.videorentalstore.customer.CustomerNotFoundException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

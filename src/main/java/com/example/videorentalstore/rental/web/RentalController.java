@@ -2,8 +2,8 @@ package com.example.videorentalstore.rental.web;
 
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalService;
-import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssembler;
 import com.example.videorentalstore.rental.web.dto.RentalResponse;
+import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssembler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

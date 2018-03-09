@@ -5,7 +5,6 @@ import com.example.videorentalstore.film.web.dto.FilmResponse;
 import com.example.videorentalstore.film.web.dto.UpdateFilmQuantityRequest;
 import com.example.videorentalstore.film.web.dto.WriteFilmRequest;
 import com.example.videorentalstore.film.web.dto.assembler.FilmResponseAssembler;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

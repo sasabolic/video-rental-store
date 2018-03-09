@@ -1,7 +1,5 @@
 package com.example.videorentalstore.rental.web.dto;
 
-import com.example.videorentalstore.rental.web.dto.CreateRentalRequest;
-import com.example.videorentalstore.rental.web.dto.CreateRentalRequestList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

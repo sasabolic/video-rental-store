@@ -45,7 +45,7 @@ public class CustomerRentalController {
 
     @PatchMapping("/customers/{id}/rentals")
     public ResponseEntity<ReceiptResponse> patch(@PathVariable("id") long customerId, @RequestBody @Valid BatchRentalRequest batchRentalRequest) {
-        ReturnRentalsCommand returnRentalsCommand = new ReturnRentalsCommand(customerId, batchRentalRequest.getRentals().stream().map(ReturnBackRentalRequest::toReturnRentalCommand).collect(Collectors.toList()));
+        ReturnRentalsCommand returnRentalsCommand = new ReturnRentalsCommand(customerId, batchRentalRequest.getRentals().stream().map(RentalRequest::toReturnRentalCommand).collect(Collectors.toList()));
 
         final Receipt receipt = this.rentalService.returnBack(returnRentalsCommand);
 
