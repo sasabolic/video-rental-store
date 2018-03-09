@@ -13,5 +13,17 @@ import java.util.List;
 public class BatchRentalCommand {
 
     private Long customerId;
+    private Action action;
     private List<RentalCommand> rentalCommands;
+
+    /**
+     * Enumeration for all the actions of {@code BatchRentalCommand}.
+     */
+    public enum Action {
+        PAY,
+
+        RETURN,
+
+        EXTRA_PAY
+    }
 }

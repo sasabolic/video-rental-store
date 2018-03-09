@@ -1,5 +1,6 @@
 package com.example.videorentalstore.rental.web.dto;
 
+import com.example.videorentalstore.rental.BatchRentalCommand;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class BatchRentalRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        BatchRentalRequest request = new BatchRentalRequest(BatchRentalRequest.Action.PAY.name(), Arrays.asList(new RentalRequest(1L)));
+        BatchRentalRequest request = new BatchRentalRequest(BatchRentalCommand.Action.PAY.name(), Arrays.asList(new RentalRequest(1L)));
         final Set<ConstraintViolation<BatchRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
@@ -43,7 +44,7 @@ public class BatchRentalRequestValidationTest {
 
     @Test
     public void whenRequestEmptyRentalsThenViolationListNotEmpty() {
-        BatchRentalRequest request = new BatchRentalRequest(BatchRentalRequest.Action.PAY.name(), Collections.emptyList());
+        BatchRentalRequest request = new BatchRentalRequest(BatchRentalCommand.Action.PAY.name(), Collections.emptyList());
         final Set<ConstraintViolation<BatchRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
@@ -53,7 +54,7 @@ public class BatchRentalRequestValidationTest {
 
     @Test
     public void whenRequestNullRentalsThenViolationForCreateRentalRequest() {
-        BatchRentalRequest request = new BatchRentalRequest(BatchRentalRequest.Action.PAY.name(), null);
+        BatchRentalRequest request = new BatchRentalRequest(BatchRentalCommand.Action.PAY.name(), null);
         final Set<ConstraintViolation<BatchRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();

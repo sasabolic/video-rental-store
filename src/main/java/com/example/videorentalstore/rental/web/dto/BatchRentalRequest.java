@@ -1,6 +1,7 @@
 package com.example.videorentalstore.rental.web.dto;
 
 import com.example.videorentalstore.core.IsEnum;
+import com.example.videorentalstore.rental.BatchRentalCommand;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -15,15 +16,7 @@ import java.util.List;
 @Getter
 public class BatchRentalRequest {
 
-    public enum Action {
-        PAY,
-
-        RETURN,
-
-        EXTRA_PAY
-    }
-
-    @IsEnum(enumClass = Action.class)
+    @IsEnum(enumClass = BatchRentalCommand.Action.class)
     private String action;
 
     @NotEmpty(message = "List of rental requests cannot be empty")
