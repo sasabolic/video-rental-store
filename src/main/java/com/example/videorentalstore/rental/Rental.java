@@ -35,8 +35,8 @@ public class Rental {
     @Column(name = "end_date")
     private Instant endDate;
 
-//    @Enumerated(EnumType.STRING)
-//    private Status status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     private boolean active = true;
 
@@ -84,15 +84,13 @@ public class Rental {
         return this.film.calculateBonusPoints(this.daysRented);
     }
 
-//    enum Status {
-//        DRAFT,
-//
-//        PAID,
-//
-//        ACTIVE,
-//
-//        EXTRA_PAID,
-//
-//        FINISHED
-//    }
+    enum Status {
+        DRAFT,
+
+        ACTIVE,
+
+        RETURNED,
+
+        COMPLETED
+    }
 }

@@ -29,6 +29,7 @@
             <column name="days_rented" type="int"/>
             <column name="start_date" type="timestamp"/>
             <column name="end_date" type="timestamp"/>
+            <column name="status" type="varchar(50)"/>
             <column name="customer_id" type="int"/>
             <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
