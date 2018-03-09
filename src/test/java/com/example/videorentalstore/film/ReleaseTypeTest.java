@@ -49,8 +49,48 @@ public class ReleaseTypeTest {
     }
 
     @Test
-    public void givenOldReleaseWhenCalculatePriceForZeroDaysThenReturnZero() {
-        final BigDecimal result = ReleaseType.OLD_RELEASE.calculatePrice(0);
+    public void givenNewReleaseWhenCalculateExtraChargesThenReturnCorrectResult() {
+        final BigDecimal result = ReleaseType.NEW_RELEASE.calculateExtraCharges(10);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(400));
+    }
+
+    @Test
+    public void givenNewReleaseWhenCalculateExtraChargesForZeroDaysThenReturnZero() {
+        final BigDecimal result = ReleaseType.NEW_RELEASE.calculateExtraCharges(0);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    public void givenRegularReleaseWhenCalculateExtraChargesThenReturnCorrectResult() {
+        final BigDecimal result = ReleaseType.REGULAR_RELEASE.calculateExtraCharges(10);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(300));
+    }
+
+    @Test
+    public void givenRegularReleaseWhenCalculateExtraChargesForZeroDaysThenReturnZero() {
+        final BigDecimal result = ReleaseType.REGULAR_RELEASE.calculateExtraCharges(0);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    public void givenOldReleaseWhenCalculateExtraChargesThenReturnCorrectResult() {
+        final BigDecimal result = ReleaseType.OLD_RELEASE.calculateExtraCharges(10);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(300));
+    }
+
+    @Test
+    public void givenOldReleaseWhenCalculateExtraChargesForZeroDaysThenReturnZero() {
+        final BigDecimal result = ReleaseType.OLD_RELEASE.calculateExtraCharges(0);
 
         assertThat(result).isNotNull();
         assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
