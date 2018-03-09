@@ -16,7 +16,7 @@ public interface GenericResponseAssembler<E, D> {
      * Transforms entity object to DTO object.
      *
      * @param entity the entity
-     * @return the d
+     * @return the DTO
      */
     D of(E entity);
 
@@ -24,7 +24,7 @@ public interface GenericResponseAssembler<E, D> {
      * Transforms collection of entity objects to list of DTO objects.
      *
      * @param entities the entities
-     * @return the list
+     * @return the list of DTO objects
      */
     default List<D> of(final Collection<E> entities) {
        return entities.stream()

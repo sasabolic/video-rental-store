@@ -63,6 +63,7 @@ public class Customer {
         }
     }
 
+    // TODO: 3/9/18 Rename to 'calculatePrice'
     public BigDecimal calculate() {
         return this.rentals.stream()
                 .map(Rental::calculatePrice)

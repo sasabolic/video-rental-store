@@ -2,6 +2,7 @@ package com.example.videorentalstore.rental.web.dto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.Valid;
@@ -15,16 +16,18 @@ import java.util.*;
 @Getter
 @ToString
 @EqualsAndHashCode
+@NoArgsConstructor
 public class CreateRentalRequestList implements List<CreateRentalRequest> {
 
     @NotNull(message = "List of create rental requests cannot be null")
     @NotEmpty(message = "List of create rental requests cannot be empty")
     @Valid
-    private List<CreateRentalRequest> createRentalRequests;
+    private List<CreateRentalRequest> createRentalRequests = new ArrayList<>();
 
-    public CreateRentalRequestList() {
-        this.createRentalRequests = new ArrayList<>();
-    }
+    // TODO: 3/9/18 Cleanup code
+//    public CreateRentalRequestList() {
+//        this.createRentalRequests = new ArrayList<>();
+//    }
 
     public CreateRentalRequestList(List<CreateRentalRequest> createRentalRequests) {
         this.createRentalRequests = createRentalRequests;

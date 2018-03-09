@@ -38,6 +38,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(RestError.of(HttpStatus.CONFLICT, e));
     }
 
+    // TODO: 3/9/18 Check if the error types is thrown
     @ExceptionHandler({RentalException.class})
     protected ResponseEntity<Object> handleRentalException(RentalException ex) {
         RestError restError = RestError.of(HttpStatus.BAD_REQUEST, ex, ex.getMessage());

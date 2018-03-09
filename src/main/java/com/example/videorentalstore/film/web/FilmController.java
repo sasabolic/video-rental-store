@@ -41,6 +41,7 @@ public class FilmController {
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
 
+    // TODO: 3/9/18 Rename to SaveFilmRequest
     @PostMapping
     public ResponseEntity<FilmResponse> create(@RequestBody @Valid WriteFilmRequest writeFilmRequest) {
         final Film film = this.filmService.save(new CreateFilmCommand(writeFilmRequest.getTitle(), writeFilmRequest.getType(), writeFilmRequest.getQuantity()));

@@ -44,6 +44,7 @@ public class DefaultFilmService implements FilmService {
 
     @Override
     public Film update(UpdateFilmCommand updateFilmCommand) {
+        // TODO: 3/9/18 Extract filter().findAny().ifPresent() is reusable lambda. Sending only the predicate for filter action.
         this.filmRepository.findByTitle(updateFilmCommand.getTitle()).stream()
                 .filter(f -> !f.getId().equals(updateFilmCommand.getId()))
                 .findAny().ifPresent(f -> {

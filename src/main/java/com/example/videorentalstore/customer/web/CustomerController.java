@@ -6,7 +6,7 @@ import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.customer.CustomerService;
 import com.example.videorentalstore.customer.UpdateCustomerCommand;
 import com.example.videorentalstore.customer.web.dto.CustomerResponse;
-import com.example.videorentalstore.customer.web.dto.WriteCustomerRequest;
+import com.example.videorentalstore.customer.web.dto.SaveCustomerRequest;
 import com.example.videorentalstore.customer.web.dto.assembler.CustomerResponseAssembler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,15 +44,15 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerResponse> create(@RequestBody @Valid WriteCustomerRequest writeCustomerRequest) {
-        final Customer result = this.customerService.save(new CreateCustomerCommand(writeCustomerRequest.getFirstName(), writeCustomerRequest.getLastName()));
+    public ResponseEntity<CustomerResponse> create(@RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
+        final Customer result = this.customerService.save(new CreateCustomerCommand(saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName()));
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
     }
 
     @PutMapping(value = "/{customerId}")
-    public ResponseEntity<CustomerResponse> update(@PathVariable Long customerId, @RequestBody @Valid WriteCustomerRequest writeCustomerRequest) {
-        final Customer result = this.customerService.update(new UpdateCustomerCommand(customerId, writeCustomerRequest.getFirstName(), writeCustomerRequest.getLastName()));
+    public ResponseEntity<CustomerResponse> update(@PathVariable Long customerId, @RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
+        final Customer result = this.customerService.update(new UpdateCustomerCommand(customerId, saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName()));
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
     }

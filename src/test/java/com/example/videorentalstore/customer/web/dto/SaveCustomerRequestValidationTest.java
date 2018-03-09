@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WriteCustomerRequestValidationTest {
+public class SaveCustomerRequestValidationTest {
 
     private static Validator validator;
 
@@ -23,16 +23,16 @@ public class WriteCustomerRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        WriteCustomerRequest request = new WriteCustomerRequest("First", "Last");
-        final Set<ConstraintViolation<WriteCustomerRequest>> validate = validator.validate(request);
+        SaveCustomerRequest request = new SaveCustomerRequest("First", "Last");
+        final Set<ConstraintViolation<SaveCustomerRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
     }
 
     @Test
     public void whenRequestInvalidFirstNameThenViolationForFirstName() {
-        WriteCustomerRequest request = new WriteCustomerRequest("", "Last");
-        final Set<ConstraintViolation<WriteCustomerRequest>> validate = validator.validate(request);
+        SaveCustomerRequest request = new SaveCustomerRequest("", "Last");
+        final Set<ConstraintViolation<SaveCustomerRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
@@ -41,8 +41,8 @@ public class WriteCustomerRequestValidationTest {
 
     @Test
     public void whenRequestInvalidLastNameThenViolationForLastName() {
-        WriteCustomerRequest request = new WriteCustomerRequest("First", "");
-        final Set<ConstraintViolation<WriteCustomerRequest>> validate = validator.validate(request);
+        SaveCustomerRequest request = new SaveCustomerRequest("First", "");
+        final Set<ConstraintViolation<SaveCustomerRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
@@ -51,8 +51,8 @@ public class WriteCustomerRequestValidationTest {
 
     @Test
     public void whenRequestInvalidAllFieldsThenViolationListNotEmpty() {
-        WriteCustomerRequest request = new WriteCustomerRequest("", "");
-        final Set<ConstraintViolation<WriteCustomerRequest>> validate = validator.validate(request);
+        SaveCustomerRequest request = new SaveCustomerRequest("", "");
+        final Set<ConstraintViolation<SaveCustomerRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(2);

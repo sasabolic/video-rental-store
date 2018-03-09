@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// TODO: 3/9/18 Delete this endpoint
 @RestController
 public class RentalController {
 
@@ -22,6 +23,7 @@ public class RentalController {
         this.rentalAssembler = rentalAssembler;
     }
 
+    // TODO: 3/9/18 Remove customer id?
     @GetMapping("/rentals")
     public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("id") long customerId) {
         final List<Rental> rentals = this.rentalService.findAll();

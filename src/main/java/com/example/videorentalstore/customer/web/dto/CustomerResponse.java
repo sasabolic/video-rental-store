@@ -19,6 +19,6 @@ public class CustomerResponse {
     @JsonProperty("bonus_points")
     private long bonusPoints;
 
-    // TODO Hateoas to link of rentals
+    // TODO: 3/9/18 Hateoas to link of rentals
 //    private List<Rental> rentals = new ArrayList<>();
 }
