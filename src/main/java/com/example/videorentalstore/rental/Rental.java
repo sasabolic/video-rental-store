@@ -56,12 +56,28 @@ public class Rental {
 
         this.daysRented = daysRented;
         this.startDate = startDate;
+        this.status = Status.PAYMENT_EXPECTED;
     }
 
-    public Rental finish() {
+    public Rental markCompleted() {
+        if (this.status != Status.EXTRA_PAYMENT_EXPECTED) {
+            throw new IllegalStateException(
+                    String.format("Cannot mark Rental as COMPLETED that is currently not EXTRA_PAYMENT_EXPECTED! Current status: %s.", this.status));
+        }
+        this.status = Status.COMPLETED;
         this.active = false;
         this.endDate = Instant.now();
         this.film.returnBack();
+
+        return this;
+    }
+
+    public Rental markActive() {
+        if (this.status != Status.EXTRA_PAYMENT_EXPECTED) {
+            throw new IllegalStateException(
+                    String.format("Cannot mark Rental as ACTIVE that is currently not EXTRA_PAYMENT_EXPECTED! Current status: %s.", this.status));
+        }
+        this.status = Status.ACTIVE;
 
         return this;
     }
@@ -84,12 +100,15 @@ public class Rental {
         return this.film.calculateBonusPoints(this.daysRented);
     }
 
+    /**
+     * Enumeration for all the statuses {@link Rental} can be in.
+     */
     enum Status {
-        DRAFT,
+        PAYMENT_EXPECTED,
 
         ACTIVE,
 
-        RETURNED,
+        EXTRA_PAYMENT_EXPECTED,
 
         COMPLETED
     }

@@ -81,7 +81,7 @@ public class DefaultRentalService implements RentalService {
                                 .findAny()
                                 .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", returnRentalCommand.getRentalId(), returnRentalsCommand.getCustomerId())));
 
-                        rental.finish();
+                        rental.markCompleted();
                     } catch(RentalNotFoundException | IllegalStateException ex) {
                         exceptions.add(ex);
                     }

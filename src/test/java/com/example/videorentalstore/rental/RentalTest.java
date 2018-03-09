@@ -45,7 +45,7 @@ public class RentalTest {
 
     @Test
     public void whenFinishThenActiveFalse() {
-        rental.finish();
+        rental.markCompleted();
 
         assertThat(rental.isActive()).isFalse();
     }
@@ -64,7 +64,7 @@ public class RentalTest {
     public void givenEndDateWhenCalculatePriceThenReturnZero() {
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, 3);
 
-        rental.finish();
+        rental.markCompleted();
 
         final BigDecimal result = rental.calculatePrice();
 
@@ -86,7 +86,7 @@ public class RentalTest {
     public void givenEndDateBeforeExpireWhenCalculateExtraChargesThenReturnZero() {
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, 3);
 
-        rental.finish();
+        rental.markCompleted();
 
         final BigDecimal result = rental.calculateExtraCharges();
 
@@ -98,7 +98,7 @@ public class RentalTest {
     public void givenEndDateAfterExpireWhenCalculateExtraChargesThenReturnCorrectResult() {
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 2, 3);
 
-        rental.finish();
+        rental.markCompleted();
 
         final BigDecimal result = rental.calculateExtraCharges();
 

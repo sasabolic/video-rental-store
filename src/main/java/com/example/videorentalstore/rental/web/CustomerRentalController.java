@@ -28,7 +28,7 @@ public class CustomerRentalController {
     }
 
     @GetMapping("/customers/{id}/rentals")
-    public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("id") long customerId) {
+    public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("id") long customerId, @RequestParam(required = false) String status) {
         final List<Rental> rentals = this.rentalService.findAllForCustomer(customerId);
 
         return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
@@ -44,7 +44,7 @@ public class CustomerRentalController {
     }
 
     @PatchMapping("/customers/{id}/rentals")
-    public ResponseEntity<ReceiptResponse> returnBack(@PathVariable("id") long customerId, @RequestBody @Valid ReturnBackRentalRequestList returnBackRentalRequestList) {
+    public ResponseEntity<ReceiptResponse> patch(@PathVariable("id") long customerId, @RequestBody @Valid ReturnBackRentalRequestList returnBackRentalRequestList) {
         ReturnRentalsCommand returnRentalsCommand = new ReturnRentalsCommand(customerId, returnBackRentalRequestList.stream().map(ReturnBackRentalRequest::toReturnRentalCommand).collect(Collectors.toList()));
 
         final Receipt receipt = this.rentalService.returnBack(returnRentalsCommand);
