@@ -29,7 +29,7 @@ public class FilmRepositoryTest {
         entityManager.persist(film);
         entityManager.flush();
 
-        film.returnBack();
+        film.putBack();
 
         final Film result = filmRepository.save(film);
 

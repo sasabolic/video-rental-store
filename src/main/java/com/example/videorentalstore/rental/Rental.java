@@ -87,7 +87,7 @@ public class Rental {
         this.status = Status.COMPLETED;
         this.active = false;
         this.endDate = Instant.now();
-        this.film.returnBack();
+        this.film.putBack();
 
         return this;
     }

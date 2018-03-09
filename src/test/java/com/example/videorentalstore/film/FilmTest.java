@@ -132,7 +132,7 @@ public class FilmTest {
     public void whenReturnBackThenQuantityIncreased() {
         final int before = film.getQuantity();
 
-        film.returnBack();
+        film.putBack();
 
         assertThat(film.getQuantity()).isEqualTo(before + 1);
     }
