@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,22 +26,17 @@ public class DefaultRentalService implements RentalService {
         this.rentalRepository = rentalRepository;
     }
 
+    @Override
     public List<Rental> findAll() {
         return this.rentalRepository.findAll();
     }
 
-    public List<Rental> findAllActiveForCustomer(Long customerId) {
-        return findAllForCustomer(customerId, Rental.Status.ACTIVE);
-    }
-
-    public List<Rental> findAllForCustomer(Long customerId, Rental.Status status) {
+    @Override
+    public List<Rental> findAllForCustomer(Long customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
-        if (status == null) {
-            return customer.getRentals();
-        }
-        return customer.getRentals().stream().filter(r -> status == r.getStatus()).collect(Collectors.toList());
+        return customer.getRentals();
     }
 
     @Override
@@ -87,7 +81,7 @@ public class DefaultRentalService implements RentalService {
                                 .findAny()
                                 .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", returnRentalCommand.getRentalId(), returnRentalsCommand.getCustomerId())));
 
-                        rental.markReturned();
+                        rental.finish();
                     } catch(RentalNotFoundException | IllegalStateException ex) {
                         exceptions.add(ex);
                     }

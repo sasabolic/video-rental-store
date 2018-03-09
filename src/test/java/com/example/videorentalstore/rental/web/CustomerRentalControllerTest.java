@@ -1,9 +1,7 @@
 package com.example.videorentalstore.rental.web;
 
 import com.example.videorentalstore.customer.CustomerNotFoundException;
-import com.example.videorentalstore.film.FilmDataFixtures;
 import com.example.videorentalstore.film.FilmNotFoundException;
-import com.example.videorentalstore.film.UpdateFilmQuantityCommand;
 import com.example.videorentalstore.rental.*;
 import com.example.videorentalstore.rental.web.dto.assembler.DefaultReceiptResponseAssembler;
 import com.example.videorentalstore.rental.web.dto.assembler.DefaultRentalResponseAssembler;
@@ -33,7 +31,6 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -63,7 +60,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetAllForCustomerThenReturnStatusOK() throws Exception {
-        given(this.rentalService.findAllActiveForCustomer(anyLong())).willReturn(RentalDataFixtures.rentals());
+        given(this.rentalService.findAllForCustomer(anyLong())).willReturn(RentalDataFixtures.rentals());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", 12)
@@ -76,7 +73,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetAllForCustomerThenReturnJson() throws Exception {
-        given(this.rentalService.findAllActiveForCustomer(anyLong())).willReturn(RentalDataFixtures.rentals());
+        given(this.rentalService.findAllForCustomer(anyLong())).willReturn(RentalDataFixtures.rentals());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", 12)
@@ -89,16 +86,12 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$[0].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$[0].days_rented", equalTo(1)))
                 .andExpect(jsonPath("$[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$[1].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$[1].days_rented", equalTo(5)))
                 .andExpect(jsonPath("$[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$[2].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$[2].days_rented", equalTo(2)))
                 .andExpect(jsonPath("$[3].film_title", equalTo("Out of Africa")))
-                .andExpect(jsonPath("$[3].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$[3].days_rented", equalTo(7)));
     }
 
@@ -107,7 +100,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.rentalService.findAllActiveForCustomer(anyLong())).willThrow(new CustomerNotFoundException(message));
+        given(this.rentalService.findAllForCustomer(anyLong())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", customerId)
@@ -123,7 +116,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.rentalService.findAllActiveForCustomer(anyLong())).willThrow(new CustomerNotFoundException(message));
+        given(this.rentalService.findAllForCustomer(anyLong())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", customerId)
@@ -141,7 +134,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenCreateForCustomerThenReturnStatusOK() throws Exception {
-        doReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(CreateRentalsCommand.class));
+        given(rentalService.create(isA(CreateRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", 12)
@@ -155,7 +148,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenCreateForCustomerThenReturnJson() throws Exception {
-        doReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals())).when(rentalService).create(isA(CreateRentalsCommand.class));
+        given(rentalService.create(isA(CreateRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", 12)
@@ -169,20 +162,16 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.amount", equalTo(250)))
                 .andExpect(jsonPath("$.rentals").isArray())
                 .andExpect(jsonPath("$.rentals", hasSize(4)))
-                .andExpect(jsonPath("$.rentals[0].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
                 .andExpect(jsonPath("$.rentals[0].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[0].end_date", is(nullValue())))
                 .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$.rentals[1].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
                 .andExpect(jsonPath("$.rentals[1].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$.rentals[2].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
                 .andExpect(jsonPath("$.rentals[2].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$.rentals[3].status", equalTo("ACTIVE")))
                 .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
                 .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")));
@@ -351,7 +340,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenReturnBackThenReturnStatusOK() throws Exception {
-        given(rentalService.returnBack(isA(ReturnRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.returnedRentals()));
+        given(rentalService.returnBack(isA(ReturnRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.finishedRentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
@@ -365,7 +354,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenReturnBackThenReturnJson() throws Exception {
-        given(rentalService.returnBack(isA(ReturnRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.returnedRentals()));
+        given(rentalService.returnBack(isA(ReturnRentalsCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.finishedRentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
@@ -379,22 +368,18 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.amount", equalTo(110)))
                 .andExpect(jsonPath("$.rentals").isArray())
                 .andExpect(jsonPath("$.rentals", hasSize(4)))
-                .andExpect(jsonPath("$.rentals[0].status", equalTo("RETURNED")))
                 .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
                 .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
                 .andExpect(jsonPath("$.rentals[0].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[0].end_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[1].status", equalTo("RETURNED")))
                 .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
                 .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
                 .andExpect(jsonPath("$.rentals[1].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[1].end_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[2].status", equalTo("RETURNED")))
                 .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
                 .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
                 .andExpect(jsonPath("$.rentals[2].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[2].end_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[3].status", equalTo("RETURNED")))
                 .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
                 .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")))
                 .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())))

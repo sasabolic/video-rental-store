@@ -1,12 +1,14 @@
 package com.example.videorentalstore.rental.web.dto;
 
-import com.example.videorentalstore.rental.Rental;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.Instant;
 
+/**
+ * Rental response DTO.
+ */
 @AllArgsConstructor
 @Getter
 public class RentalResponse {
@@ -24,6 +26,4 @@ public class RentalResponse {
 
     @JsonProperty("end_date")
     private Instant endDate;
-
-    private String status;
 }

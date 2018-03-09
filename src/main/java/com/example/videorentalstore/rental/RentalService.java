@@ -6,9 +6,7 @@ public interface RentalService {
 
     List<Rental> findAll();
 
-    List<Rental> findAllActiveForCustomer(Long customerId);
-
-    List<Rental> findAllForCustomer(Long customerId, Rental.Status status);
+    List<Rental> findAllForCustomer(Long customerId);
 
     Receipt create(CreateRentalsCommand createRentalsCommand);
 

@@ -1,101 +1,117 @@
 package com.example.videorentalstore.rental;
 
-import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.FilmDataFixtures;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.spy;
 
 public class RentalTest {
 
-    @Test
-    public void giveRegularReleaseRentedFor5DaysWhenCalculatePriceThenReturn90() {
-        Film film = FilmDataFixtures.regularReleaseFilm("Spider Man");
+    private Rental rental;
 
-        Rental rental = new Rental(film, 5);
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-        final BigDecimal price = rental.calculatePrice();
-
-        assertThat(price).isEqualByComparingTo(BigDecimal.valueOf(90));
+    @Before
+    public void setUp()  {
+        rental = RentalDataFixtures.rental();
     }
 
     @Test
-    public void giveRegularReleaseRentedFor3DaysWhenCalculatePriceThenReturn30() {
-        Film film = FilmDataFixtures.regularReleaseFilm("Spider Man 2");
-
-        Rental rental = new Rental(film, 3);
-
-        final BigDecimal price = rental.calculatePrice();
-
-        assertThat(price).isEqualByComparingTo(BigDecimal.valueOf(30));
+    public void whenNewInstanceThenActiveTrue() {
+        assertThat(rental.isActive()).isTrue();
     }
 
     @Test
-    public void giveRegularReleaseRentedFor1DaysWhenCalculatePriceThenReturn30() {
-        Film film = FilmDataFixtures.regularReleaseFilm("Spider Man 2");
+    public void givenNegativeDaysRentedWhenNewInstanceThenThrowException() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Number of days rented cannot be negative!");
 
-        Rental rental = new Rental(film, 1);
-
-        final BigDecimal price = rental.calculatePrice();
-
-        assertThat(price).isEqualByComparingTo(BigDecimal.valueOf(30));
+        rental = RentalDataFixtures.rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), -1);
     }
 
     @Test
-    public void giveNewReleaseRentedFor1DaysWhenCalculatePriceThenReturn40() {
-        Film film = FilmDataFixtures.newReleaseFilm("Matrix 11");
+    public void givenFilmNullWhenNewInstanceThenThrowException() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Rental's film cannot be null!");
 
-        Rental rental = new Rental(film, 1);
-
-        final BigDecimal price = rental.calculatePrice();
-
-        assertThat(price).isEqualByComparingTo(BigDecimal.valueOf(40));
+        rental = RentalDataFixtures.rental(null);
     }
 
     @Test
-    public void giveNewReleaseRentedFor3DaysWhenCalculatePriceThenReturn120() {
-        Film film = FilmDataFixtures.newReleaseFilm("Matrix 11");
+    public void whenFinishThenActiveFalse() {
+        rental.finish();
 
-        Rental rental = new Rental(film, 3);
-
-        final BigDecimal price = rental.calculatePrice();
-
-        assertThat(price).isEqualByComparingTo(BigDecimal.valueOf(120));
+        assertThat(rental.isActive()).isFalse();
     }
 
     @Test
-    public void givenOldReleaseFilmRentedFor5DaysWhenCalculatePriceThenReturn30() {
-        Film film = FilmDataFixtures.oldReleaseFilm("Out of Africa");
+    public void givenNullEndDateWhenCalculatePriceThenReturnCorrectResult() {
+        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5);
 
-        Rental rental = new Rental(film, 5);
+        final BigDecimal result = rental.calculatePrice();
 
-        final BigDecimal price = rental.calculatePrice();
-
-        assertThat(price).isEqualByComparingTo(BigDecimal.valueOf(30));
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(90));
     }
 
     @Test
-    public void givenOldReleaseFilmRentedFor7DaysWhenCalculatePriceThenReturn90() {
-        Film film = FilmDataFixtures.oldReleaseFilm("Out of Africa");
+    public void givenEndDateWhenCalculatePriceThenReturnZero() {
+        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, 3);
 
-        Rental rental = new Rental(film, 7);
+        rental.finish();
 
-        final BigDecimal price = rental.calculatePrice();
+        final BigDecimal result = rental.calculatePrice();
 
-        assertThat(price).isEqualByComparingTo(BigDecimal.valueOf(90));
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
     }
 
     @Test
-    public void givenOldReleaseFilmRentedFor1DayWhenCalculatePriceThenReturn30() {
-        Film film = FilmDataFixtures.oldReleaseFilm("Out of Africa");
+    public void givenNullEndDateWhenCalculateExtraChargesThenReturnZero() {
+        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5);
 
-        Rental rental = spy(new Rental(film, 1));
+        final BigDecimal result = rental.calculateExtraCharges();
 
-        final BigDecimal price = rental.calculatePrice();
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+    }
 
-        assertThat(price).isEqualByComparingTo(BigDecimal.valueOf(30));
+    @Test
+    public void givenEndDateBeforeExpireWhenCalculateExtraChargesThenReturnZero() {
+        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, 3);
+
+        rental.finish();
+
+        final BigDecimal result = rental.calculateExtraCharges();
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    public void givenEndDateAfterExpireWhenCalculateExtraChargesThenReturnCorrectResult() {
+        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 2, 3);
+
+        rental.finish();
+
+        final BigDecimal result = rental.calculateExtraCharges();
+
+        assertThat(result).isNotNull();
+        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(30));
+    }
+
+    @Test
+    public void whenCalculateBonusPointsThenReturnCorrectResult() {
+        rental = RentalDataFixtures.rental(FilmDataFixtures.newReleaseFilm("Matrix 11"));
+
+        final int result = rental.calculateBonusPoints();
+
+        assertThat(result).isEqualTo(2);
     }
 }

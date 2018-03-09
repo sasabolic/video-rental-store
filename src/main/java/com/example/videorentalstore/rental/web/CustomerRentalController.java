@@ -29,7 +29,7 @@ public class CustomerRentalController {
 
     @GetMapping("/customers/{id}/rentals")
     public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("id") long customerId) {
-        final List<Rental> rentals = this.rentalService.findAllActiveForCustomer(customerId);
+        final List<Rental> rentals = this.rentalService.findAllForCustomer(customerId);
 
         return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
     }

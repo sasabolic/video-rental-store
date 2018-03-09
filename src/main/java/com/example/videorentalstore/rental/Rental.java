@@ -8,6 +8,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -34,64 +35,49 @@ public class Rental {
     @Column(name = "end_date")
     private Instant endDate;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private boolean active = true;
 
     public Rental(Film film, int daysRented) {
         this(film, daysRented, Instant.now());
     }
 
     public Rental(Film film, int daysRented, Instant startDate) {
+        Objects.requireNonNull(film, "Rental's film cannot be null!");
+        Objects.requireNonNull(startDate, "Rentals's start date cannot be null!");
+
+        if (daysRented <= 0) {
+            throw new IllegalArgumentException("Number of days rented cannot be negative!");
+        }
         this.film = film;
         this.film.take();
 
         this.daysRented = daysRented;
         this.startDate = startDate;
-        this.status = Status.ACTIVE;
     }
 
-    public Rental(long id, Film film, int daysRented, Instant startDate) {
-        this(film, daysRented, startDate);
-        this.id = id;
-    }
-
-    public Rental(long id, Film film, int daysRented) {
-        this(film, daysRented);
-        this.id = id;
-    }
-
-    public boolean isActive() {
-        return this.status == Status.ACTIVE;
-    }
-
-    public Rental markReturned() {
-        if (this.status != Status.ACTIVE) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark rental with id '%d' as RETURNED that is currently not ACTIVE! Current status: %s.", this.id, this.status));
-        }
-
+    public Rental finish() {
+        this.active = false;
         this.endDate = Instant.now();
         this.film.returnBack();
-        this.status = Status.RETURNED;
 
         return this;
     }
 
     public BigDecimal calculatePrice() {
+        if (this.endDate != null) {
+            return BigDecimal.ZERO;
+        }
         return this.film.calculatePrice(this.daysRented);
     }
 
     public BigDecimal calculateExtraCharges() {
+        if (this.endDate == null) {
+            return BigDecimal.ZERO;
+        }
         return this.film.calculatePrice(DAYS.between(this.startDate, this.endDate) - this.daysRented);
     }
 
     public int calculateBonusPoints() {
         return this.film.calculateBonusPoints(this.daysRented);
-    }
-
-    public enum Status {
-        ACTIVE,
-
-        RETURNED
     }
 }

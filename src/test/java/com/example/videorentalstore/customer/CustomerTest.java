@@ -74,7 +74,7 @@ public class CustomerTest {
 
     @Test
     public void whenDeactivateWithCompletedRentalsThenActiveFalse() {
-        RentalDataFixtures.rentals().stream().map(Rental::markReturned).forEach(r -> customer.addRental(r));
+        RentalDataFixtures.rentals().stream().map(Rental::finish).forEach(r -> customer.addRental(r));
 
         customer.deactivate();
 
@@ -117,7 +117,7 @@ public class CustomerTest {
         final long before = customer.getBonusPoints();
 
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markReturned);
+        rentals.stream().forEach(Rental::finish);
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
@@ -129,7 +129,7 @@ public class CustomerTest {
     @Test
     public void whenRentalsReturnedSameDayThenCalculateExtraChargesReturnsZeroAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markReturned);
+        rentals.stream().forEach(Rental::finish);
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
@@ -141,7 +141,7 @@ public class CustomerTest {
     @Test
     public void whenRentalsReturnedThenCalculateExtraChargesReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals(3);
-        rentals.stream().forEach(Rental::markReturned);
+        rentals.stream().forEach(Rental::finish);
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
@@ -153,7 +153,7 @@ public class CustomerTest {
     @Test
     public void whenRentalsReturnedThenCalculateReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markReturned);
+        rentals.stream().forEach(Rental::finish);
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
