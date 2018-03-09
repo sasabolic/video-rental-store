@@ -59,6 +59,26 @@ public class Rental {
         this.status = Status.PAYMENT_EXPECTED;
     }
 
+    public Rental markActive() {
+        if (this.status != Status.PAYMENT_EXPECTED) {
+            throw new IllegalStateException(
+                    String.format("Cannot mark Rental as ACTIVE that is currently not PAYMENT_EXPECTED! Current status: %s.", this.status));
+        }
+        this.status = Status.ACTIVE;
+
+        return this;
+    }
+
+    public Rental markExtraPaymentExpected() {
+        if (this.status != Status.ACTIVE) {
+            throw new IllegalStateException(
+                    String.format("Cannot mark Rental as EXTRA_PAYMENT_EXPECTED that is currently not ACTIVE! Current status: %s.", this.status));
+        }
+        this.status = Status.EXTRA_PAYMENT_EXPECTED;
+
+        return this;
+    }
+
     public Rental markCompleted() {
         if (this.status != Status.EXTRA_PAYMENT_EXPECTED) {
             throw new IllegalStateException(
@@ -68,16 +88,6 @@ public class Rental {
         this.active = false;
         this.endDate = Instant.now();
         this.film.returnBack();
-
-        return this;
-    }
-
-    public Rental markActive() {
-        if (this.status != Status.EXTRA_PAYMENT_EXPECTED) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark Rental as ACTIVE that is currently not EXTRA_PAYMENT_EXPECTED! Current status: %s.", this.status));
-        }
-        this.status = Status.ACTIVE;
 
         return this;
     }
