@@ -72,6 +72,10 @@ public class Film {
         return type.calculatePrice(daysRented);
     }
 
+    public BigDecimal calculateExtraCharges(long extraDays) {
+        return type.calculatePrice(extraDays);
+    }
+
     public int calculateBonusPoints(long daysRented) {
         return type.calculateBonusPoints(daysRented);
     }
