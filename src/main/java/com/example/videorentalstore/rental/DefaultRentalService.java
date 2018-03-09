@@ -74,18 +74,26 @@ public class DefaultRentalService implements RentalService {
 
         List<Exception> exceptions = new ArrayList<>();
         batchRentalCommand.getRentalCommands().stream()
-                .forEach(returnRentalCommand -> {
+                .forEach(rentalCommand -> {
                     try {
                         final Rental rental = customer.getRentals().stream()
-                                .filter(r -> returnRentalCommand.getRentalId().equals(r.getId()))
+                                .filter(r -> rentalCommand.getRentalId().equals(r.getId()))
                                 .findAny()
-                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", returnRentalCommand.getRentalId(), batchRentalCommand.getCustomerId())));
+                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rentalCommand.getRentalId(), batchRentalCommand.getCustomerId())));
 
-                        rental.markCompleted();
+                        switch (batchRentalCommand.getAction()) {
+                            case PAY:
+                                rental.markActive();
+                                break;
+                            case RETURN:
+                                rental.markExtraPaymentExpected();
+                                break;
+                            case EXTRA_PAY:
+                                rental.markCompleted();
+                        }
                     } catch(RentalNotFoundException | IllegalStateException ex) {
                         exceptions.add(ex);
                     }
-
                 });
 
         if (!exceptions.isEmpty()) {

@@ -156,7 +156,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    public void whenReturningBackRentalsThenReturnCorrectResult() {
+    public void whenExtraPayRentalsThenReturnCorrectResult() {
         final Customer customer = CustomerDataFixtures.customer();
 
         final Rental newReleaseRental = spy(RentalDataFixtures.rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1, 3));
@@ -175,7 +175,7 @@ public class RentalServiceTest {
         doReturn(3L).when(regularReleaseRental1).getId();
         doReturn(4L).when(oldReleaseRental).getId();
 
-        final Receipt receipt = rentalService.process(new BatchRentalCommand(1L, BatchRentalCommand.Action.RETURN, Arrays.asList(new RentalCommand(1L), new RentalCommand(2L), new RentalCommand(3L), new RentalCommand(4L))));
+        final Receipt receipt = rentalService.process(new BatchRentalCommand(1L, BatchRentalCommand.Action.EXTRA_PAY, Arrays.asList(new RentalCommand(1L), new RentalCommand(2L), new RentalCommand(3L), new RentalCommand(4L))));
 
         assertThat(receipt).isNotNull();
         assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
