@@ -1,4 +1,4 @@
-package com.example.videorentalstore.rental.web;
+package com.example.videorentalstore.rental.web.dto;
 
 import com.example.videorentalstore.rental.web.dto.CreateRentalRequest;
 import com.example.videorentalstore.rental.web.dto.CreateRentalRequestList;

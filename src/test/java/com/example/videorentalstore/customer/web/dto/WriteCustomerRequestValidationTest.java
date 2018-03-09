@@ -1,4 +1,4 @@
-package com.example.videorentalstore.customer.web;
+package com.example.videorentalstore.customer.web.dto;
 
 import com.example.videorentalstore.customer.web.dto.WriteCustomerRequest;
 import com.example.videorentalstore.film.web.dto.WriteFilmRequest;
