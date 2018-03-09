@@ -94,7 +94,7 @@ public class DefaultRentalService implements RentalService {
                 });
 
         if (!exceptions.isEmpty()) {
-            throw new RentalException("Could not return rentals", exceptions);
+            throw new RentalException("Could not process batch rental command", exceptions);
         }
 
         customerRepository.save(customer);
