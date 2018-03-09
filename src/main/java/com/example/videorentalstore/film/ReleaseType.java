@@ -13,13 +13,13 @@ public enum ReleaseType {
     /**
      * The New release.
      */
-    NEW_RELEASE {
+    NEW_RELEASE(PREMIUM_PRICE) {
         @Override
         public BigDecimal calculatePrice(long daysRented) {
             if (daysRented <= 0) {
                 return BigDecimal.ZERO;
             }
-            return PREMIUM_PRICE.multiply(BigDecimal.valueOf(daysRented));
+            return price().multiply(BigDecimal.valueOf(daysRented));
         }
 
         @Override
@@ -34,17 +34,17 @@ public enum ReleaseType {
     /**
      * The Regular release.
      */
-    REGULAR_RELEASE {
+    REGULAR_RELEASE(BASIC_PRICE) {
         @Override
         public BigDecimal calculatePrice(long daysRented) {
             if (daysRented <= 0) {
                 return BigDecimal.ZERO;
             }
 
-            BigDecimal price = BASIC_PRICE;
+            BigDecimal price = price();
 
             if (daysRented > 3) {
-                price = price.add(BASIC_PRICE.multiply(BigDecimal.valueOf(daysRented - 3)));
+                price = price.add(price().multiply(BigDecimal.valueOf(daysRented - 3)));
             }
             return price;
         }
@@ -61,7 +61,7 @@ public enum ReleaseType {
     /**
      * The Old release.
      */
-    OLD_RELEASE {
+    OLD_RELEASE(BASIC_PRICE) {
         @Override
         public BigDecimal calculatePrice(long daysRented) {
             if (daysRented <= 0) {
@@ -85,6 +85,16 @@ public enum ReleaseType {
         }
     };
 
+    private final BigDecimal price;
+
+    ReleaseType(BigDecimal price) {
+        this.price = price;
+    }
+
+    BigDecimal price() {
+        return this.price;
+    }
+
     /**
      * Calculates price.
      *
@@ -92,6 +102,16 @@ public enum ReleaseType {
      * @return the big decimal
      */
     public abstract BigDecimal calculatePrice(long daysRented);
+
+    /**
+     * Calculates extra charges.
+     *
+     * @param extraDays the extra days
+     * @return the big decimal
+     */
+    public BigDecimal calculateExtraCharges(long extraDays) {
+        return price().multiply(BigDecimal.valueOf(extraDays));
+    }
 
     /**
      * Calculates bonus points.
