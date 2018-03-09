@@ -76,10 +76,7 @@ public class DefaultRentalService implements RentalService {
         batchRentalCommand.getRentalCommands().stream()
                 .forEach(rentalCommand -> {
                     try {
-                        final Rental rental = customer.getRentals().stream()
-                                .filter(r -> rentalCommand.getRentalId().equals(r.getId()))
-                                .findAny()
-                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rentalCommand.getRentalId(), batchRentalCommand.getCustomerId())));
+                        final Rental rental = checkRentalExistsForCustomer(customer, rentalCommand.getRentalId());
 
                         switch (batchRentalCommand.getAction()) {
                             case PAY:
@@ -104,5 +101,12 @@ public class DefaultRentalService implements RentalService {
 
         return new Receipt(customer.calculateExtraCharges(), customer.getRentals());
 
+    }
+
+    private Rental checkRentalExistsForCustomer(Customer customer, Long rentalId) {
+        return customer.getRentals().stream()
+                                    .filter(r -> rentalId.equals(r.getId()))
+                                    .findAny()
+                                    .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rentalId, customer.getId())));
     }
 }

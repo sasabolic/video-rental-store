@@ -200,7 +200,10 @@ public class RentalServiceTest {
     @Test
     public void whenReturningBackRentalsOfNonExistingFilmsThenThrowException() {
         final long customerId = 1L;
-        doReturn(Optional.of(CustomerDataFixtures.customer())).when(customerRepository).findById(anyLong());
+        final Customer customer = spy(CustomerDataFixtures.customer());
+
+        doReturn(customerId).when(customer).getId();
+        doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
 
         Receipt receipt = null;
         try {
