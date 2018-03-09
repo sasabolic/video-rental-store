@@ -3,7 +3,7 @@ package com.example.videorentalstore.film.web;
 import com.example.videorentalstore.film.*;
 import com.example.videorentalstore.film.web.dto.FilmResponse;
 import com.example.videorentalstore.film.web.dto.UpdateFilmQuantityRequest;
-import com.example.videorentalstore.film.web.dto.WriteFilmRequest;
+import com.example.videorentalstore.film.web.dto.SaveFilmRequest;
 import com.example.videorentalstore.film.web.dto.assembler.FilmResponseAssembler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,17 +41,16 @@ public class FilmController {
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
 
-    // TODO: 3/9/18 Rename to SaveFilmRequest
     @PostMapping
-    public ResponseEntity<FilmResponse> create(@RequestBody @Valid WriteFilmRequest writeFilmRequest) {
-        final Film film = this.filmService.save(new CreateFilmCommand(writeFilmRequest.getTitle(), writeFilmRequest.getType(), writeFilmRequest.getQuantity()));
+    public ResponseEntity<FilmResponse> create(@RequestBody @Valid SaveFilmRequest saveFilmRequest) {
+        final Film film = this.filmService.save(new CreateFilmCommand(saveFilmRequest.getTitle(), saveFilmRequest.getType(), saveFilmRequest.getQuantity()));
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
 
     @PutMapping(value = "/{filmId}")
-    public ResponseEntity<FilmResponse> update(@PathVariable Long filmId, @RequestBody @Valid WriteFilmRequest writeFilmRequest) {
-        final Film film = this.filmService.update(new UpdateFilmCommand(filmId, writeFilmRequest.getTitle(), writeFilmRequest.getType(), writeFilmRequest.getQuantity()));
+    public ResponseEntity<FilmResponse> update(@PathVariable Long filmId, @RequestBody @Valid SaveFilmRequest saveFilmRequest) {
+        final Film film = this.filmService.update(new UpdateFilmCommand(filmId, saveFilmRequest.getTitle(), saveFilmRequest.getType(), saveFilmRequest.getQuantity()));
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }

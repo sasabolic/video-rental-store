@@ -10,10 +10,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
- * Create/update film request DTO.
+ * Save film request DTO.
  */
 @Getter
-public class WriteFilmRequest {
+public class SaveFilmRequest {
 
     @NotEmpty(message = "Title must not be empty")
     private String title;
@@ -25,9 +25,9 @@ public class WriteFilmRequest {
     private Integer quantity;
 
     @JsonCreator
-    public WriteFilmRequest(@JsonProperty("title") String title,
-                            @JsonProperty("type") String type,
-                            @JsonProperty("quantity") Integer quantity) {
+    public SaveFilmRequest(@JsonProperty("title") String title,
+                           @JsonProperty("type") String type,
+                           @JsonProperty("quantity") Integer quantity) {
         this.title = title;
         this.type = type;
         this.quantity = quantity;

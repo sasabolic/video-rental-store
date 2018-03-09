@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WriteFilmRequestValidationTest {
+public class SaveFilmRequestValidationTest {
 
     private static Validator validator;
 
@@ -23,16 +23,16 @@ public class WriteFilmRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        WriteFilmRequest request = new WriteFilmRequest("Title", "NEW_RELEASE", 11);
-        final Set<ConstraintViolation<WriteFilmRequest>> validate = validator.validate(request);
+        SaveFilmRequest request = new SaveFilmRequest("Title", "NEW_RELEASE", 11);
+        final Set<ConstraintViolation<SaveFilmRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
     }
 
     @Test
     public void whenRequestInvalidTypeThenViolationForType() {
-        WriteFilmRequest request = new WriteFilmRequest("Title", "INVALID_TYPE", 11);
-        final Set<ConstraintViolation<WriteFilmRequest>> validate = validator.validate(request);
+        SaveFilmRequest request = new SaveFilmRequest("Title", "INVALID_TYPE", 11);
+        final Set<ConstraintViolation<SaveFilmRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
@@ -41,8 +41,8 @@ public class WriteFilmRequestValidationTest {
 
     @Test
     public void whenRequestInvalidTitleThenViolationForTitle() {
-        WriteFilmRequest request = new WriteFilmRequest(null, "NEW_RELEASE", 11);
-        final Set<ConstraintViolation<WriteFilmRequest>> validate = validator.validate(request);
+        SaveFilmRequest request = new SaveFilmRequest(null, "NEW_RELEASE", 11);
+        final Set<ConstraintViolation<SaveFilmRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
@@ -51,9 +51,9 @@ public class WriteFilmRequestValidationTest {
 
     @Test
     public void whenRequestInvalidQuantityThenViolationForQuantity() {
-        WriteFilmRequest request = new WriteFilmRequest("Title", "NEW_RELEASE", null);
+        SaveFilmRequest request = new SaveFilmRequest("Title", "NEW_RELEASE", null);
 
-        final Set<ConstraintViolation<WriteFilmRequest>> validate = validator.validate(request);
+        final Set<ConstraintViolation<SaveFilmRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
@@ -62,9 +62,9 @@ public class WriteFilmRequestValidationTest {
 
     @Test
     public void whenRequestInvalidAllFieldsThenViolationListNotEmpty() {
-        WriteFilmRequest request = new WriteFilmRequest("", "INVALID_TYPE", null);
+        SaveFilmRequest request = new SaveFilmRequest("", "INVALID_TYPE", null);
 
-        final Set<ConstraintViolation<WriteFilmRequest>> validate = validator.validate(request);
+        final Set<ConstraintViolation<SaveFilmRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(3);
