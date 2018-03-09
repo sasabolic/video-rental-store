@@ -5,9 +5,12 @@ import lombok.Getter;
 
 import java.util.List;
 
+/**
+ * Batch rental command.
+ */
 @AllArgsConstructor
 @Getter
-public class ReturnRentalsCommand {
+public class BatchRentalCommand {
 
     private Long customerId;
     private List<RentalCommand> rentalCommands;

@@ -68,18 +68,18 @@ public class DefaultRentalService implements RentalService {
     }
 
     @Override
-    public Receipt returnBack(ReturnRentalsCommand returnRentalsCommand) {
-        Customer customer = customerRepository.findById(returnRentalsCommand.getCustomerId())
-                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", returnRentalsCommand.getCustomerId())));
+    public Receipt returnBack(BatchRentalCommand batchRentalCommand) {
+        Customer customer = customerRepository.findById(batchRentalCommand.getCustomerId())
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", batchRentalCommand.getCustomerId())));
 
         List<Exception> exceptions = new ArrayList<>();
-        returnRentalsCommand.getRentalCommands().stream()
+        batchRentalCommand.getRentalCommands().stream()
                 .forEach(returnRentalCommand -> {
                     try {
                         final Rental rental = customer.getRentals().stream()
                                 .filter(r -> returnRentalCommand.getRentalId().equals(r.getId()))
                                 .findAny()
-                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", returnRentalCommand.getRentalId(), returnRentalsCommand.getCustomerId())));
+                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", returnRentalCommand.getRentalId(), batchRentalCommand.getCustomerId())));
 
                         rental.markCompleted();
                     } catch(RentalNotFoundException | IllegalStateException ex) {
