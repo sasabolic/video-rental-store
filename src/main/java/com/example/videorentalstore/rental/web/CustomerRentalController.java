@@ -47,7 +47,7 @@ public class CustomerRentalController {
     public ResponseEntity<ReceiptResponse> patch(@PathVariable("id") long customerId, @RequestBody @Valid BatchRentalRequest batchRentalRequest) {
         BatchRentalCommand batchRentalCommand = new BatchRentalCommand(customerId, BatchRentalCommand.Action.valueOf(batchRentalRequest.getAction()), batchRentalRequest.getRentals().stream().map(RentalRequest::toRentalCommand).collect(Collectors.toList()));
 
-        final Receipt receipt = this.rentalService.returnBack(batchRentalCommand);
+        final Receipt receipt = this.rentalService.process(batchRentalCommand);
 
         return ResponseEntity.ok(receiptResponseAssembler.of(receipt));
     }

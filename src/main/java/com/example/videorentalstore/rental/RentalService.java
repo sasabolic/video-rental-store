@@ -10,5 +10,5 @@ public interface RentalService {
 
     Receipt create(CreateRentalsCommand createRentalsCommand);
 
-    Receipt returnBack(BatchRentalCommand batchRentalCommand);
+    Receipt process(BatchRentalCommand batchRentalCommand);
 }

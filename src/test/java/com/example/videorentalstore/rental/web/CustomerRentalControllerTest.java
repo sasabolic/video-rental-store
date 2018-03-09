@@ -340,7 +340,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenPayThenReturnStatusOK() throws Exception {
-        given(rentalService.returnBack(isA(BatchRentalCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
+        given(rentalService.process(isA(BatchRentalCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
@@ -354,7 +354,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenPayThenReturnJson() throws Exception {
-        given(rentalService.returnBack(isA(BatchRentalCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
+        given(rentalService.process(isA(BatchRentalCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
@@ -391,7 +391,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(rentalService.returnBack(isA(BatchRentalCommand.class))).willThrow(new CustomerNotFoundException(message));
+        given(rentalService.process(isA(BatchRentalCommand.class))).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", customerId)
@@ -408,7 +408,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(rentalService.returnBack(isA(BatchRentalCommand.class))).willThrow(new CustomerNotFoundException(message));
+        given(rentalService.process(isA(BatchRentalCommand.class))).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", customerId)
@@ -434,7 +434,7 @@ public class CustomerRentalControllerTest {
         final String message2 = "Rental with id '" + rentalId2 + "' does not exist";
 
 
-        given(rentalService.returnBack(isA(BatchRentalCommand.class))).willThrow(new RentalException(message, Arrays.asList(new RentalNotFoundException(message1), new RentalNotFoundException(message2))));
+        given(rentalService.process(isA(BatchRentalCommand.class))).willThrow(new RentalException(message, Arrays.asList(new RentalNotFoundException(message1), new RentalNotFoundException(message2))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
@@ -463,7 +463,7 @@ public class CustomerRentalControllerTest {
         final String message2 = "Rental with id '" + rentalId2 + "' does not exist";
 
 
-        given(rentalService.returnBack(isA(BatchRentalCommand.class))).willThrow(new RentalException(message, Arrays.asList(new RentalNotFoundException(message1), new RentalNotFoundException(message2))));
+        given(rentalService.process(isA(BatchRentalCommand.class))).willThrow(new RentalException(message, Arrays.asList(new RentalNotFoundException(message1), new RentalNotFoundException(message2))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
