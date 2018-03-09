@@ -37,7 +37,7 @@ public class WriteFilmRequestValidationTest {
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
-        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("Invalid release type: 'INVALID_TYPE'. Allowed values are: 'NEW_RELEASE, REGULAR_RELEASE, OLD_RELEASE'");
+        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("Invalid value: 'INVALID_TYPE'. Allowed values are: 'NEW_RELEASE, REGULAR_RELEASE, OLD_RELEASE'");
     }
 
     @Test

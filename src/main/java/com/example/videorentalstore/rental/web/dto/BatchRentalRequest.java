@@ -1,6 +1,6 @@
 package com.example.videorentalstore.rental.web.dto;
 
-import com.example.videorentalstore.core.ValidAction;
+import com.example.videorentalstore.core.IsEnum;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class BatchRentalRequest {
         EXTRA_PAY
     }
 
-    @ValidAction
+    @IsEnum(enumClass = Action.class)
     private String action;
 
     @NotEmpty(message = "List of rental requests cannot be empty")

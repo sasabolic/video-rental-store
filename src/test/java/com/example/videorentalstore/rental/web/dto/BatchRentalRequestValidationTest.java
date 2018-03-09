@@ -38,7 +38,7 @@ public class BatchRentalRequestValidationTest {
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
-        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("Invalid action: 'null'. Allowed values are: 'PAY, RETURN, EXTRA_PAY'");
+        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("Invalid value: 'null'. Allowed values are: 'PAY, RETURN, EXTRA_PAY'");
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.example.videorentalstore.film.web.dto;
 
-import com.example.videorentalstore.core.ValidReleaseType;
+import com.example.videorentalstore.core.IsEnum;
+import com.example.videorentalstore.film.ReleaseType;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class WriteFilmRequest {
     @NotEmpty(message = "Title must not be empty")
     private String title;
 
-    @ValidReleaseType
+    @IsEnum(enumClass = ReleaseType.class)
     private String type;
 
     @NotNull(message = "Quantity cannot be null")
