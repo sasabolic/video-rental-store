@@ -35,8 +35,8 @@ public class CustomerRentalController {
     }
 
     @PostMapping("/customers/{id}/rentals")
-    public ResponseEntity<ReceiptResponse> create(@PathVariable("id") long customerId, @RequestBody @Valid CreateRentalListRequest createRentalListRequests) {
-        CreateRentalsCommand createRentalsCommand = new CreateRentalsCommand(customerId, createRentalListRequests.getCreateRentalRequests().stream().map(r -> r.toCreateRentalCommand()).collect(Collectors.toList()));
+    public ResponseEntity<ReceiptResponse> create(@PathVariable("id") long customerId, @RequestBody @Valid CreateRentalRequestList createRentalRequestList) {
+        CreateRentalsCommand createRentalsCommand = new CreateRentalsCommand(customerId, createRentalRequestList.stream().map(r -> r.toCreateRentalCommand()).collect(Collectors.toList()));
 
         final Receipt receipt = rentalService.create(createRentalsCommand);
 
