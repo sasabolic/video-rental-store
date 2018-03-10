@@ -30,6 +30,7 @@ public class Film {
     public Film(String title, ReleaseType type, int quantity) {
         Objects.requireNonNull(title, "Film's title cannot be null!");
         Objects.requireNonNull(type, "Film's type cannot be null!");
+        
         if (quantity < 0) {
             throw new IllegalArgumentException("Number of film copies cannot be negative!");
         }
