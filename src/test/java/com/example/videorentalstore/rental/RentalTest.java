@@ -1,5 +1,6 @@
 package com.example.videorentalstore.rental;
 
+import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.FilmDataFixtures;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,8 +24,18 @@ public class RentalTest {
     }
 
     @Test
-    public void whenNewInstanceThenActiveTrue() {
-        assertThat(rental.isActive()).isTrue();
+    public void whenNewInstanceThenStatusUpFrontPaymentExpected() {
+        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
+    }
+
+    @Test
+    public void whenNewInstanceThenFilmQuantityDecreased() {
+        final Film film = FilmDataFixtures.newReleaseFilm();
+        final int before = film.getQuantity();
+
+        rental = RentalDataFixtures.rental(film);
+
+        assertThat(this.rental.getFilm().getQuantity()).isEqualTo(before - 1);
     }
 
     @Test
@@ -44,16 +55,220 @@ public class RentalTest {
     }
 
     @Test
-    public void whenFinishThenActiveFalse() {
-        rental.markActive();
-        rental.markExtraPaymentExpected();
-        rental.markCompleted();
+    public void whenMarkPaidUpFrontThenStatusPaidUpFront() {
+        rental.markPaidUpFront();
 
-        assertThat(rental.isActive()).isFalse();
+        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.PAID_UP_FRONT);
     }
 
     @Test
-    public void givenNullEndDateWhenCalculatePriceThenReturnCorrectResult() {
+    public void givenInvalidStateWhenMarkPaidUpFrontThenThrowError() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Cannot mark Rental as PAID_UP_FRONT that is currently not UP_FRONT_PAYMENT_EXPECTED!");
+
+        rental.markPaidUpFront();
+        rental.markActive();
+
+        rental.markPaidUpFront();
+    }
+
+    @Test
+    public void whenMarkActiveThenStatusActive() {
+        rental.markPaidUpFront();
+
+        rental.markActive();
+
+        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.ACTIVE);
+    }
+
+    @Test
+    public void givenInvalidStateWhenMarkActiveThenThrowError() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Cannot mark Rental as ACTIVE that is currently not PAID_UP_FRONT!");
+
+        rental.markActive();
+    }
+
+    @Test
+    public void whenMarkReturnedThenStatusReturned() {
+        rental.markPaidUpFront();
+        rental.markActive();
+
+        rental.markReturned();
+
+        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.RETURNED);
+    }
+
+    @Test
+    public void givenInvalidStateWhenMarkReturnedThenThrowError() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Cannot mark Rental as RETURNED that is currently not ACTIVE!");
+
+        rental.markReturned();
+    }
+
+    @Test
+    public void whenMarkLatePaymentExpectedThenStatusLatePaymentExpected() {
+        rental.markPaidUpFront();
+        rental.markActive();
+        rental.markReturned();
+
+        rental.markLatePaymentExpected();
+
+        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.LATE_PAYMENT_EXPECTED);
+    }
+
+    @Test
+    public void givenInvalidStateWhenMarkLatePaymentExpectedThenThrowError() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Cannot mark Rental as LATE_PAYMENT_EXPECTED that is currently not RETURNED!");
+
+        rental.markLatePaymentExpected();
+    }
+
+    @Test
+    public void whenMarkPayedLateThenStatusPayedLate() {
+        rental.markPaidUpFront();
+        rental.markActive();
+        rental.markReturned();
+        rental.markLatePaymentExpected();
+
+        rental.markPayedLate();
+
+        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.PAID_LATE);
+    }
+
+    @Test
+    public void givenInvalidStateWhenMarkPaidLatetExpectedThenThrowError() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Cannot mark Rental as PAID_LATE that is currently not LATE_PAYMENT_EXPECTED!");
+
+        rental.markPayedLate();
+    }
+
+    @Test
+    public void whenMarkCompletedThenStatusCompleted() {
+        rental.markPaidUpFront();
+        rental.markActive();
+        rental.markReturned();
+        rental.markLatePaymentExpected();
+        rental.markPayedLate();
+
+        rental.markCompleted();
+
+        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.COMPLETED);
+    }
+
+    @Test
+    public void givenInvalidStateWhenMarkCompletedThenThrowError() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Cannot mark Rental as COMPLETED that is currently not PAID_LATE! Current status: UP_FRONT_PAYMENT_EXPECTED.");
+
+        rental.markCompleted();
+    }
+
+    @Test
+    public void whenIsPaidUpFrontThenTrue() {
+        rental.markPaidUpFront();
+        rental.markActive();
+        rental.markReturned();
+        rental.markLatePaymentExpected();
+        rental.markPayedLate();
+
+        final boolean result = rental.isPaidUpFront();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void givenDifferentStatusWhenIsPaidUpFrontThenFalse() {
+
+        final boolean result = rental.isPaidUpFront();
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void whenIsUpFrontPaymentExpectedThenTrue() {
+
+        final boolean result = rental.isUpFrontPaymentExpected();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void givenDifferentStatusWhenIsUpFrontPaymentExpectedThenFalse() {
+        rental.markPaidUpFront();
+
+        final boolean result = rental.isUpFrontPaymentExpected();
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void whenIsLatePaymentExpectedThenTrue() {
+
+        final boolean result = rental.isUpFrontPaymentExpected();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void givenDifferentStatusWhenIsLatePaymentExpectedThenFalse() {
+        rental.markPaidUpFront();
+        rental.markActive();
+        rental.markReturned();
+
+        final boolean result = rental.isUpFrontPaymentExpected();
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void givenDifferentStatusWhenIsNotCompletedThenTrue() {
+        rental.markPaidUpFront();
+        rental.markActive();
+        rental.markReturned();
+
+        final boolean result = rental.isNotCompleted();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void whenIsNotCompletedThenFalse() {
+        rental.markPaidUpFront();
+        rental.markActive();
+        rental.markReturned();
+        rental.markLatePaymentExpected();
+        rental.markPayedLate();
+        rental.markCompleted();
+
+        final boolean result = rental.isNotCompleted();
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void whenHasStatusThenTrue() {
+        rental.markPaidUpFront();
+
+        final boolean result = rental.hasStatus(Rental.Status.PAID_UP_FRONT);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void givenDifferentStatusWhenHasStatusThenFalse() {
+        rental.markPaidUpFront();
+
+        final boolean result = rental.hasStatus(Rental.Status.ACTIVE);
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void whenCalculatePriceThenReturnCorrectResult() {
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5);
 
         final BigDecimal result = rental.calculatePrice();
@@ -63,55 +278,27 @@ public class RentalTest {
     }
 
     @Test
-    public void givenEndDateWhenCalculatePriceThenReturnZero() {
-        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, 3);
-
-        rental.markActive();
-        rental.markExtraPaymentExpected();
-        rental.markCompleted();
-
-        final BigDecimal result = rental.calculatePrice();
-
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
-    }
-
-    @Test
-    public void givenNullEndDateWhenCalculateExtraChargesThenReturnZero() {
-        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5);
-
-        final BigDecimal result = rental.calculateExtraCharges();
-
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
-    }
-
-    @Test
-    public void givenEndDateBeforeExpireWhenCalculateExtraChargesThenReturnZero() {
-        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5, 3);
-
-        rental.markActive();
-        rental.markExtraPaymentExpected();
-        rental.markCompleted();
-
-        final BigDecimal result = rental.calculateExtraCharges();
-
-        assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
-    }
-
-    @Test
-    public void givenEndDateAfterExpireWhenCalculateExtraChargesThenReturnCorrectResult() {
+    public void whenCalculateExtraChargesThenReturnCorrectResult() {
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 2, 3);
 
+        rental.markPaidUpFront();
         rental.markActive();
-        rental.markExtraPaymentExpected();
-        rental.markCompleted();
+        rental.markReturned();
 
         final BigDecimal result = rental.calculateExtraCharges();
 
         assertThat(result).isNotNull();
         assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(30));
+    }
+
+    @Test
+    public void givenNullReturnDateWhenCalculateExtraChargesThenThrowException() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Cannot calculate late charges if RETURN DATE is not set.");
+
+        rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5);
+
+        rental.calculateExtraCharges();
     }
 
     @Test

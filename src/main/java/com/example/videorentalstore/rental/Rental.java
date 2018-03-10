@@ -33,12 +33,10 @@ public class Rental {
     private Instant startDate;
 
     @Column(name = "end_date")
-    private Instant endDate;
+    private Instant returnDate;
 
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    private boolean active = true;
 
     public Rental(Film film, int daysRented) {
         this(film, daysRented, Instant.now());
@@ -51,59 +49,104 @@ public class Rental {
         if (daysRented <= 0) {
             throw new IllegalArgumentException("Number of days rented cannot be negative!");
         }
+
         this.film = film;
         this.film.take();
 
         this.daysRented = daysRented;
         this.startDate = startDate;
-        this.status = Status.PAYMENT_EXPECTED;
+        this.status = Status.UP_FRONT_PAYMENT_EXPECTED;
+    }
+
+    public Rental markPaidUpFront() {
+        if (this.status != Status.UP_FRONT_PAYMENT_EXPECTED) {
+            throw new IllegalStateException(
+                    String.format("Cannot mark Rental as PAID_UP_FRONT that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
+        }
+        this.status = Status.PAID_UP_FRONT;
+
+        return this;
     }
 
     public Rental markActive() {
-        if (this.status != Status.PAYMENT_EXPECTED) {
+        if (this.status != Status.PAID_UP_FRONT) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as ACTIVE that is currently not PAYMENT_EXPECTED! Current status: %s.", this.status));
+                    String.format("Cannot mark Rental as ACTIVE that is currently not PAID_UP_FRONT! Current status: %s.", this.status));
         }
         this.status = Status.ACTIVE;
 
         return this;
     }
 
-    public Rental markExtraPaymentExpected() {
+    public void markReturned() {
         if (this.status != Status.ACTIVE) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as EXTRA_PAYMENT_EXPECTED that is currently not ACTIVE! Current status: %s.", this.status));
+                    String.format("Cannot mark Rental as RETURNED that is currently not ACTIVE! Current status: %s.", this.status));
         }
-        this.status = Status.EXTRA_PAYMENT_EXPECTED;
+        this.status = Status.RETURNED;
+        this.returnDate = Instant.now();
+        this.film.putBack();
+    }
+
+    public Rental markLatePaymentExpected() {
+        if (this.status != Status.RETURNED) {
+            throw new IllegalStateException(
+                    String.format("Cannot mark Rental as LATE_PAYMENT_EXPECTED that is currently not RETURNED! Current status: %s.", this.status));
+        }
+        this.status = Status.LATE_PAYMENT_EXPECTED;
+
+        return this;
+    }
+
+    public Rental markPayedLate() {
+        if (this.status != Status.LATE_PAYMENT_EXPECTED) {
+            throw new IllegalStateException(
+                    String.format("Cannot mark Rental as PAID_LATE that is currently not LATE_PAYMENT_EXPECTED! Current status: %s.", this.status));
+        }
+        this.status = Status.PAID_LATE;
 
         return this;
     }
 
     public Rental markCompleted() {
-        if (this.status != Status.EXTRA_PAYMENT_EXPECTED) {
+        if (this.status != Status.PAID_LATE) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as COMPLETED that is currently not EXTRA_PAYMENT_EXPECTED! Current status: %s.", this.status));
+                    String.format("Cannot mark Rental as COMPLETED that is currently not PAID_LATE! Current status: %s.", this.status));
         }
         this.status = Status.COMPLETED;
-        this.active = false;
-        this.endDate = Instant.now();
-        this.film.putBack();
 
         return this;
     }
 
+    public boolean isPaidUpFront() {
+        return !this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED);
+    }
+
+    public boolean isUpFrontPaymentExpected() {
+        return this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED);
+    }
+
+    public boolean isLatePaymentExpected() {
+        return this.status.equals(Status.LATE_PAYMENT_EXPECTED);
+    }
+
+    public boolean isNotCompleted() {
+        return !this.status.equals(Status.COMPLETED);
+    }
+
+    public boolean hasStatus(Status status) {
+        return this.status.equals(status);
+    }
+
     public BigDecimal calculatePrice() {
-        if (this.endDate != null) {
-            return BigDecimal.ZERO;
-        }
         return this.film.calculatePrice(this.daysRented);
     }
 
     public BigDecimal calculateExtraCharges() {
-        if (this.endDate == null) {
-            return BigDecimal.ZERO;
+        if (this.returnDate == null) {
+            throw new NullPointerException("Cannot calculate late charges if RETURN DATE is not set.");
         }
-        return this.film.calculateExtraCharges(DAYS.between(this.startDate, this.endDate) - this.daysRented);
+        return this.film.calculateExtraCharges(DAYS.between(this.startDate, this.returnDate) - this.daysRented);
     }
 
     public int calculateBonusPoints() {
@@ -113,12 +156,18 @@ public class Rental {
     /**
      * Enumeration for all the statuses {@link Rental} can be in.
      */
-    enum Status {
-        PAYMENT_EXPECTED,
+    public enum Status {
+        UP_FRONT_PAYMENT_EXPECTED,
+
+        PAID_UP_FRONT,
 
         ACTIVE,
 
-        EXTRA_PAYMENT_EXPECTED,
+        RETURNED, // mozda i ne treba vec odma sledeci
+
+        LATE_PAYMENT_EXPECTED,
+
+        PAID_LATE, // mozda i ne treba vec odma sledeci
 
         COMPLETED
     }
