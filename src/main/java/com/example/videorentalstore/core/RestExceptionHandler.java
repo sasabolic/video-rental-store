@@ -28,6 +28,11 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<Object> handleBadRequest(Exception e) {
+        return buildResponseEntity(RestError.of(HttpStatus.BAD_REQUEST, e));
+    }
+
     @ExceptionHandler({FilmNotFoundException.class, CustomerNotFoundException.class})
     public ResponseEntity<Object> handleNotFound(Exception e) {
         return buildResponseEntity(RestError.of(HttpStatus.NOT_FOUND, e));
