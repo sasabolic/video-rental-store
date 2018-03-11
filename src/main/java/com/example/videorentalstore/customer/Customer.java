@@ -50,7 +50,7 @@ public class Customer {
     }
 
     public void deactivate() {
-        this.rentals.stream().filter(Rental::isActive).findAny().ifPresent(r -> {
+        this.rentals.stream().filter(Rental::isNotCompleted).findAny().ifPresent(r -> {
             throw new IllegalStateException(String.format("Customer with id '%d' cannot be deactivated while containing rentals in status ACTIVE.", this.id));
         });
         this.active = false;
@@ -58,19 +58,25 @@ public class Customer {
 
     public void addRental(Rental rental) {
         this.rentals.add(rental);
-        if (rental.isActive()) {
-            this.bonusPoints += rental.calculateBonusPoints();
-        }
+    }
+
+    public void addBonusPoints() {
+        this.bonusPoints += this.rentals.stream()
+                .filter(Rental::isPaidUpFront)
+                .map(Rental::calculateBonusPoints)
+                .reduce(0, (x, y) -> x + y);
     }
 
     public BigDecimal calculatePrice() {
         return this.rentals.stream()
+                .filter(Rental::isUpFrontPaymentExpected)
                 .map(Rental::calculatePrice)
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }
 
     public BigDecimal calculateExtraCharges() {
         return this.rentals.stream()
+                .filter(Rental::isLatePaymentExpected)
                 .map(Rental::calculateExtraCharges)
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }
