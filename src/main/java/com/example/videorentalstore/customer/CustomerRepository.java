@@ -17,7 +17,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Override
     List<Customer> findAll();
 
-    @Query("SELECT c FROM Customer c LEFT JOIN FETCH c.rentals r WHERE c.id = ?1 AND c.active = true")
+    @Query("SELECT c FROM Customer c LEFT JOIN c.rentals r WITH r.active = true WHERE c.id = ?1 AND c.active = true")
     @Override
     Optional<Customer> findById(Long id);
 
