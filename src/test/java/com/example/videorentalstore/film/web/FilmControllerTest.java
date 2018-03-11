@@ -295,7 +295,7 @@ public class FilmControllerTest {
                 .andExpect(jsonPath("$.status", equalTo(400)))
                 .andExpect(jsonPath("$.message", equalTo("Validation failed")))
                 .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors", hasSize(3)));
+                .andExpect(jsonPath("$.errors", hasSize(2)));
     }
 
     @Test
@@ -423,7 +423,7 @@ public class FilmControllerTest {
                 .andExpect(jsonPath("$.status", equalTo(400)))
                 .andExpect(jsonPath("$.message", equalTo("Validation failed")))
                 .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors", hasSize(3)));
+                .andExpect(jsonPath("$.errors", hasSize(2)));
     }
 
     @Test
