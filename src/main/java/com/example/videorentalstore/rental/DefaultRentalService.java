@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,11 +33,15 @@ public class DefaultRentalService implements RentalService {
     }
 
     @Override
-    public List<Rental> findAllForCustomer(Long customerId) {
+    public List<Rental> findAllForCustomer(Long customerId, Rental.Status status) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
-        return customer.getRentals();
+        if (status == null) {
+            return customer.getRentals();
+        }
+
+        return customer.getRentals().stream().filter(r -> r.hasStatus(status)).collect(Collectors.toList());
     }
 
     @Override
@@ -68,27 +73,47 @@ public class DefaultRentalService implements RentalService {
     }
 
     @Override
-    public Receipt process(BatchRentalCommand batchRentalCommand) {
-        Customer customer = customerRepository.findById(batchRentalCommand.getCustomerId())
-                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", batchRentalCommand.getCustomerId())));
+    public List<Rental> create(Long customerId, List<RentalInfo> rentalInfos) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
         List<Exception> exceptions = new ArrayList<>();
-        batchRentalCommand.getRentalIds().stream()
+        rentalInfos.stream()
+                .forEach(rentalInfo -> {
+                    try {
+                        final Film film = filmRepository.findById(rentalInfo.getFilmId())
+                                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", rentalInfo.getFilmId())));
+
+                        customer.addRental(new Rental(film, rentalInfo.getDaysRented()));
+                    } catch (FilmNotFoundException ex) {
+                        exceptions.add(ex);
+                    }
+
+                });
+
+        if (!exceptions.isEmpty()) {
+            throw new RentalException("Could not create rentals", exceptions);
+        }
+
+        customerRepository.save(customer);
+
+        return customer.getRentals();
+    }
+
+    @Override
+    public List<Rental> returnBack(Long customerId, List<Long> rentalIds) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
+
+        List<Exception> exceptions = new ArrayList<>();
+        rentalIds.stream()
                 .forEach(rentalId -> {
                     try {
                         final Rental rental = checkRentalExistsForCustomer(customer, rentalId);
 
-                        switch (batchRentalCommand.getAction()) {
-                            case PAY:
-                                rental.markActive();
-                                break;
-                            case RETURN:
-                                rental.markExtraPaymentExpected();
-                                break;
-                            case EXTRA_PAY:
-                                rental.markCompleted();
-                        }
-                    } catch(RentalNotFoundException | IllegalStateException ex) {
+                        rental.markReturned();
+                        rental.markLatePaymentExpected();
+                    } catch (RentalNotFoundException | IllegalStateException ex) {
                         exceptions.add(ex);
                     }
                 });
@@ -99,14 +124,18 @@ public class DefaultRentalService implements RentalService {
 
         customerRepository.save(customer);
 
-        return new Receipt(customer.calculateExtraCharges(), customer.getRentals());
+        return customer.getRentals();
+    }
+
+    @Override
+    public void delete(Long customerId, List<Long> ids) {
 
     }
 
     private Rental checkRentalExistsForCustomer(Customer customer, Long rentalId) {
         return customer.getRentals().stream()
-                                    .filter(r -> rentalId.equals(r.getId()))
-                                    .findAny()
-                                    .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rentalId, customer.getId())));
+                .filter(r -> rentalId.equals(r.getId()))
+                .findAny()
+                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rentalId, customer.getId())));
     }
 }

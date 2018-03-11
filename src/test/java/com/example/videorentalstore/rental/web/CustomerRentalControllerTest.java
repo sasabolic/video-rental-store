@@ -22,14 +22,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -60,7 +60,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetAllForCustomerThenReturnStatusOK() throws Exception {
-        given(this.rentalService.findAllForCustomer(anyLong())).willReturn(RentalDataFixtures.rentals());
+        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", 12)
@@ -73,7 +73,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetAllForCustomerThenReturnJson() throws Exception {
-        given(this.rentalService.findAllForCustomer(anyLong())).willReturn(RentalDataFixtures.rentals());
+        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", 12)
@@ -96,11 +96,78 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
+    public void whenGetAllForCustomerWithStatusThenReturnStatusOK() throws Exception {
+        given(this.rentalService.findAllForCustomer(anyLong(), isA(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/customers/{customerId}/rentals?status={status}", 12, Rental.Status.UP_FRONT_PAYMENT_EXPECTED)
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenGetAllForCustomerWithStatusThenReturnJson() throws Exception {
+        given(this.rentalService.findAllForCustomer(anyLong(), isA(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/customers/{customerId}/rentals?status={status}", 12, Rental.Status.UP_FRONT_PAYMENT_EXPECTED)
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].film_title", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$[0].days_rented", equalTo(1)))
+                .andExpect(jsonPath("$[1].film_title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$[1].days_rented", equalTo(5)))
+                .andExpect(jsonPath("$[2].film_title", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$[2].days_rented", equalTo(2)))
+                .andExpect(jsonPath("$[3].film_title", equalTo("Out of Africa")))
+                .andExpect(jsonPath("$[3].days_rented", equalTo(7)));
+    }
+
+    @Test
+    public void whenGetAllForCustomerWithNonExistingStatusThenReturnStatusBadRequest() throws Exception {
+        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/customers/{customerId}/rentals?status={status}", 12, "NON_EXISTING")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenGetAllForCustomerWithNonExistingStatusThenReturnJsonError() throws Exception {
+        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/customers/{customerId}/rentals?status={status}", 12, "NON_EXISTING")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(400)));
+    }
+
+    @Test
     public void whenGetAllForNonExistingCustomerThenReturnStatusNotFound() throws Exception {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.rentalService.findAllForCustomer(anyLong())).willThrow(new CustomerNotFoundException(message));
+        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", customerId)
@@ -116,7 +183,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.rentalService.findAllForCustomer(anyLong())).willThrow(new CustomerNotFoundException(message));
+        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", customerId)
@@ -133,7 +200,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenCreateForCustomerThenReturnStatusOK() throws Exception {
+    public void whenCreateForCustomerThenReturnStatusCreated() throws Exception {
         given(rentalService.create(isA(BatchRentalCreateCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -143,12 +210,29 @@ public class CustomerRentalControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void whenCreateForCustomerThenReturnLocationHeader() throws Exception {
+        final int customerId = 12;
+
+        given(rentalService.create(isA(BatchRentalCreateCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers/{customerId}/rentals", customerId)
+                .content(RentalDataFixtures.json())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", equalTo("http://localhost/customers/" + customerId + "/rentals?status=UP_FRONT_PAYMENT_EXPECTED")));
     }
 
     @Test
     public void whenCreateForCustomerThenReturnJson() throws Exception {
-        given(rentalService.create(isA(BatchRentalCreateCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
+        given(rentalService.create(anyLong(), anyList())).willReturn(RentalDataFixtures.rentals());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", 12)
@@ -157,24 +241,23 @@ public class CustomerRentalControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.amount", equalTo(250)))
-                .andExpect(jsonPath("$.rentals").isArray())
-                .andExpect(jsonPath("$.rentals", hasSize(4)))
-                .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
-                .andExpect(jsonPath("$.rentals[0].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[0].end_date", is(nullValue())))
-                .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
-                .andExpect(jsonPath("$.rentals[1].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
-                .andExpect(jsonPath("$.rentals[2].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
-                .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].days_rented", equalTo(1)))
+                .andExpect(jsonPath("$[0].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$[0].return_date", is(nullValue())))
+                .andExpect(jsonPath("$[0].film_title", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$[1].days_rented", equalTo(5)))
+                .andExpect(jsonPath("$[1].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$[1].film_title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$[2].days_rented", equalTo(2)))
+                .andExpect(jsonPath("$[2].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$[2].film_title", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$[3].days_rented", equalTo(7)))
+                .andExpect(jsonPath("$[3].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$[3].film_title", equalTo("Out of Africa")));
     }
 
     @Test
@@ -182,7 +265,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(rentalService.create(isA(BatchRentalCreateCommand.class))).willThrow(new CustomerNotFoundException(message));
+        given(rentalService.create(anyLong(), anyList())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", customerId)
@@ -199,7 +282,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(rentalService.create(isA(BatchRentalCreateCommand.class))).willThrow(new CustomerNotFoundException(message));
+        given(rentalService.create(anyLong(), anyList())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", customerId)
@@ -224,7 +307,7 @@ public class CustomerRentalControllerTest {
         final String message1 = "Film with id '" + filmId1 + "' does not exist";
         final String message2 = "Film with id '" + filmId2 + "' does not exist";
 
-        given(rentalService.create(isA(BatchRentalCreateCommand.class))).willThrow(new RentalException(message, Arrays.asList(new FilmNotFoundException(message1), new FilmNotFoundException(message2))));
+        given(rentalService.create(anyLong(), anyList())).willThrow(new RentalException(message, Arrays.asList(new FilmNotFoundException(message1), new FilmNotFoundException(message2))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", 1L)
@@ -249,7 +332,7 @@ public class CustomerRentalControllerTest {
         final String message2 = "Film with id '" + filmId2 + "' does not exist";
 
 
-        given(rentalService.create(isA(BatchRentalCreateCommand.class))).willThrow(new RentalException(message, Arrays.asList(new FilmNotFoundException(message1), new FilmNotFoundException(message2))));
+        given(rentalService.create(anyLong(), anyList())).willThrow(new RentalException(message, Arrays.asList(new FilmNotFoundException(message1), new FilmNotFoundException(message2))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", 1L)
@@ -339,12 +422,12 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenPayThenReturnStatusOK() throws Exception {
-        given(rentalService.process(isA(BatchRentalCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
+    public void whenReturnBackThenReturnStatusOK() throws Exception {
+        given(rentalService.returnBack(anyLong(), anyList())).willReturn(RentalDataFixtures.rentals());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content(RentalDataFixtures.payJson())
+                .content(RentalDataFixtures.returnJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -353,49 +436,51 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenPayThenReturnJson() throws Exception {
-        given(rentalService.process(isA(BatchRentalCommand.class))).willReturn(new Receipt(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
+    public void whenReturnBackThenReturnJson() throws Exception {
+        final List<Rental> rentals = RentalDataFixtures.rentals();
+        rentals.forEach(r -> r.markPaidUpFront().markActive().markReturned());
+
+        given(rentalService.returnBack(anyLong(), anyList())).willReturn(rentals);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content(RentalDataFixtures.payJson())
+                .content(RentalDataFixtures.returnJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.amount", equalTo(110)))
-                .andExpect(jsonPath("$.rentals").isArray())
-                .andExpect(jsonPath("$.rentals", hasSize(4)))
-                .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
-                .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$.rentals[0].start_date", is(notNullValue())))
-//                .andExpect(jsonPath("$.rentals[0].end_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
-                .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$.rentals[1].start_date", is(notNullValue())))
-//                .andExpect(jsonPath("$.rentals[1].end_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
-                .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$.rentals[2].start_date", is(notNullValue())))
-//                .andExpect(jsonPath("$.rentals[2].end_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
-                .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")))
-                .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())));
-//                .andExpect(jsonPath("$.rentals[3].end_date", is(notNullValue())));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].days_rented", equalTo(1)))
+                .andExpect(jsonPath("$[0].film_title", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$[0].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$[0].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$[1].days_rented", equalTo(5)))
+                .andExpect(jsonPath("$[1].film_title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$[1].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$[1].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$[2].days_rented", equalTo(2)))
+                .andExpect(jsonPath("$[2].film_title", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$[2].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$[2].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$[3].days_rented", equalTo(7)))
+                .andExpect(jsonPath("$[3].film_title", equalTo("Out of Africa")))
+                .andExpect(jsonPath("$[3].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$[3].return_date", is(notNullValue())));
     }
 
     @Test
-    public void whenPayForNonExistingCustomerThenReturnStatusNotFound() throws Exception {
+    public void whenReturnBackForNonExistingCustomerThenReturnStatusNotFound() throws Exception {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(rentalService.process(isA(BatchRentalCommand.class))).willThrow(new CustomerNotFoundException(message));
+        given(rentalService.returnBack(anyLong(), anyList())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", customerId)
-                .content(RentalDataFixtures.payJson())
+                .content(RentalDataFixtures.returnJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -404,15 +489,15 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenPayForNonExistingCustomerThenReturnJsonError() throws Exception {
+    public void whenReturnBackForNonExistingCustomerThenReturnJsonError() throws Exception {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(rentalService.process(isA(BatchRentalCommand.class))).willThrow(new CustomerNotFoundException(message));
+        given(rentalService.returnBack(anyLong(), anyList())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", customerId)
-                .content(RentalDataFixtures.payJson())
+                .content(RentalDataFixtures.returnJson())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -426,7 +511,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenPatchRequestForCustomerNonExistingRentalsThenReturnStatusBadRequest() throws Exception {
+    public void whenReturnBackForCustomerNonExistingRentalsThenReturnStatusBadRequest() throws Exception {
         final Long rentalId1 = 10L;
         final Long rentalId2 = 23L;
         final String message = "Could not create rentals";
@@ -434,12 +519,11 @@ public class CustomerRentalControllerTest {
         final String message2 = "Rental with id '" + rentalId2 + "' does not exist";
 
 
-        given(rentalService.process(isA(BatchRentalCommand.class))).willThrow(new RentalException(message, Arrays.asList(new RentalNotFoundException(message1), new RentalNotFoundException(message2))));
+        given(rentalService.returnBack(anyLong(), anyList())).willThrow(new RentalException(message, Arrays.asList(new RentalNotFoundException(message1), new RentalNotFoundException(message2))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
                 .content("{\n" +
-                        "  \"action\": \"PAY\",\n" +
                         "  \"rentals\": [\n" +
                         "    {\"rental_id\": 1},\n" +
                         "    {\"rental_id\": 2},\n" +
@@ -455,7 +539,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenPatchRequestForCustomerNonExistingRentalsThenReturnJsonError() throws Exception {
+    public void whenReturnBackForCustomerNonExistingRentalsThenReturnJsonError() throws Exception {
         final Long rentalId1 = 10L;
         final Long rentalId2 = 23L;
         final String message = "Could not create rentals";
@@ -463,12 +547,11 @@ public class CustomerRentalControllerTest {
         final String message2 = "Rental with id '" + rentalId2 + "' does not exist";
 
 
-        given(rentalService.process(isA(BatchRentalCommand.class))).willThrow(new RentalException(message, Arrays.asList(new RentalNotFoundException(message1), new RentalNotFoundException(message2))));
+        given(rentalService.returnBack(anyLong(), anyList())).willThrow(new RentalException(message, Arrays.asList(new RentalNotFoundException(message1), new RentalNotFoundException(message2))));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
                 .content("{\n" +
-                        "  \"action\": \"PAY\",\n" +
                         "  \"rentals\": [\n" +
                         "    {\"rental_id\": 1},\n" +
                         "    {\"rental_id\": 2},\n" +
@@ -491,7 +574,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenPatchRequestForCustomerEmptyRequestThenReturnStatusBadRequest() throws Exception {
+    public void whenReturnBackForCustomerEmptyRequestThenReturnStatusBadRequest() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
                 .content("[]")
@@ -503,7 +586,7 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenPatchRequestForCustomerEmptyRequestThenReturnJsonError() throws Exception {
+    public void whenReturnBackForCustomerEmptyRequestThenReturnJsonError() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
                 .content("{}")
@@ -518,15 +601,14 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.status", equalTo(400)))
                 .andExpect(jsonPath("$.message", equalTo("Validation failed")))
                 .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.errors", hasSize(2)));
+                .andExpect(jsonPath("$.errors", hasSize(1)));
     }
 
     @Test
-    public void whenPatchRequestForCustomerWithInvalidFieldsThenReturnStatusBadRequest() throws Exception {
+    public void whenReturnBackForCustomerWithInvalidFieldsThenReturnStatusBadRequest() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
                 .content("{\n" +
-                        "  \"action\": \"PAY\",\n" +
                         "  \"rentals\": [\n" +
                         "    {\"rental_id\": null}\n" +
                         "  ]\n" +
@@ -543,7 +625,6 @@ public class CustomerRentalControllerTest {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
                 .content("{\n" +
-                        "  \"action\": \"PAY\",\n" +
                         "  \"rentals\": [\n" +
                         "    {\"rental_id\": null}\n" +
                         "  ]\n" +

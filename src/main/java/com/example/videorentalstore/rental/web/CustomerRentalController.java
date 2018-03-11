@@ -1,13 +1,16 @@
 package com.example.videorentalstore.rental.web;
 
-import com.example.videorentalstore.rental.*;
+import com.example.videorentalstore.rental.Rental;
+import com.example.videorentalstore.rental.RentalService;
 import com.example.videorentalstore.rental.web.dto.*;
 import com.example.videorentalstore.rental.web.dto.assembler.ReceiptResponseAssembler;
 import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssembler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,28 +30,42 @@ public class CustomerRentalController {
         this.receiptResponseAssembler = receiptResponseAssembler;
     }
 
-    @GetMapping("/customers/{id}/rentals")
-    public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("id") long customerId, @RequestParam(required = false) String status) {
-        final List<Rental> rentals = this.rentalService.findAllForCustomer(customerId);
+    @GetMapping("/customers/{customerId}/rentals")
+    public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("customerId") long customerId, @RequestParam(required = false) String status) {
+        final List<Rental> rentals = this.rentalService.findAllForCustomer(customerId, status != null ? Rental.Status.valueOf(status) : null);
 
         return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
     }
 
-    @PostMapping("/customers/{id}/rentals")
-    public ResponseEntity<ReceiptResponse> create(@PathVariable("id") long customerId, @RequestBody @Valid CreateRentalRequestList createRentalRequestList) {
-        BatchRentalCreateCommand batchRentalCreateCommand = new BatchRentalCreateCommand(customerId, createRentalRequestList.stream().map(CreateRentalRequest::toRentalInfo).collect(Collectors.toList()));
+    @PostMapping("/customers/{customerId}/rentals")
+    public ResponseEntity<List<RentalResponse>> create(@PathVariable("customerId") long customerId, @RequestBody @Valid CreateRentalRequestList createRentalRequestList) {
+        final List<Rental> rentals = rentalService.create(customerId, createRentalRequestList.stream().map(CreateRentalRequest::toRentalInfo).collect(Collectors.toList()));
 
-        final Receipt receipt = rentalService.create(batchRentalCreateCommand);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .query("status={status}")
+                .buildAndExpand(Rental.Status.UP_FRONT_PAYMENT_EXPECTED).toUri();
 
-        return ResponseEntity.ok(receiptResponseAssembler.of(receipt));
+//        return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
+        return ResponseEntity.created(location).body(rentalResponseAssembler.of(rentals));
     }
 
-    @PatchMapping("/customers/{id}/rentals")
-    public ResponseEntity<ReceiptResponse> patch(@PathVariable("id") long customerId, @RequestBody @Valid BatchRentalRequest batchRentalRequest) {
-        BatchRentalCommand batchRentalCommand = new BatchRentalCommand(customerId, BatchRentalCommand.Action.valueOf(batchRentalRequest.getAction()), batchRentalRequest.getRentals().stream().map(RentalRequest::getRentalId).collect(Collectors.toList()));
 
-        final Receipt receipt = this.rentalService.process(batchRentalCommand);
+    @PatchMapping("/customers/{customerId}/rentals")
+    public ResponseEntity<List<RentalResponse>> returnBack(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchRentalRequest batchRentalRequest) {
+        final List<Rental> rentals = this.rentalService.returnBack(customerId, batchRentalRequest.getRentals().stream().map(RentalRequest::getRentalId).collect(Collectors.toList()));
 
-        return ResponseEntity.ok(receiptResponseAssembler.of(receipt));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .query("status={status}")
+                .buildAndExpand(Rental.Status.LATE_PAYMENT_EXPECTED).toUri();
+
+//        return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
+        return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
+    }
+
+    @DeleteMapping("/customers/{customerId}/rentals")
+    public ResponseEntity<Void> delete(@PathVariable("customerId") long customerId, @RequestParam List<Long> ids) {
+        return ResponseEntity.noContent().build();
     }
 }
