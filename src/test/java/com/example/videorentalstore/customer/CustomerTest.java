@@ -99,6 +99,19 @@ public class CustomerTest {
     }
 
     @Test
+    public void whenRentalPaidUpFrontRentalsCalculateThenReturnCorrectAmount() {
+        final List<Rental> rentals = RentalDataFixtures.rentals();
+
+        rentals.forEach(Rental::markPaidUpFront);
+
+        rentals.forEach(r -> customer.addRental(r));
+
+        final BigDecimal totalAmount = customer.calculatePrice();
+
+        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
     public void whenRentalsAddedThenRentalsSizeIncreased() {
         final long before = customer.getRentals().size();
 
