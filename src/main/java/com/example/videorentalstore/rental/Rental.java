@@ -119,7 +119,7 @@ public class Rental {
     }
 
     public boolean isPaidUpFront() {
-        return !this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED);
+        return this.status.equals(Status.PAID_UP_FRONT);
     }
 
     public boolean isUpFrontPaymentExpected() {

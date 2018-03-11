@@ -170,10 +170,6 @@ public class RentalTest {
     @Test
     public void whenIsPaidUpFrontThenTrue() {
         rental.markPaidUpFront();
-        rental.markActive();
-        rental.markReturned();
-        rental.markLatePaymentExpected();
-        rental.markPayedLate();
 
         final boolean result = rental.isPaidUpFront();
 
