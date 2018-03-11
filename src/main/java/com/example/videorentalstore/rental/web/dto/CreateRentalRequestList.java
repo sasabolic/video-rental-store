@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
- * List of {@link CreateRentalRequest} DTOs.
+ * Batch return rentals request DTO. Contains List of {@link CreateRentalRequest} DTOs.
  */
 @Getter
 @ToString
