@@ -45,7 +45,7 @@ public class RentalDataFixtures {
         );
     }
 
-    public static List<Rental> finishedRentals() {
+    public static List<Rental> completedRentals() {
         return Arrays.asList(
                 rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1).markCompleted(),
                 rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5).markCompleted(),
@@ -54,9 +54,8 @@ public class RentalDataFixtures {
         );
     }
 
-    public static String payJson() {
+    public static String returnJson() {
         return "{\n" +
-                "  \"action\": \"PAY\",\n" +
                 "  \"rentals\": [\n" +
                 "    {\"rental_id\": 1},\n" +
                 "    {\"rental_id\": 2},\n" +
