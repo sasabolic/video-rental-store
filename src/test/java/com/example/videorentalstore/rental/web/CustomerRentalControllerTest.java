@@ -438,7 +438,7 @@ public class CustomerRentalControllerTest {
     @Test
     public void whenReturnBackThenReturnJson() throws Exception {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.forEach(r -> r.markPaidUpFront().markActive().markReturned());
+        rentals.forEach(r -> r.markPaidUpFront().markInProcess().markReturned());
 
         given(rentalService.returnBack(anyLong(), anyList())).willReturn(rentals);
 

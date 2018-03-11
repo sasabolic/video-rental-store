@@ -76,7 +76,7 @@ public class CustomerTest {
     public void whenDeactivateWithCompletedRentalsThenActiveFalse() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
         rentals.stream().forEach(Rental::markPaidUpFront);
-        rentals.stream().forEach(Rental::markActive);
+        rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
         rentals.stream().forEach(Rental::markLatePaymentExpected);
         rentals.stream().forEach(Rental::markPayedLate);
@@ -131,7 +131,7 @@ public class CustomerTest {
 
         final List<Rental> rentals = RentalDataFixtures.rentals();
         rentals.stream().forEach(Rental::markPaidUpFront);
-        rentals.stream().forEach(Rental::markActive);
+        rentals.stream().forEach(Rental::markInProcess);
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
@@ -146,7 +146,7 @@ public class CustomerTest {
     public void whenRentalsReturnedSameDayThenCalculateExtraChargesReturnsZeroAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
         rentals.stream().forEach(Rental::markPaidUpFront);
-        rentals.stream().forEach(Rental::markActive);
+        rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
         rentals.stream().forEach(Rental::markLatePaymentExpected);
 
@@ -161,7 +161,7 @@ public class CustomerTest {
     public void whenRentalsReturnedThenCalculateExtraChargesReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals(3);
         rentals.stream().forEach(Rental::markPaidUpFront);
-        rentals.stream().forEach(Rental::markActive);
+        rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
         rentals.stream().forEach(Rental::markLatePaymentExpected);
 
@@ -176,7 +176,7 @@ public class CustomerTest {
     public void whenRentalsReturnedThenCalculatePriceReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
         rentals.stream().forEach(Rental::markPaidUpFront);
-        rentals.stream().forEach(Rental::markActive);
+        rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
         rentals.stream().forEach(Rental::markLatePaymentExpected);
 

@@ -24,6 +24,11 @@ public class RentalTest {
     }
 
     @Test
+    public void whenNewInstanceThenActiveTrue() {
+        assertThat(rental.isActive()).isTrue();
+    }
+
+    @Test
     public void whenNewInstanceThenStatusUpFrontPaymentExpected() {
         assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
     }
@@ -64,35 +69,35 @@ public class RentalTest {
     @Test
     public void givenInvalidStateWhenMarkPaidUpFrontThenThrowError() {
         thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark Rental as PAID_UP_FRONT that is currently not UP_FRONT_PAYMENT_EXPECTED!");
+        thrown.expectMessage("Cannot mark rental as PAID_UP_FRONT that is currently not UP_FRONT_PAYMENT_EXPECTED!");
 
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
 
         rental.markPaidUpFront();
     }
 
     @Test
-    public void whenMarkActiveThenStatusActive() {
+    public void whenMarkInProcessThenStatusInProcess() {
         rental.markPaidUpFront();
 
-        rental.markActive();
+        rental.markInProcess();
 
-        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.ACTIVE);
+        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.IN_PROCESS);
     }
 
     @Test
-    public void givenInvalidStateWhenMarkActiveThenThrowError() {
+    public void givenInvalidStateWhenMarkInProcessThenThrowError() {
         thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark Rental as ACTIVE that is currently not PAID_UP_FRONT!");
+        thrown.expectMessage("Cannot mark rental as IN_PROCESS that is currently not PAID_UP_FRONT!");
 
-        rental.markActive();
+        rental.markInProcess();
     }
 
     @Test
     public void whenMarkReturnedThenStatusReturned() {
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
 
         rental.markReturned();
 
@@ -102,7 +107,7 @@ public class RentalTest {
     @Test
     public void givenInvalidStateWhenMarkReturnedThenThrowError() {
         thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark Rental as RETURNED that is currently not ACTIVE!");
+        thrown.expectMessage("Cannot mark rental as RETURNED that is currently not IN_PROCESS!");
 
         rental.markReturned();
     }
@@ -110,7 +115,7 @@ public class RentalTest {
     @Test
     public void whenMarkLatePaymentExpectedThenStatusLatePaymentExpected() {
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
         rental.markReturned();
 
         rental.markLatePaymentExpected();
@@ -121,7 +126,7 @@ public class RentalTest {
     @Test
     public void givenInvalidStateWhenMarkLatePaymentExpectedThenThrowError() {
         thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark Rental as LATE_PAYMENT_EXPECTED that is currently not RETURNED!");
+        thrown.expectMessage("Cannot mark rental as LATE_PAYMENT_EXPECTED that is currently not RETURNED!");
 
         rental.markLatePaymentExpected();
     }
@@ -129,7 +134,7 @@ public class RentalTest {
     @Test
     public void whenMarkPayedLateThenStatusPayedLate() {
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
         rental.markReturned();
         rental.markLatePaymentExpected();
 
@@ -141,7 +146,7 @@ public class RentalTest {
     @Test
     public void givenInvalidStateWhenMarkPaidLatetExpectedThenThrowError() {
         thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark Rental as PAID_LATE that is currently not LATE_PAYMENT_EXPECTED!");
+        thrown.expectMessage("Cannot mark rental as PAID_LATE that is currently not LATE_PAYMENT_EXPECTED!");
 
         rental.markPayedLate();
     }
@@ -149,7 +154,7 @@ public class RentalTest {
     @Test
     public void whenMarkCompletedThenStatusCompleted() {
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
         rental.markReturned();
         rental.markLatePaymentExpected();
         rental.markPayedLate();
@@ -162,26 +167,9 @@ public class RentalTest {
     @Test
     public void givenInvalidStateWhenMarkCompletedThenThrowError() {
         thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark Rental as COMPLETED that is currently not PAID_LATE! Current status: UP_FRONT_PAYMENT_EXPECTED.");
+        thrown.expectMessage("Cannot mark rental as COMPLETED that is currently not PAID_LATE! Current status: UP_FRONT_PAYMENT_EXPECTED.");
 
         rental.markCompleted();
-    }
-
-    @Test
-    public void whenIsPaidUpFrontThenTrue() {
-        rental.markPaidUpFront();
-
-        final boolean result = rental.isPaidUpFront();
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenDifferentStatusWhenIsPaidUpFrontThenFalse() {
-
-        final boolean result = rental.isPaidUpFront();
-
-        assertThat(result).isFalse();
     }
 
     @Test
@@ -202,6 +190,23 @@ public class RentalTest {
     }
 
     @Test
+    public void whenIsPaidUpFrontThenTrue() {
+        rental.markPaidUpFront();
+
+        final boolean result = rental.isPaidUpFront();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void givenDifferentStatusWhenIsPaidUpFrontThenFalse() {
+
+        final boolean result = rental.isPaidUpFront();
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
     public void whenIsLatePaymentExpectedThenTrue() {
 
         final boolean result = rental.isUpFrontPaymentExpected();
@@ -212,7 +217,7 @@ public class RentalTest {
     @Test
     public void givenDifferentStatusWhenIsLatePaymentExpectedThenFalse() {
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
         rental.markReturned();
 
         final boolean result = rental.isUpFrontPaymentExpected();
@@ -223,7 +228,7 @@ public class RentalTest {
     @Test
     public void givenDifferentStatusWhenIsNotCompletedThenTrue() {
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
         rental.markReturned();
 
         final boolean result = rental.isNotCompleted();
@@ -234,7 +239,7 @@ public class RentalTest {
     @Test
     public void whenIsNotCompletedThenFalse() {
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
         rental.markReturned();
         rental.markLatePaymentExpected();
         rental.markPayedLate();
@@ -258,9 +263,26 @@ public class RentalTest {
     public void givenDifferentStatusWhenHasStatusThenFalse() {
         rental.markPaidUpFront();
 
-        final boolean result = rental.hasStatus(Rental.Status.ACTIVE);
+        final boolean result = rental.hasStatus(Rental.Status.IN_PROCESS);
 
         assertThat(result).isFalse();
+    }
+
+    @Test
+    public void whenDeactivateThenActiveFalse() {
+        rental.deactivate();
+
+        assertThat(rental.isActive()).isFalse();
+    }
+
+    @Test
+    public void givenInvalidStateWhenDeactivateThenThrowError() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Cannot deactivate rental that is currently not UP_FRONT_PAYMENT_EXPECTED!");
+
+        rental.markPaidUpFront();
+
+        rental.deactivate();
     }
 
     @Test
@@ -278,7 +300,7 @@ public class RentalTest {
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 2, 3);
 
         rental.markPaidUpFront();
-        rental.markActive();
+        rental.markInProcess();
         rental.markReturned();
 
         final BigDecimal result = rental.calculateExtraCharges();

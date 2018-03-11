@@ -172,10 +172,10 @@ public class RentalServiceTest {
         final Rental regularReleaseRental1 = spy(RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2, 3));
         final Rental oldReleaseRental = spy(RentalDataFixtures.rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7, 3));
 
-        customer.addRental(newReleaseRental.markPaidUpFront().markActive());
-        customer.addRental(regularReleaseRental.markPaidUpFront().markActive());
-        customer.addRental(regularReleaseRental1.markPaidUpFront().markActive());
-        customer.addRental(oldReleaseRental.markPaidUpFront().markActive());
+        customer.addRental(newReleaseRental.markPaidUpFront().markInProcess());
+        customer.addRental(regularReleaseRental.markPaidUpFront().markInProcess());
+        customer.addRental(regularReleaseRental1.markPaidUpFront().markInProcess());
+        customer.addRental(oldReleaseRental.markPaidUpFront().markInProcess());
 
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
         doReturn(1L).when(newReleaseRental).getId();

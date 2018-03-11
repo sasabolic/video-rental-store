@@ -51,7 +51,7 @@ public class Customer {
 
     public void deactivate() {
         this.rentals.stream().filter(Rental::isNotCompleted).findAny().ifPresent(r -> {
-            throw new IllegalStateException(String.format("Customer with id '%d' cannot be deactivated while containing rentals in status ACTIVE.", this.id));
+            throw new IllegalStateException(String.format("Customer with id '%d' cannot be deactivated while containing rentals in status IN_PROCESS.", this.id));
         });
         this.active = false;
     }

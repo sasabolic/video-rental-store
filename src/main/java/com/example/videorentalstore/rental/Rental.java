@@ -38,6 +38,8 @@ public class Rental {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    private boolean active = true;
+
     public Rental(Film film, int daysRented) {
         this(film, daysRented, Instant.now());
     }
@@ -61,27 +63,27 @@ public class Rental {
     public Rental markPaidUpFront() {
         if (this.status != Status.UP_FRONT_PAYMENT_EXPECTED) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as PAID_UP_FRONT that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as PAID_UP_FRONT that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
         }
         this.status = Status.PAID_UP_FRONT;
 
         return this;
     }
 
-    public Rental markActive() {
+    public Rental markInProcess() {
         if (this.status != Status.PAID_UP_FRONT) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as ACTIVE that is currently not PAID_UP_FRONT! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as IN_PROCESS that is currently not PAID_UP_FRONT! Current status: %s.", this.status));
         }
-        this.status = Status.ACTIVE;
+        this.status = Status.IN_PROCESS;
 
         return this;
     }
 
     public void markReturned() {
-        if (this.status != Status.ACTIVE) {
+        if (this.status != Status.IN_PROCESS) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as RETURNED that is currently not ACTIVE! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as RETURNED that is currently not IN_PROCESS! Current status: %s.", this.status));
         }
         this.status = Status.RETURNED;
         this.returnDate = Instant.now();
@@ -91,7 +93,7 @@ public class Rental {
     public Rental markLatePaymentExpected() {
         if (this.status != Status.RETURNED) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as LATE_PAYMENT_EXPECTED that is currently not RETURNED! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as LATE_PAYMENT_EXPECTED that is currently not RETURNED! Current status: %s.", this.status));
         }
         this.status = Status.LATE_PAYMENT_EXPECTED;
 
@@ -101,7 +103,7 @@ public class Rental {
     public Rental markPayedLate() {
         if (this.status != Status.LATE_PAYMENT_EXPECTED) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as PAID_LATE that is currently not LATE_PAYMENT_EXPECTED! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as PAID_LATE that is currently not LATE_PAYMENT_EXPECTED! Current status: %s.", this.status));
         }
         this.status = Status.PAID_LATE;
 
@@ -111,19 +113,19 @@ public class Rental {
     public Rental markCompleted() {
         if (this.status != Status.PAID_LATE) {
             throw new IllegalStateException(
-                    String.format("Cannot mark Rental as COMPLETED that is currently not PAID_LATE! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as COMPLETED that is currently not PAID_LATE! Current status: %s.", this.status));
         }
         this.status = Status.COMPLETED;
 
         return this;
     }
 
-    public boolean isPaidUpFront() {
-        return this.status.equals(Status.PAID_UP_FRONT);
-    }
-
     public boolean isUpFrontPaymentExpected() {
         return this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED);
+    }
+
+    public boolean isPaidUpFront() {
+        return this.status.equals(Status.PAID_UP_FRONT);
     }
 
     public boolean isLatePaymentExpected() {
@@ -136,6 +138,13 @@ public class Rental {
 
     public boolean hasStatus(Status status) {
         return this.status.equals(status);
+    }
+
+    public void deactivate() {
+        if (this.status != Status.UP_FRONT_PAYMENT_EXPECTED) {
+            throw new IllegalStateException(String.format("Cannot deactivate rental that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
+        }
+        this.active = false;
     }
 
     public BigDecimal calculatePrice() {
@@ -161,7 +170,7 @@ public class Rental {
 
         PAID_UP_FRONT,
 
-        ACTIVE,
+        IN_PROCESS,
 
         RETURNED, // mozda i ne treba vec odma sledeci
 

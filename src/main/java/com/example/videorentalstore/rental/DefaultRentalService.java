@@ -128,8 +128,27 @@ public class DefaultRentalService implements RentalService {
     }
 
     @Override
-    public void delete(Long customerId, List<Long> ids) {
+    public void delete(Long customerId, List<Long> rentalIds) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
+        List<Exception> exceptions = new ArrayList<>();
+        rentalIds.stream()
+                .forEach(rentalId -> {
+                    try {
+                        final Rental rental = checkRentalExistsForCustomer(customer, rentalId);
+
+                        rental.deactivate();
+                    } catch (RentalNotFoundException | IllegalStateException ex) {
+                        exceptions.add(ex);
+                    }
+                });
+
+        if (!exceptions.isEmpty()) {
+            throw new RentalException("Could not process batch rental command", exceptions);
+        }
+
+        rentalRepository.deleteAll(customer.getRentals());
     }
 
     private Rental checkRentalExistsForCustomer(Customer customer, Long rentalId) {
