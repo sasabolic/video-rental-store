@@ -13,16 +13,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @JsonTest
-public class CreateRentalRequestListJsonTests {
+public class BatchCreateRentalRequestJsonTests {
 
 	@Autowired
-	private JacksonTester<CreateRentalRequestList> json;
+	private JacksonTester<BatchCreateRentalRequest> json;
 
 	@Test
 	public void testDeserialize() throws Exception {
 		String content = "[{\"film_id\":1,\"days_rented\":10}]";
 
-		assertThat(this.json.parse(content)).isEqualTo(new CreateRentalRequestList(Arrays.asList(new CreateRentalRequest(1L, 10))));
+		assertThat(this.json.parse(content)).isEqualTo(new BatchCreateRentalRequest(Arrays.asList(new CreateRentalRequest(1L, 10))));
 		assertThat(this.json.parseObject(content).getCreateRentalRequests()).isEqualTo(Arrays.asList(new CreateRentalRequest(1L, 10)));
 	}
 

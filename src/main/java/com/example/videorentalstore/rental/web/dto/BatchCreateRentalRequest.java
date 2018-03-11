@@ -11,20 +11,20 @@ import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
- * Batch return rentals request DTO. Contains List of {@link CreateRentalRequest} DTOs.
+ * Batch create rentals request DTO. Contains List of {@link CreateRentalRequest} DTOs.
  */
 @Getter
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
-public class CreateRentalRequestList implements List<CreateRentalRequest> {
+public class BatchCreateRentalRequest implements List<CreateRentalRequest> {
 
     @NotNull(message = "List of create rental requests cannot be null")
     @NotEmpty(message = "List of create rental requests cannot be empty")
     @Valid
     private List<CreateRentalRequest> createRentalRequests = new ArrayList<>();
 
-    public CreateRentalRequestList(List<CreateRentalRequest> createRentalRequests) {
+    public BatchCreateRentalRequest(List<CreateRentalRequest> createRentalRequests) {
         this.createRentalRequests = createRentalRequests;
     }
 

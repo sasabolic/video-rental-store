@@ -38,8 +38,8 @@ public class CustomerRentalController {
     }
 
     @PostMapping("/customers/{customerId}/rentals")
-    public ResponseEntity<List<RentalResponse>> create(@PathVariable("customerId") long customerId, @RequestBody @Valid CreateRentalRequestList createRentalRequestList) {
-        final List<Rental> rentals = rentalService.create(customerId, createRentalRequestList.stream().map(CreateRentalRequest::toRentalInfo).collect(Collectors.toList()));
+    public ResponseEntity<List<RentalResponse>> create(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchCreateRentalRequest batchCreateRentalRequest) {
+        final List<Rental> rentals = rentalService.create(customerId, batchCreateRentalRequest.stream().map(CreateRentalRequest::toRentalInfo).collect(Collectors.toList()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

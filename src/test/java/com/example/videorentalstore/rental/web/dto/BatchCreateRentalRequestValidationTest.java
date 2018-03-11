@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CreateRentalRequestListValidationTest {
+public class BatchCreateRentalRequestValidationTest {
 
     private static Validator validator;
 
@@ -25,16 +25,16 @@ public class CreateRentalRequestListValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        CreateRentalRequestList request = new CreateRentalRequestList(Arrays.asList(new CreateRentalRequest(1L, 10)));
-        final Set<ConstraintViolation<CreateRentalRequestList>> validate = validator.validate(request);
+        BatchCreateRentalRequest request = new BatchCreateRentalRequest(Arrays.asList(new CreateRentalRequest(1L, 10)));
+        final Set<ConstraintViolation<BatchCreateRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
     }
 
     @Test
     public void whenRequestNullThenViolationListNotEmpty() {
-        CreateRentalRequestList request = new CreateRentalRequestList(null);
-        final Set<ConstraintViolation<CreateRentalRequestList>> validate = validator.validate(request);
+        BatchCreateRentalRequest request = new BatchCreateRentalRequest(null);
+        final Set<ConstraintViolation<BatchCreateRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(2);
@@ -43,8 +43,8 @@ public class CreateRentalRequestListValidationTest {
 
     @Test
     public void whenRequestEmptyThenViolationListNotEmpty() {
-        CreateRentalRequestList request = new CreateRentalRequestList(Collections.emptyList());
-        final Set<ConstraintViolation<CreateRentalRequestList>> validate = validator.validate(request);
+        BatchCreateRentalRequest request = new BatchCreateRentalRequest(Collections.emptyList());
+        final Set<ConstraintViolation<BatchCreateRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
@@ -53,8 +53,8 @@ public class CreateRentalRequestListValidationTest {
 
     @Test
     public void whenRequestInvalidCreateRentalRequestThenViolationForCreateRentalRequest() {
-        CreateRentalRequestList request = new CreateRentalRequestList(Arrays.asList(new CreateRentalRequest(null, 0)));
-        final Set<ConstraintViolation<CreateRentalRequestList>> validate = validator.validate(request);
+        BatchCreateRentalRequest request = new BatchCreateRentalRequest(Arrays.asList(new CreateRentalRequest(null, 0)));
+        final Set<ConstraintViolation<BatchCreateRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(2);
