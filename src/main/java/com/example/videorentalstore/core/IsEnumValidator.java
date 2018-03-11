@@ -20,6 +20,10 @@ public class IsEnumValidator implements ConstraintValidator<IsEnum, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null) {
+            return true;
+        }
+
         boolean isValid = false;
 
         final Enum<?>[] enumConstants = constraintAnnotation.enumClass().getEnumConstants();
