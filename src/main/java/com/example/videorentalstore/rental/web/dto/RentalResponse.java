@@ -21,6 +21,8 @@ public class RentalResponse {
     @JsonProperty("days_rented")
     private int daysRented;
 
+    private String status;
+
     @JsonProperty("start_date")
     private Instant startDate;
 
