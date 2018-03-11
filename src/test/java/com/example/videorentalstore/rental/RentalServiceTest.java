@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +61,7 @@ public class RentalServiceTest {
     public void whenFindingAllForCustomerThenReturnListOfRentals() {
         doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
 
-        final List<Rental> result = rentalService.findAllForCustomer(1L);
+        final List<Rental> result = rentalService.findAllForCustomer(1L, null);
 
         assertThat(result).isNotNull();
         assertThat(result).isNotEmpty();
@@ -78,11 +77,22 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        rentalService.findAllForCustomer(1L);
+        rentalService.findAllForCustomer(1L, null);
     }
 
     @Test
-    public void whenCreatingRentalsThenReturnReceipt() {
+    public void whenFindingAllForCustomerWithStatusThenReturnListOfRentals() {
+        doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
+
+        final List<Rental> result = rentalService.findAllForCustomer(1L, Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
+
+        assertThat(result).isNotNull();
+        assertThat(result).isNotEmpty();
+        assertThat(result).hasSize(4);
+    }
+
+    @Test
+    public void whenCreatingRentalsThenReturnListOfRentals() {
         doReturn(Optional.of(CustomerDataFixtures.customer())).when(customerRepository).findById(anyLong());
 
         doReturn(Optional.of(FilmDataFixtures.newReleaseFilm("Matrix 11"))).when(filmRepository).findById(eq(1L));
@@ -96,14 +106,12 @@ public class RentalServiceTest {
                 new RentalInfo(3L, 2),
                 new RentalInfo(4L, 7));
 
-        final Receipt receipt = rentalService.create(new BatchRentalCreateCommand(1L, rentalInfos));
+        final List<Rental> result = rentalService.create(1L, rentalInfos);
 
-        assertThat(receipt).isNotNull();
-        assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
-        assertThat(receipt.getRentals()).hasSize(4);
-        assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(receipt.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
-        assertThat(receipt.getRentals()).extracting(r -> r.isActive()).containsOnly(true);
+        assertThat(result).isNotNull();
+        assertThat(result).hasSize(4);
+        assertThat(result).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(result).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
     }
 
     @Test
@@ -121,7 +129,7 @@ public class RentalServiceTest {
                 new RentalInfo(3L, 2),
                 new RentalInfo(4L, 7));
 
-        rentalService.create(new BatchRentalCreateCommand(1L, rentalInfos));
+        rentalService.create(1L, rentalInfos);
     }
 
     @Test
@@ -136,9 +144,9 @@ public class RentalServiceTest {
                 new RentalInfo(3L, 2),
                 new RentalInfo(4L, 7));
 
-        Receipt receipt = null;
+        List<Rental> result = null;
         try {
-            receipt = rentalService.create(new BatchRentalCreateCommand(1L, rentalInfos));
+            result = rentalService.create(1L, rentalInfos);
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
@@ -152,11 +160,11 @@ public class RentalServiceTest {
                     );
         }
 
-        assertThat(receipt).isNull();
+        assertThat(result).isNull();
     }
 
     @Test
-    public void whenExtraPayRentalsThenReturnCorrectResult() {
+    public void whenReturningBackRentalsThenReturnListOfRentals() {
         final Customer customer = CustomerDataFixtures.customer();
 
         final Rental newReleaseRental = spy(RentalDataFixtures.rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1, 3));
@@ -164,10 +172,10 @@ public class RentalServiceTest {
         final Rental regularReleaseRental1 = spy(RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2, 3));
         final Rental oldReleaseRental = spy(RentalDataFixtures.rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7, 3));
 
-        customer.addRental(newReleaseRental.markActive().markExtraPaymentExpected());
-        customer.addRental(regularReleaseRental.markActive().markExtraPaymentExpected());
-        customer.addRental(regularReleaseRental1.markActive().markExtraPaymentExpected());
-        customer.addRental(oldReleaseRental.markActive().markExtraPaymentExpected());
+        customer.addRental(newReleaseRental.markPaidUpFront().markActive());
+        customer.addRental(regularReleaseRental.markPaidUpFront().markActive());
+        customer.addRental(regularReleaseRental1.markPaidUpFront().markActive());
+        customer.addRental(oldReleaseRental.markPaidUpFront().markActive());
 
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
         doReturn(1L).when(newReleaseRental).getId();
@@ -175,14 +183,12 @@ public class RentalServiceTest {
         doReturn(3L).when(regularReleaseRental1).getId();
         doReturn(4L).when(oldReleaseRental).getId();
 
-        final Receipt receipt = rentalService.process(new BatchRentalCommand(1L, BatchRentalCommand.Action.EXTRA_PAY, Arrays.asList(1L, 2L, 3L, 4L)));
+        final List<Rental> result = rentalService.returnBack(1L, Arrays.asList(1L, 2L, 3L, 4L));
 
-        assertThat(receipt).isNotNull();
-        assertThat(receipt).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
-        assertThat(receipt.getRentals()).hasSize(4);
-        assertThat(receipt.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(receipt.getRentals()).extracting(r -> r.getEndDate()).isNotNull();
-        assertThat(receipt.getRentals()).extracting(r -> r.isActive()).containsOnly(false);
+        assertThat(result).isNotNull();
+        assertThat(result).hasSize(4);
+        assertThat(result).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(result).extracting(r -> r.getReturnDate()).isNotNull();
     }
 
     @Test
@@ -194,7 +200,7 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        rentalService.process(new BatchRentalCommand(customerId, BatchRentalCommand.Action.RETURN, Arrays.asList(1L, 2L, 3L, 4L)));
+        rentalService.returnBack(customerId, Arrays.asList(1L, 2L, 3L, 4L));
     }
 
     @Test
@@ -205,9 +211,9 @@ public class RentalServiceTest {
         doReturn(customerId).when(customer).getId();
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
 
-        Receipt receipt = null;
+        List<Rental> result = null;
         try {
-            receipt = rentalService.process(new BatchRentalCommand(customerId, BatchRentalCommand.Action.RETURN, Arrays.asList(1L, 2L, 3L, 4L)));
+            result = rentalService.returnBack(customerId, Arrays.asList(1L, 2L, 3L, 4L));
         } catch (RentalException ex) {
             assertThat(ex).isNotNull();
             assertThat(ex.isEmpty()).isFalse();
@@ -221,6 +227,6 @@ public class RentalServiceTest {
                     );
         }
 
-        assertThat(receipt).isNull();
+        assertThat(result).isNull();
     }
 }
