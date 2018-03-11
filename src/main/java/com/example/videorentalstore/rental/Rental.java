@@ -116,6 +116,7 @@ public class Rental {
                     String.format("Cannot mark rental as COMPLETED that is currently not PAID_LATE! Current status: %s.", this.status));
         }
         this.status = Status.COMPLETED;
+        this.active = false;
 
         return this;
     }
@@ -141,7 +142,7 @@ public class Rental {
     }
 
     public void deactivate() {
-        if (this.status != Status.UP_FRONT_PAYMENT_EXPECTED) {
+        if (!this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED)) {
             throw new IllegalStateException(String.format("Cannot deactivate rental that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
         }
         this.active = false;
