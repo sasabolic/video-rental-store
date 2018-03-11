@@ -48,5 +48,4 @@ public class RentalRepositoryTest {
         assertThat(result).hasSize(before.intValue() + 2);
         assertThat(result).containsAll(customer.getRentals());
     }
-
 }
