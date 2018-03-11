@@ -52,8 +52,8 @@ public class CustomerRentalController {
 
 
     @PatchMapping("/customers/{customerId}/rentals")
-    public ResponseEntity<List<RentalResponse>> returnBack(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchRentalRequest batchRentalRequest) {
-        final List<Rental> rentals = this.rentalService.returnBack(customerId, batchRentalRequest.getRentals().stream().map(RentalRequest::getRentalId).collect(Collectors.toList()));
+    public ResponseEntity<List<RentalResponse>> returnBack(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchReturnRentalRequest batchReturnRentalRequest) {
+        final List<Rental> rentals = this.rentalService.returnBack(customerId, batchReturnRentalRequest.getReturnRentalRequests().stream().map(ReturnRentalRequest::getRentalId).collect(Collectors.toList()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

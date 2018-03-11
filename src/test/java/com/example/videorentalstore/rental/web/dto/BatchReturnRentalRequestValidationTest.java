@@ -13,7 +13,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BatchRentalRequestValidationTest {
+public class BatchReturnRentalRequestValidationTest {
 
     private static Validator validator;
 
@@ -25,26 +25,26 @@ public class BatchRentalRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        BatchRentalRequest request = new BatchRentalRequest(Arrays.asList(new RentalRequest(1L)));
-        final Set<ConstraintViolation<BatchRentalRequest>> validate = validator.validate(request);
+        BatchReturnRentalRequest request = new BatchReturnRentalRequest(Arrays.asList(new ReturnRentalRequest(1L)));
+        final Set<ConstraintViolation<BatchReturnRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
     }
 
     @Test
     public void whenRequestEmptyRentalsThenViolationListNotEmpty() {
-        BatchRentalRequest request = new BatchRentalRequest(Collections.emptyList());
-        final Set<ConstraintViolation<BatchRentalRequest>> validate = validator.validate(request);
+        BatchReturnRentalRequest request = new BatchReturnRentalRequest(Collections.emptyList());
+        final Set<ConstraintViolation<BatchReturnRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
-        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("List of rental requests cannot be empty");
+        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("List of return rental requests cannot be empty");
     }
 
     @Test
     public void whenRequestNullRentalsThenViolationForCreateRentalRequest() {
-        BatchRentalRequest request = new BatchRentalRequest(null);
-        final Set<ConstraintViolation<BatchRentalRequest>> validate = validator.validate(request);
+        BatchReturnRentalRequest request = new BatchReturnRentalRequest(null);
+        final Set<ConstraintViolation<BatchReturnRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);

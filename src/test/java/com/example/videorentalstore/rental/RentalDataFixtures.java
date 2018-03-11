@@ -55,14 +55,12 @@ public class RentalDataFixtures {
     }
 
     public static String returnJson() {
-        return "{\n" +
-                "  \"rentals\": [\n" +
-                "    {\"rental_id\": 1},\n" +
-                "    {\"rental_id\": 2},\n" +
-                "    {\"rental_id\": 3},\n" +
-                "    {\"rental_id\": 4}\n" +
-                "  ]\n" +
-                "}";
+        return "[\n" +
+                "  {\"rental_id\": 1},\n" +
+                "  {\"rental_id\": 2},\n" +
+                "  {\"rental_id\": 3},\n" +
+                "  {\"rental_id\": 4}\n" +
+                "]";
     }
 
     public static String json() {

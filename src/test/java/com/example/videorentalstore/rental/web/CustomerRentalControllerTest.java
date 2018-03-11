@@ -523,14 +523,12 @@ public class CustomerRentalControllerTest {
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
-                .content("{\n" +
-                        "  \"rentals\": [\n" +
-                        "    {\"rental_id\": 1},\n" +
-                        "    {\"rental_id\": 2},\n" +
-                        "    {\"rental_id\": " + rentalId1 + "},\n" +
-                        "    {\"rental_id\": " + rentalId2 + "}\n" +
-                        "  ]\n" +
-                        "}")
+                .content("[\n" +
+                        "  {\"rental_id\": 1},\n" +
+                        "  {\"rental_id\": 2},\n" +
+                        "  {\"rental_id\": " + rentalId1 + "},\n" +
+                        "  {\"rental_id\": " + rentalId2 + "}\n" +
+                        "]")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -551,14 +549,12 @@ public class CustomerRentalControllerTest {
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
-                .content("{\n" +
-                        "  \"rentals\": [\n" +
-                        "    {\"rental_id\": 1},\n" +
-                        "    {\"rental_id\": 2},\n" +
-                        "    {\"rental_id\": " + rentalId1 + "},\n" +
-                        "    {\"rental_id\": " + rentalId2 + "}\n" +
-                        "  ]\n" +
-                        "}")
+                .content("[\n" +
+                        "  {\"rental_id\": 1},\n" +
+                        "  {\"rental_id\": 2},\n" +
+                        "  {\"rental_id\": " + rentalId1 + "},\n" +
+                        "  {\"rental_id\": " + rentalId2 + "}\n" +
+                        "]")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -589,7 +585,7 @@ public class CustomerRentalControllerTest {
     public void whenReturnBackForCustomerEmptyRequestThenReturnJsonError() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content("{}")
+                .content("[]")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -608,11 +604,9 @@ public class CustomerRentalControllerTest {
     public void whenReturnBackForCustomerWithInvalidFieldsThenReturnStatusBadRequest() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content("{\n" +
-                        "  \"rentals\": [\n" +
-                        "    {\"rental_id\": null}\n" +
-                        "  ]\n" +
-                        "}")
+                .content("[\n" +
+                        "  {\"rental_id\": null}\n" +
+                        "]")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -624,11 +618,9 @@ public class CustomerRentalControllerTest {
     public void whenReturnBackForCustomerWithInvalidFieldsThenReturnJsonError() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
-                .content("{\n" +
-                        "  \"rentals\": [\n" +
-                        "    {\"rental_id\": null}\n" +
-                        "  ]\n" +
-                        "}")
+                .content("[\n" +
+                        "  {\"rental_id\": null}\n" +
+                        "]")
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)

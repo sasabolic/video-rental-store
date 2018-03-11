@@ -23,16 +23,16 @@ public class RentalRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        RentalRequest request = new RentalRequest(1L);
-        final Set<ConstraintViolation<RentalRequest>> validate = validator.validate(request);
+        ReturnRentalRequest request = new ReturnRentalRequest(1L);
+        final Set<ConstraintViolation<ReturnRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
     }
 
     @Test
     public void whenRequestInvalidThenViolationListNotEmpty() {
-        RentalRequest request = new RentalRequest(null);
-        final Set<ConstraintViolation<RentalRequest>> validate = validator.validate(request);
+        ReturnRentalRequest request = new ReturnRentalRequest(null);
+        final Set<ConstraintViolation<ReturnRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
