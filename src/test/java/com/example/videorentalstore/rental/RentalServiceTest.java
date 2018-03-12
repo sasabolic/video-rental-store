@@ -106,12 +106,14 @@ public class RentalServiceTest {
                 new RentalInfo(3L, 2),
                 new RentalInfo(4L, 7));
 
-        final List<Rental> result = rentalService.create(1L, rentalInfos);
+        final RentalResult result = rentalService.create(1L, rentalInfos);
 
         assertThat(result).isNotNull();
-        assertThat(result).hasSize(4);
-        assertThat(result).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(result).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
+        assertThat(result).hasFieldOrPropertyWithValue("status", Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
+        assertThat(result.getRentals()).hasSize(4);
+        assertThat(result.getRentals()).extracting(Rental::getStatus).containsOnly(Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
+        assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(result.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
     }
 
     @Test
@@ -144,7 +146,7 @@ public class RentalServiceTest {
                 new RentalInfo(3L, 2),
                 new RentalInfo(4L, 7));
 
-        List<Rental> result = null;
+        RentalResult result = null;
         try {
             result = rentalService.create(1L, rentalInfos);
         } catch (RentalException ex) {
@@ -183,12 +185,14 @@ public class RentalServiceTest {
         doReturn(3L).when(regularReleaseRental1).getId();
         doReturn(4L).when(oldReleaseRental).getId();
 
-        final List<Rental> result = rentalService.returnBack(1L, Arrays.asList(1L, 2L, 3L, 4L));
+        final RentalResult result = rentalService.returnBack(1L, Arrays.asList(1L, 2L, 3L, 4L));
 
         assertThat(result).isNotNull();
-        assertThat(result).hasSize(4);
-        assertThat(result).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(result).extracting(r -> r.getReturnDate()).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("status", Rental.Status.LATE_PAYMENT_EXPECTED);
+        assertThat(result.getRentals()).hasSize(4);
+        assertThat(result.getRentals()).extracting(Rental::getStatus).containsOnly(Rental.Status.LATE_PAYMENT_EXPECTED);
+        assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(result.getRentals()).extracting(r -> r.getReturnDate()).isNotNull();
     }
 
     @Test
@@ -211,7 +215,7 @@ public class RentalServiceTest {
         doReturn(customerId).when(customer).getId();
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
 
-        List<Rental> result = null;
+        RentalResult result = null;
         try {
             result = rentalService.returnBack(customerId, Arrays.asList(1L, 2L, 3L, 4L));
         } catch (RentalException ex) {
