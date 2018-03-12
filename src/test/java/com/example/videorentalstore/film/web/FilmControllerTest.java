@@ -208,7 +208,7 @@ public class FilmControllerTest {
     }
 
     @Test
-    public void whenCreateThenReturnStatusOK() throws Exception {
+    public void whenCreateThenReturnStatusCreated() throws Exception {
         given(this.filmService.save(anyString(), anyString(), anyInt()))
                 .willReturn(FilmDataFixtures.newReleaseFilm());
 

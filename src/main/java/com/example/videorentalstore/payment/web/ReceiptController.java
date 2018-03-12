@@ -26,7 +26,7 @@ public class ReceiptController {
     }
 
     @GetMapping("/{receiptId}")
-    public ResponseEntity<ReceiptResponse> get(@PathVariable("receiptId") long receiptId) {
+    public ResponseEntity<ReceiptResponse> get(@PathVariable("receiptId") Long receiptId) {
         final Receipt receipt = paymentService.findById(receiptId);
 
         return ResponseEntity.ok(receiptResponseAssembler.of(receipt));

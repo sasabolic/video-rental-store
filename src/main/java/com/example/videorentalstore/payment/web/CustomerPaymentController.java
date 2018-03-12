@@ -28,7 +28,7 @@ public class CustomerPaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@PathVariable("customerId") long customerId, @RequestBody @Valid SavePaymentRequest savePaymentRequest, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Void> create(@PathVariable("customerId") Long customerId, @RequestBody @Valid SavePaymentRequest savePaymentRequest, HttpServletRequest httpServletRequest) {
         final Receipt receipt = paymentService.pay(customerId, Invoice.Type.valueOf(savePaymentRequest.getType()), new BigDecimal(savePaymentRequest.getAmount()));
 
         URI location = ServletUriComponentsBuilder
@@ -40,7 +40,7 @@ public class CustomerPaymentController {
     }
 
     @GetMapping
-    public ResponseEntity<Void> getAll(@PathVariable("customerId") long customerId) {
+    public ResponseEntity<Void> getAll(@PathVariable("customerId") Long customerId) {
         throw new UnsupportedOperationException("HTTP method GET is not supported by this URL");
     }
 

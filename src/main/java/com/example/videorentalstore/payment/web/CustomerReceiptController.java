@@ -29,7 +29,7 @@ public class CustomerReceiptController {
     }
 
     @GetMapping
-    public ResponseEntity<Resources<ReceiptResponse>> getAll(@PathVariable("customerId") long customerId) {
+    public ResponseEntity<Resources<ReceiptResponse>> getAll(@PathVariable("customerId") Long customerId) {
         final List<Receipt> receipts = paymentService.findAllForCustomer(customerId);
 
         return ResponseEntity.ok(receiptResponseAssembler.of(receipts, customerId));

@@ -25,7 +25,7 @@ public class RentalController {
 
     // TODO: 3/9/18 Remove customer id?
     @GetMapping("/rentals")
-    public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("id") long customerId) {
+    public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("id") Long customerId) {
         final List<Rental> rentals = this.rentalService.findAll();
 
         return ResponseEntity.ok(rentalAssembler.of(rentals));

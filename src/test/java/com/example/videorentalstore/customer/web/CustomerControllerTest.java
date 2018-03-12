@@ -1,5 +1,6 @@
 package com.example.videorentalstore.customer.web;
 
+import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.customer.CustomerDataFixtures;
 import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.customer.CustomerService;
@@ -25,6 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.spy;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -74,14 +76,15 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].first_name", equalTo("John")))
-                .andExpect(jsonPath("$[0].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$[1].first_name", equalTo("Giovanni")))
-                .andExpect(jsonPath("$[1].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$[2].first_name", equalTo("Evan")))
-                .andExpect(jsonPath("$[2].last_name", equalTo("Smith")));
+                .andExpect(jsonPath("$._embedded.customers").isArray())
+                .andExpect(jsonPath("$._embedded.customers", hasSize(3)))
+                .andExpect(jsonPath("$._embedded.customers[0].first_name", equalTo("John")))
+                .andExpect(jsonPath("$._embedded.customers[0].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$._embedded.customers[1].first_name", equalTo("Giovanni")))
+                .andExpect(jsonPath("$._embedded.customers[1].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$._embedded.customers[2].first_name", equalTo("Evan")))
+                .andExpect(jsonPath("$._embedded.customers[2].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers{?name}")));
     }
 
     @Test
@@ -98,11 +101,12 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$[1].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$[2].last_name", equalTo("Smith")));
+                .andExpect(jsonPath("$._embedded.customers").isArray())
+                .andExpect(jsonPath("$._embedded.customers", hasSize(3)))
+                .andExpect(jsonPath("$._embedded.customers[0].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$._embedded.customers[1].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$._embedded.customers[2].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers?name=" + name)));
     }
 
     @Test
@@ -120,13 +124,16 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers?name=" + name)));
     }
 
     @Test
     public void whenGetByIdThenReturnStatusOK() throws Exception {
-        given(this.customerService.findById(anyLong())).willReturn(CustomerDataFixtures.customer());
+        final long customerId = 1L;
+        final Customer customer = spy(CustomerDataFixtures.customer());
+
+        given(customer.getId()).willReturn(customerId);
+        given(this.customerService.findById(anyLong())).willReturn(customer);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}", 1L)
@@ -142,11 +149,14 @@ public class CustomerControllerTest {
     public void whenGetByIdThenReturnJson() throws Exception {
         final String firstName = "John";
         final String lastName = "Smith";
+        final long customerId = 1L;
+        final Customer customer = spy(CustomerDataFixtures.customer(firstName, lastName));
 
-        given(this.customerService.findById(anyLong())).willReturn(CustomerDataFixtures.customer(firstName, lastName));
+        given(customer.getId()).willReturn(customerId);
+        given(this.customerService.findById(anyLong())).willReturn(customer);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}", 1L)
+                .get("/customers/{customerId}", customerId)
                 .accept(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -155,7 +165,9 @@ public class CustomerControllerTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.first_name", equalTo(firstName)))
-                .andExpect(jsonPath("$.last_name", equalTo(lastName)));
+                .andExpect(jsonPath("$.last_name", equalTo(lastName)))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers/" + customerId)))
+                .andExpect(jsonPath("$._links.rentals.href", equalTo("http://localhost/customers/" + customerId + "/rentals{?status}")));
     }
 
     @Test
@@ -196,9 +208,12 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void whenCreateThenReturnStatusOK() throws Exception {
-        given(this.customerService.save(anyString(), anyString()))
-				.willReturn(CustomerDataFixtures.customer());
+    public void whenCreateThenReturnStatusCreated() throws Exception {
+        final long customerId = 1L;
+        final Customer customer = spy(CustomerDataFixtures.customer());
+
+        given(customer.getId()).willReturn(customerId);
+        given(this.customerService.save(anyString(), anyString())).willReturn(customer);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers")
@@ -207,16 +222,16 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
-    public void whenCreateThenReturnJson() throws Exception {
-        final String firstName = "John";
-        final String lastName = "Smith";
+    public void whenCreateThenReturnLocationHeader() throws Exception {
+        final long customerId = 1L;
+        final Customer customer = spy(CustomerDataFixtures.customer());
 
-        given(this.customerService.save(anyString(), anyString()))
-                .willReturn(CustomerDataFixtures.customer(firstName, lastName));
+        given(customer.getId()).willReturn(customerId);
+        given(this.customerService.save(anyString(), anyString())).willReturn(customer);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers")
@@ -225,11 +240,8 @@ public class CustomerControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.first_name", equalTo(firstName)))
-                .andExpect(jsonPath("$.last_name", equalTo(lastName)));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/customers/" + customerId));
     }
 
     @Test
@@ -282,22 +294,27 @@ public class CustomerControllerTest {
     public void whenUpdateThenReturnJson() throws Exception {
         final String firstName = "John";
         final String lastName = "Smith";
+        final long customerId = 1L;
+        final Customer customer = spy(CustomerDataFixtures.customer(firstName, lastName));
 
+        given(customer.getId()).willReturn(customerId);
         given(this.customerService.update(anyLong(), anyString(), anyString()))
-                .willReturn(CustomerDataFixtures.customer(firstName, lastName));
+                .willReturn(customer);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/customers/{customerId}", 1L)
+                .put("/customers/{customerId}", customerId)
                 .content(CustomerDataFixtures.json())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType("application/hal+json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.first_name", equalTo(firstName)))
-                .andExpect(jsonPath("$.last_name", equalTo(lastName)));
+                .andExpect(jsonPath("$.last_name", equalTo(lastName)))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers/" + customerId)))
+                .andExpect(jsonPath("$._links.rentals.href", equalTo("http://localhost/customers/" + customerId + "/rentals{?status}")));
     }
 
     @Test

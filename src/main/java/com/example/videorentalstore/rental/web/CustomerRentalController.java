@@ -30,7 +30,7 @@ public class CustomerRentalController {
     }
 
     @GetMapping("/customers/{customerId}/rentals")
-    public ResponseEntity<Resources<RentalResponse>> getAll(@PathVariable("customerId") long customerId, @RequestParam(required = false) String status) {
+    public ResponseEntity<Resources<RentalResponse>> getAll(@PathVariable("customerId") Long customerId, @RequestParam(required = false) String status) {
         final Rental.Status statusValue = status != null ? Rental.Status.valueOf(status) : null;
 
         final List<Rental> rentals = this.rentalService.findAllForCustomer(customerId, statusValue);
@@ -40,7 +40,7 @@ public class CustomerRentalController {
     }
 
     @PostMapping("/customers/{customerId}/rentals")
-    public ResponseEntity<List<RentalResponse>> create(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchCreateRentalRequest batchCreateRentalRequest) {
+    public ResponseEntity<List<RentalResponse>> create(@PathVariable("customerId") Long customerId, @RequestBody @Valid BatchCreateRentalRequest batchCreateRentalRequest) {
         final RentalResult rentalResult = rentalService.create(customerId, batchCreateRentalRequest.stream().map(CreateRentalRequest::toRentalInfo).collect(Collectors.toList()));
 
         URI location = ServletUriComponentsBuilder
@@ -52,14 +52,14 @@ public class CustomerRentalController {
     }
 
     @PatchMapping("/customers/{customerId}/rentals")
-    public ResponseEntity<Resources<RentalResponse>> returnBack(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchReturnRentalRequest batchReturnRentalRequest) {
+    public ResponseEntity<Resources<RentalResponse>> returnBack(@PathVariable("customerId") Long customerId, @RequestBody @Valid BatchReturnRentalRequest batchReturnRentalRequest) {
         final RentalResult rentalResult = this.rentalService.returnBack(customerId, batchReturnRentalRequest.getReturnRentalRequests().stream().map(ReturnRentalRequest::getRentalId).collect(Collectors.toList()));
 
         return ResponseEntity.ok(rentalResponseAssembler.of(rentalResult.getRentals(), rentalResult.getStatus(), customerId));
     }
 
     @DeleteMapping("/customers/{customerId}/rentals")
-    public ResponseEntity<Void> delete(@PathVariable("customerId") long customerId, @RequestParam List<Long> ids) {
+    public ResponseEntity<Void> delete(@PathVariable("customerId") Long customerId, @RequestParam List<Long> ids) {
         return ResponseEntity.noContent().build();
     }
 }

@@ -6,10 +6,13 @@ import com.example.videorentalstore.customer.CustomerService;
 import com.example.videorentalstore.customer.web.dto.CustomerResponse;
 import com.example.videorentalstore.customer.web.dto.SaveCustomerRequest;
 import com.example.videorentalstore.customer.web.dto.assembler.CustomerResponseAssembler;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -28,35 +31,40 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponse>> getAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<Resources<CustomerResponse>> getAll(@RequestParam(required = false) String name) {
         final List<Customer> result = this.customerService.findAll(name);
 
-        return ResponseEntity.ok(this.customerResponseAssembler.of(result));
+        return ResponseEntity.ok(this.customerResponseAssembler.of(result, name));
     }
 
     @GetMapping(value = "/{customerId}")
-    public ResponseEntity<CustomerResponse> get(@PathVariable long customerId) {
+    public ResponseEntity<CustomerResponse> get(@PathVariable Long customerId) {
         final Customer result = this.customerService.findById(customerId);
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
     }
 
     @PostMapping
-    public ResponseEntity<CustomerResponse> create(@RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
+    public ResponseEntity<Void> create(@RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
         final Customer result = this.customerService.save(saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName());
 
-        return ResponseEntity.ok(this.customerResponseAssembler.of(result));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{filmId}")
+                .buildAndExpand(result.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping(value = "/{customerId}")
-    public ResponseEntity<CustomerResponse> update(@PathVariable long customerId, @RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
+    public ResponseEntity<CustomerResponse> update(@PathVariable Long customerId, @RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
         final Customer result = this.customerService.update(customerId, saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName());
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
     }
 
     @DeleteMapping(value = "/{customerId}")
-    public ResponseEntity<Void> delete(@PathVariable long customerId) {
+    public ResponseEntity<Void> delete(@PathVariable Long customerId) {
         this.customerService.delete(customerId);
 
         return ResponseEntity.noContent().build();

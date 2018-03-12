@@ -25,7 +25,7 @@ public class CustomerInvoiceController {
     }
 
     @GetMapping("/customers/{customerId}/invoices/{type}")
-    public ResponseEntity<InvoiceResponse> get(@PathVariable("customerId") long customerId, @PathVariable("type") String type) {
+    public ResponseEntity<InvoiceResponse> get(@PathVariable("customerId") Long customerId, @PathVariable("type") String type) {
         final Invoice invoice = invoiceService.calculate(customerId, Invoice.Type.fromPathVariable(type));
 
         return ResponseEntity.ok(invoiceResponseAssembler.of(invoice));
