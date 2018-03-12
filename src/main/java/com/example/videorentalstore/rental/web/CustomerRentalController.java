@@ -2,9 +2,10 @@ package com.example.videorentalstore.rental.web;
 
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalService;
+import com.example.videorentalstore.rental.RentalResult;
 import com.example.videorentalstore.rental.web.dto.*;
-import com.example.videorentalstore.rental.web.dto.assembler.ReceiptResponseAssembler;
 import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssembler;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,46 +23,39 @@ public class CustomerRentalController {
 
     private final RentalService rentalService;
     private final RentalResponseAssembler rentalResponseAssembler;
-    private final ReceiptResponseAssembler receiptResponseAssembler;
 
-    public CustomerRentalController(RentalService rentalService, RentalResponseAssembler rentalResponseAssembler, ReceiptResponseAssembler receiptResponseAssembler) {
+    public CustomerRentalController(RentalService rentalService, RentalResponseAssembler rentalResponseAssembler) {
         this.rentalService = rentalService;
         this.rentalResponseAssembler = rentalResponseAssembler;
-        this.receiptResponseAssembler = receiptResponseAssembler;
     }
 
     @GetMapping("/customers/{customerId}/rentals")
-    public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("customerId") long customerId, @RequestParam(required = false) String status) {
-        final List<Rental> rentals = this.rentalService.findAllForCustomer(customerId, status != null ? Rental.Status.valueOf(status) : null);
+    public ResponseEntity<Resources<RentalResponse>> getAll(@PathVariable("customerId") long customerId, @RequestParam(required = false) String status) {
+        final Rental.Status statusValue = status != null ? Rental.Status.valueOf(status) : null;
 
-        return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
+        final List<Rental> rentals = this.rentalService.findAllForCustomer(customerId, statusValue);
+
+
+        return ResponseEntity.ok(rentalResponseAssembler.of(rentals, statusValue, customerId));
     }
 
     @PostMapping("/customers/{customerId}/rentals")
     public ResponseEntity<List<RentalResponse>> create(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchCreateRentalRequest batchCreateRentalRequest) {
-        final List<Rental> rentals = rentalService.create(customerId, batchCreateRentalRequest.stream().map(CreateRentalRequest::toRentalInfo).collect(Collectors.toList()));
+        final RentalResult rentalResult = rentalService.create(customerId, batchCreateRentalRequest.stream().map(CreateRentalRequest::toRentalInfo).collect(Collectors.toList()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .query("status={status}")
-                .buildAndExpand(Rental.Status.UP_FRONT_PAYMENT_EXPECTED).toUri();
+                .buildAndExpand(rentalResult.getStatus()).toUri();
 
-//        return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
-        return ResponseEntity.created(location).body(rentalResponseAssembler.of(rentals));
+        return ResponseEntity.created(location).build();
     }
 
-
     @PatchMapping("/customers/{customerId}/rentals")
-    public ResponseEntity<List<RentalResponse>> returnBack(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchReturnRentalRequest batchReturnRentalRequest) {
-        final List<Rental> rentals = this.rentalService.returnBack(customerId, batchReturnRentalRequest.getReturnRentalRequests().stream().map(ReturnRentalRequest::getRentalId).collect(Collectors.toList()));
+    public ResponseEntity<Resources<RentalResponse>> returnBack(@PathVariable("customerId") long customerId, @RequestBody @Valid BatchReturnRentalRequest batchReturnRentalRequest) {
+        final RentalResult rentalResult = this.rentalService.returnBack(customerId, batchReturnRentalRequest.getReturnRentalRequests().stream().map(ReturnRentalRequest::getRentalId).collect(Collectors.toList()));
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .query("status={status}")
-                .buildAndExpand(Rental.Status.LATE_PAYMENT_EXPECTED).toUri();
-
-//        return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
-        return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
+        return ResponseEntity.ok(rentalResponseAssembler.of(rentalResult.getRentals(), rentalResult.getStatus(), customerId));
     }
 
     @DeleteMapping("/customers/{customerId}/rentals")
