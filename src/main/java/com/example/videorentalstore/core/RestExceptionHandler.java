@@ -3,6 +3,7 @@ package com.example.videorentalstore.core;
 import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.film.FilmUniqueViolationException;
+import com.example.videorentalstore.payment.ReceiptNotFoundException;
 import com.example.videorentalstore.rental.RentalException;
 import lombok.Data;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -33,7 +34,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(RestError.of(HttpStatus.BAD_REQUEST, e));
     }
 
-    @ExceptionHandler({FilmNotFoundException.class, CustomerNotFoundException.class})
+    @ExceptionHandler({UnsupportedOperationException.class})
+    public ResponseEntity<Object> handleMethodNotAllowed(Exception e) {
+        return buildResponseEntity(RestError.of(HttpStatus.METHOD_NOT_ALLOWED, e));
+    }
+
+    @ExceptionHandler({FilmNotFoundException.class, CustomerNotFoundException.class, ReceiptNotFoundException.class})
     public ResponseEntity<Object> handleNotFound(Exception e) {
         return buildResponseEntity(RestError.of(HttpStatus.NOT_FOUND, e));
     }
