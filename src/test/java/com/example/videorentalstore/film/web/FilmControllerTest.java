@@ -16,12 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.spy;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -60,8 +62,17 @@ public class FilmControllerTest {
 
     @Test
     public void whenGetAllThenReturnJsonList() throws Exception {
-        given(this.filmService.findAll(null))
-                .willReturn(FilmDataFixtures.films());
+        final long filmId = 1L;
+        final String title = "Matrix 11";
+        final Film film = spy(FilmDataFixtures.newReleaseFilm(title));
+
+        final long filmId1 = 1L;
+        final String title1 = "Spider Man";
+        final Film film1 = spy(FilmDataFixtures.regularReleaseFilm(title1));
+
+        given(film.getId()).willReturn(filmId);
+        given(film1.getId()).willReturn(filmId);
+        given(this.filmService.findAll(null)).willReturn(Arrays.asList(film, film1));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/films")
@@ -71,20 +82,26 @@ public class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(4)))
-                .andExpect(jsonPath("$[0].title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$[1].title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$[2].title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$[3].title", equalTo("Out of Africa")));
+                .andExpect(jsonPath("$._embedded.films").isArray())
+                .andExpect(jsonPath("$._embedded.films", hasSize(2)))
+                .andExpect(jsonPath("$._embedded.films[0].title", equalTo(title)))
+                .andExpect(jsonPath("$._embedded.films[0]._links.self.href", equalTo("http://localhost/films/" + filmId)))
+                .andExpect(jsonPath("$._embedded.films[1].title", equalTo(title1)))
+                .andExpect(jsonPath("$._embedded.films[1]._links.self.href", equalTo("http://localhost/films/" + filmId1)))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films{?title}")));
     }
 
     @Test
     public void whenGetAllByTitleThenReturnJsonListContainingThatTitle() throws Exception {
         final String title = "spider";
+        final long filmId = 1L;
+        final Film film = spy(FilmDataFixtures.regularReleaseFilm("Spider Man"));
+        final long filmId1 = 2L;
+        final Film film1 = spy(FilmDataFixtures.regularReleaseFilm("Spider Man 2"));
 
-        given(this.filmService.findAll(title))
-                .willReturn(FilmDataFixtures.filmsWithTitleSpiderMan());
+        given(film.getId()).willReturn(filmId);
+        given(film1.getId()).willReturn(filmId1);
+        given(this.filmService.findAll(title)).willReturn(Arrays.asList(film, film1));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/films?title={title}", title)
@@ -94,10 +111,13 @@ public class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$[1].title", equalTo("Spider Man 2")));
+                .andExpect(jsonPath("$._embedded.films").isArray())
+                .andExpect(jsonPath("$._embedded.films", hasSize(2)))
+                .andExpect(jsonPath("$._embedded.films[0].title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$._embedded.films[0]._links.self.href", equalTo("http://localhost/films/" + filmId)))
+                .andExpect(jsonPath("$._embedded.films[1].title", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$._embedded.films[1]._links.self.href", equalTo("http://localhost/films/" + filmId1)))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films?title=" + title)));
     }
 
     @Test
@@ -114,8 +134,7 @@ public class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films?title=" + title)));
     }
 
     @Test
@@ -200,17 +219,20 @@ public class FilmControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
-    public void whenCreateThenReturnJson() throws Exception {
+    public void whenCreateThenReturnLocationHeader() throws Exception {
+        final long filmId = 1L;
         final String title = "Matrix 11";
         final ReleaseType type = ReleaseType.NEW_RELEASE;
         final int quantity = 10;
+        final Film film = spy(FilmDataFixtures.film(title, type, quantity));
 
+        given(film.getId()).willReturn(filmId);
         given(this.filmService.save(anyString(), anyString(), anyInt()))
-                .willReturn(FilmDataFixtures.film(title, type, quantity));
+                .willReturn(film);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/films")
@@ -219,12 +241,8 @@ public class FilmControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.title", equalTo(title)))
-                .andExpect(jsonPath("$.type", equalTo(type.name())))
-                .andExpect(jsonPath("$.quantity", equalTo(quantity)));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/films/" + filmId));
     }
 
     @Test
@@ -318,12 +336,15 @@ public class FilmControllerTest {
         final String title = "Matrix 11";
         final ReleaseType type = ReleaseType.NEW_RELEASE;
         final int quantity = 10;
+        final long filmId = 1L;
+        final Film film = spy(FilmDataFixtures.film(title, type, quantity));
 
+        given(film.getId()).willReturn(filmId);
         given(this.filmService.update(anyLong(), anyString(), anyString(), anyInt()))
-                .willReturn(FilmDataFixtures.film(title, type, quantity));
+                .willReturn(film);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put("/films/{filmId}", 1L)
+                .put("/films/{filmId}", filmId)
                 .content(FilmDataFixtures.json())
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -331,11 +352,12 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType("application/hal+json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.title", equalTo(title)))
                 .andExpect(jsonPath("$.type", equalTo(type.name())))
-                .andExpect(jsonPath("$.quantity", equalTo(quantity)));
+                .andExpect(jsonPath("$.quantity", equalTo(quantity)))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films/" + filmId)));
     }
 
     @Test
@@ -443,21 +465,24 @@ public class FilmControllerTest {
     @Test
     public void whenUpdateQuantityThenReturnJson() throws Exception {
         final int quantity = 10;
+        final long filmId = 1L;
+        final Film film = spy(FilmDataFixtures.newReleaseFilm("Matrix 11", quantity));
 
-        given(this.filmService.updateQuantity(anyLong(), anyInt()))
-                .willReturn(FilmDataFixtures.newReleaseFilm("Matrix 11", quantity));
+        given(film.getId()).willReturn(filmId);
+        given(this.filmService.updateQuantity(anyLong(), anyInt())).willReturn(film);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .patch("/films/{filmId}", 1L)
+                .patch("/films/{filmId}", filmId)
                 .content(FilmDataFixtures.jsonQuantity())
                 .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType("application/hal+json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.quantity", equalTo(quantity)));
+                .andExpect(jsonPath("$.quantity", equalTo(quantity)))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films/" + filmId)));
     }
 
     @Test

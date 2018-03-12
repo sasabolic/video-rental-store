@@ -25,7 +25,7 @@ public class DefaultReceiptResponseAssembler implements ReceiptResponseAssembler
     }
 
     @Override
-    public Resources<ReceiptResponse> of(Collection<Receipt> entities, long customerId) {
+    public Resources<ReceiptResponse> of(Collection<Receipt> entities, Long customerId) {
         final Resources<ReceiptResponse> resources = new Resources<>(of(entities));
 
         resources.add(linkTo(methodOn(CustomerReceiptController.class).getAll(customerId)).withSelfRel());

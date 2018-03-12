@@ -6,10 +6,13 @@ import com.example.videorentalstore.film.web.dto.FilmResponse;
 import com.example.videorentalstore.film.web.dto.SaveFilmRequest;
 import com.example.videorentalstore.film.web.dto.UpdateFilmQuantityRequest;
 import com.example.videorentalstore.film.web.dto.assembler.FilmResponseAssembler;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 
@@ -29,10 +32,10 @@ public class FilmController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FilmResponse>> getAll(@RequestParam(required = false) String title) {
+    public ResponseEntity<Resources<FilmResponse>> getAll(@RequestParam(required = false) String title) {
         final List<Film> films = this.filmService.findAll(title);
 
-        return ResponseEntity.ok(this.filmResponseAssembler.of(films));
+        return ResponseEntity.ok(this.filmResponseAssembler.of(films, title));
     }
 
     @GetMapping(value = "/{filmId}")
@@ -43,10 +46,15 @@ public class FilmController {
     }
 
     @PostMapping
-    public ResponseEntity<FilmResponse> create(@RequestBody @Valid SaveFilmRequest saveFilmRequest) {
+    public ResponseEntity<Void> create(@RequestBody @Valid SaveFilmRequest saveFilmRequest) {
         final Film film = this.filmService.save(saveFilmRequest.getTitle(), saveFilmRequest.getType(), saveFilmRequest.getQuantity());
 
-        return ResponseEntity.ok(this.filmResponseAssembler.of(film));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{filmId}")
+                .buildAndExpand(film.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @PutMapping(value = "/{filmId}")

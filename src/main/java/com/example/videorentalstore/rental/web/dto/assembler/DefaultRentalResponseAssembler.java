@@ -25,7 +25,7 @@ public class DefaultRentalResponseAssembler implements RentalResponseAssembler {
     }
 
     @Override
-    public Resources<RentalResponse> of(Collection<Rental> entities, Rental.Status status, long customerId) {
+    public Resources<RentalResponse> of(Collection<Rental> entities, Rental.Status status, Long customerId) {
         final Resources<RentalResponse> resources = new Resources<>(of(entities));
 
         String type = null;

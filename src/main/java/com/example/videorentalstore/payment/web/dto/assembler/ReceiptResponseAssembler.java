@@ -12,5 +12,5 @@ import java.util.Collection;
  */
 public interface ReceiptResponseAssembler extends GenericResponseAssembler<Receipt, ReceiptResponse> {
 
-    Resources<ReceiptResponse> of(final Collection<Receipt> entities, long customerId);
+    Resources<ReceiptResponse> of(final Collection<Receipt> entities, Long customerId);
 }

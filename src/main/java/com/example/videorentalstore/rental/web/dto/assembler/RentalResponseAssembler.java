@@ -12,5 +12,5 @@ import java.util.Collection;
  */
 public interface RentalResponseAssembler extends GenericResponseAssembler<Rental, RentalResponse> {
 
-    Resources<RentalResponse> of(final Collection<Rental> entities, Rental.Status status, long customerId);
+    Resources<RentalResponse> of(final Collection<Rental> entities, Rental.Status status, Long customerId);
 }

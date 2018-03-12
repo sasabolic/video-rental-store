@@ -19,7 +19,7 @@ public class ReceiptResponse extends ResourceSupport {
 
     private BigDecimal amount;
 
-    public ReceiptResponse(long id, BigDecimal amount) {
+    public ReceiptResponse(Long id, BigDecimal amount) {
         this.amount = amount;
 
         add(linkTo(methodOn(ReceiptController.class).get(id)).withSelfRel());
