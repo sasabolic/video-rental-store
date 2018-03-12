@@ -23,7 +23,7 @@ public class InvoiceResponse extends ResourceSupport {
     public InvoiceResponse(BigDecimal amount, Customer customer, Invoice.Type type) {
         this.amount = amount;
 
-        add(linkTo(methodOn(CustomerPaymentController.class).getAll(customer.getId())).withRel("payments"));
         add(linkTo(methodOn(CustomerInvoiceController.class).get(customer.getId(), type.pathVariable())).withSelfRel());
+        add(linkTo(methodOn(CustomerPaymentController.class).getAll(customer.getId())).withRel("create_payment"));
     }
 }

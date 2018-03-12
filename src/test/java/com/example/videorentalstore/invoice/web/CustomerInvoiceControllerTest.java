@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
@@ -70,6 +71,7 @@ public class CustomerInvoiceControllerTest {
     @Test
     public void whenGetForCustomerAndTypeThenReturnJson() throws Exception {
         final long customerId = 12L;
+        final String invoiceType = "up-front";
         final Customer customer = spy(CustomerDataFixtures.customer());
 
         given(customer.getId()).willReturn(customerId);
@@ -77,7 +79,7 @@ public class CustomerInvoiceControllerTest {
         given(this.invoiceService.calculate(anyLong(), isA(Invoice.Type.class))).willReturn(InvoiceDataFixtures.invoice(BigDecimal.TEN, customer));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/invoices/{type}", customerId, "up-front")
+                .get("/customers/{customerId}/invoices/{type}", customerId, invoiceType)
                 .accept(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
@@ -85,7 +87,9 @@ public class CustomerInvoiceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.amount", equalTo(10)));
+                .andExpect(jsonPath("$.amount", equalTo(10)))
+                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers/" + customerId + "/invoices/" + invoiceType)))
+                .andExpect(jsonPath("$._links.create_payment.href", equalTo("http://localhost/customers/" + customerId + "/payments")));
     }
 
     @Test
