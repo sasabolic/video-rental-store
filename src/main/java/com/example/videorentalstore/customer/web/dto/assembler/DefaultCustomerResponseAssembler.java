@@ -4,6 +4,9 @@ import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.customer.web.dto.CustomerResponse;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementation of {@link CustomerResponseAssembler}.
+ */
 @Component
 public class DefaultCustomerResponseAssembler implements CustomerResponseAssembler {
 

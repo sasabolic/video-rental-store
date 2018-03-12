@@ -1,5 +1,7 @@
 package com.example.videorentalstore.customer;
 
+import com.example.videorentalstore.payment.PaymentDataFixtures;
+import com.example.videorentalstore.payment.Receipt;
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalDataFixtures;
 import org.junit.Before;
@@ -115,11 +117,12 @@ public class CustomerTest {
     public void whenRentalsAddedThenRentalsSizeIncreased() {
         final long before = customer.getRentals().size();
 
-        RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
+        final List<Rental> rentals = RentalDataFixtures.rentals();
+        rentals.forEach(r -> customer.addRental(r));
 
         final long result = customer.getRentals().size();
 
-        assertThat(result).isEqualByComparingTo(before + 4);
+        assertThat(result).isEqualByComparingTo(before + rentals.size());
     }
 
     @Test
@@ -153,6 +156,19 @@ public class CustomerTest {
         final long result = customer.getBonusPoints();
 
         assertThat(result).isEqualByComparingTo(before);
+    }
+
+    @Test
+    public void whenReceiptsAddedThenReceiptsSizeIncreased() {
+        final long before = customer.getReceipts().size();
+
+        final List<Receipt> receipts = PaymentDataFixtures.receipts();
+
+        receipts.forEach(r -> customer.addReceipt(r));
+
+        final long result = customer.getReceipts().size();
+
+        assertThat(result).isEqualByComparingTo(before + receipts.size());
     }
 
     @Test
