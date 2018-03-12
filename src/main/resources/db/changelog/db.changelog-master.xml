@@ -52,7 +52,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="customer_id" type="int"/>
-            <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
     </changeSet>
 
