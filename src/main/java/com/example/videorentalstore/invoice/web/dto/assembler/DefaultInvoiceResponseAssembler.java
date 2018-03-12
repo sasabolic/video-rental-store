@@ -5,7 +5,7 @@ import com.example.videorentalstore.invoice.web.dto.InvoiceResponse;
 import org.springframework.stereotype.Component;
 
 /**
- * Assembler for {@link InvoiceResponse} DTO.
+ * Implementation of {@link InvoiceResponseAssembler}.
  */
 @Component
 public class DefaultInvoiceResponseAssembler implements InvoiceResponseAssembler {
