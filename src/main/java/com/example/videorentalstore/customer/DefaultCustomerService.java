@@ -28,18 +28,18 @@ public class DefaultCustomerService implements CustomerService {
     }
 
     @Override
-    public Customer save(CreateCustomerCommand createCustomerCommand) {
-        final Customer customer = new Customer(createCustomerCommand.getFirstName(), createCustomerCommand.getLastName());
+    public Customer save(String firstName, String lastName) {
+        final Customer customer = new Customer(firstName, lastName);
 
         return this.customerRepository.save(customer);
     }
 
     @Override
-    public Customer update(UpdateCustomerCommand updateCustomerCommand) {
-        final Customer customer = this.customerRepository.findById(updateCustomerCommand.getId())
-                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", updateCustomerCommand.getId())));
+    public Customer update(Long id, String firstName, String lastName) {
+        final Customer customer = this.customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", id)));
 
-        customer.update(updateCustomerCommand.getFirstName(), updateCustomerCommand.getLastName());
+        customer.update(firstName, lastName);
 
         return this.customerRepository.save(customer);
     }

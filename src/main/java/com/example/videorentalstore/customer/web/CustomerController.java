@@ -1,10 +1,8 @@
 package com.example.videorentalstore.customer.web;
 
 
-import com.example.videorentalstore.customer.CreateCustomerCommand;
 import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.customer.CustomerService;
-import com.example.videorentalstore.customer.UpdateCustomerCommand;
 import com.example.videorentalstore.customer.web.dto.CustomerResponse;
 import com.example.videorentalstore.customer.web.dto.SaveCustomerRequest;
 import com.example.videorentalstore.customer.web.dto.assembler.CustomerResponseAssembler;
@@ -45,14 +43,14 @@ public class CustomerController {
 
     @PostMapping
     public ResponseEntity<CustomerResponse> create(@RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
-        final Customer result = this.customerService.save(new CreateCustomerCommand(saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName()));
+        final Customer result = this.customerService.save(saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName());
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
     }
 
     @PutMapping(value = "/{customerId}")
     public ResponseEntity<CustomerResponse> update(@PathVariable long customerId, @RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
-        final Customer result = this.customerService.update(new UpdateCustomerCommand(customerId, saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName()));
+        final Customer result = this.customerService.update(customerId, saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName());
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
     }

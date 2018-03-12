@@ -81,11 +81,10 @@ public class CustomerServiceTest {
     public void whenCreatingCustomerThenReturnCustomer() {
         final String firstName = "Nikola";
         final String lastName = "Tesla";
-        final CreateCustomerCommand createCustomerCommand = new CreateCustomerCommand(firstName, lastName);
 
         doReturn(CustomerDataFixtures.customer(firstName, lastName)).when(customerRepository).save(isA(Customer.class));
 
-        final Customer result = customerService.save(createCustomerCommand);
+        final Customer result = customerService.save(firstName, lastName);
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("firstName", firstName);
@@ -95,11 +94,10 @@ public class CustomerServiceTest {
     @Test
     public void whenCreatingCustomerThenActiveIsTrue() {
         final Customer customer = CustomerDataFixtures.customer();
-        final CreateCustomerCommand createCustomerCommand = new CreateCustomerCommand(customer.getFirstName(), customer.getLastName());
 
         doReturn(customer).when(customerRepository).save(isA(Customer.class));
 
-        final Customer result = customerService.save(createCustomerCommand);
+        final Customer result = customerService.save(customer.getFirstName(), customer.getLastName());
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("active", true);
@@ -112,12 +110,10 @@ public class CustomerServiceTest {
         final String newFirstName = "Nikola";
         final String newLastName = "Tesla";
 
-        final UpdateCustomerCommand updateCustomerCommand = new UpdateCustomerCommand(5L, newFirstName, newLastName);
-
         doReturn(Optional.of(CustomerDataFixtures.customer(firstName, lastName))).when(customerRepository).findById(isA(Long.class));
         doReturn(CustomerDataFixtures.customer(newFirstName, newLastName)).when(customerRepository).save(isA(Customer.class));
 
-        final Customer result = customerService.update(updateCustomerCommand);
+        final Customer result = customerService.update(5L, newFirstName, newLastName);
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("firstName", newFirstName);
@@ -132,11 +128,9 @@ public class CustomerServiceTest {
         thrown.expect(CustomerNotFoundException.class);
         thrown.expectMessage("Customer with id '" + customerId + "' does not exist");
 
-        final UpdateCustomerCommand updateCustomerCommand = new UpdateCustomerCommand(customerId, customer.getFirstName(), customer.getLastName());
-
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(isA(Long.class));
 
-        customerService.update(updateCustomerCommand);
+        customerService.update(customerId, customer.getFirstName(), customer.getLastName());
     }
 
     @Test

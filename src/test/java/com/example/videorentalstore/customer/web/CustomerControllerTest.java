@@ -1,6 +1,8 @@
 package com.example.videorentalstore.customer.web;
 
-import com.example.videorentalstore.customer.*;
+import com.example.videorentalstore.customer.CustomerDataFixtures;
+import com.example.videorentalstore.customer.CustomerNotFoundException;
+import com.example.videorentalstore.customer.CustomerService;
 import com.example.videorentalstore.customer.web.dto.assembler.CustomerResponseAssembler;
 import com.example.videorentalstore.customer.web.dto.assembler.DefaultCustomerResponseAssembler;
 import org.junit.Test;
@@ -21,7 +23,7 @@ import java.util.Collections;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -195,7 +197,7 @@ public class CustomerControllerTest {
 
     @Test
     public void whenCreateThenReturnStatusOK() throws Exception {
-        given(this.customerService.save(isA(CreateCustomerCommand.class)))
+        given(this.customerService.save(anyString(), anyString()))
 				.willReturn(CustomerDataFixtures.customer());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -213,7 +215,7 @@ public class CustomerControllerTest {
         final String firstName = "John";
         final String lastName = "Smith";
 
-        given(this.customerService.save(isA(CreateCustomerCommand.class)))
+        given(this.customerService.save(anyString(), anyString()))
                 .willReturn(CustomerDataFixtures.customer(firstName, lastName));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -263,7 +265,7 @@ public class CustomerControllerTest {
 
     @Test
     public void whenUpdateThenReturnStatusOK() throws Exception {
-        given(this.customerService.update(isA(UpdateCustomerCommand.class)))
+        given(this.customerService.update(anyLong(), anyString(), anyString()))
                 .willReturn(CustomerDataFixtures.customer());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -281,7 +283,7 @@ public class CustomerControllerTest {
         final String firstName = "John";
         final String lastName = "Smith";
 
-        given(this.customerService.update(isA(UpdateCustomerCommand.class)))
+        given(this.customerService.update(anyLong(), anyString(), anyString()))
                 .willReturn(CustomerDataFixtures.customer(firstName, lastName));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -303,7 +305,7 @@ public class CustomerControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.customerService.update(isA(UpdateCustomerCommand.class))).willThrow(new CustomerNotFoundException(message));
+        given(this.customerService.update(anyLong(), anyString(), anyString())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/customers/{customerId}", customerId)
@@ -320,7 +322,7 @@ public class CustomerControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.customerService.update(isA(UpdateCustomerCommand.class))).willThrow(new CustomerNotFoundException(message));
+        given(this.customerService.update(anyLong(), anyString(), anyString())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/customers/{customerId}", customerId)
