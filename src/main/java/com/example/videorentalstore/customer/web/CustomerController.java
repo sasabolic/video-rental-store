@@ -37,7 +37,7 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/{customerId}")
-    public ResponseEntity<CustomerResponse> get(@PathVariable Long customerId) {
+    public ResponseEntity<CustomerResponse> get(@PathVariable long customerId) {
         final Customer result = this.customerService.findById(customerId);
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
@@ -51,14 +51,14 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/{customerId}")
-    public ResponseEntity<CustomerResponse> update(@PathVariable Long customerId, @RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
+    public ResponseEntity<CustomerResponse> update(@PathVariable long customerId, @RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
         final Customer result = this.customerService.update(new UpdateCustomerCommand(customerId, saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName()));
 
         return ResponseEntity.ok(this.customerResponseAssembler.of(result));
     }
 
     @DeleteMapping(value = "/{customerId}")
-    public ResponseEntity<Void> delete(@PathVariable Long customerId) {
+    public ResponseEntity<Void> delete(@PathVariable long customerId) {
         this.customerService.delete(customerId);
 
         return ResponseEntity.noContent().build();
