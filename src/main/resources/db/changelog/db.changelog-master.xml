@@ -43,6 +43,17 @@
             <column name="bonus_points" type="int" defaultValueNumeric="0"/>
             <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
+
+        <createTable tableName="receipt">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="amount" type="decimal(12,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_id" type="int"/>
+            <column name="active" type="boolean" defaultValueBoolean="true"/>
+        </createTable>
     </changeSet>
 
     <changeSet id="2" author="developer">
