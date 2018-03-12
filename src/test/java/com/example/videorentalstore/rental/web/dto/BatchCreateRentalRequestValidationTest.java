@@ -38,7 +38,7 @@ public class BatchCreateRentalRequestValidationTest {
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(2);
-        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("List of create rental requests cannot be null", "List of create rental requests cannot be empty");
+        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("List of pay rental requests cannot be null", "List of pay rental requests cannot be empty");
     }
 
     @Test
@@ -48,7 +48,7 @@ public class BatchCreateRentalRequestValidationTest {
 
         assertThat(validate).isNotEmpty();
         assertThat(validate).hasSize(1);
-        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("List of create rental requests cannot be empty");
+        assertThat(validate).extracting(ConstraintViolation::getMessage).containsOnly("List of pay rental requests cannot be empty");
     }
 
     @Test

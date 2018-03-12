@@ -14,7 +14,7 @@ import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
- * Assembler for {@link RentalResponse} DTO.
+ * Implementation of {@link RentalResponseAssembler}.
  */
 @Component
 public class DefaultRentalResponseAssembler implements RentalResponseAssembler {

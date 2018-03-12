@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 /**
- * Batch rental create command.
+ * Batch rental pay command.
  */
 @AllArgsConstructor
 @Getter

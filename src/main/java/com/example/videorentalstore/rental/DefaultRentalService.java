@@ -95,7 +95,10 @@ public class DefaultRentalService implements RentalService {
         rentalIds.stream()
                 .forEach(rentalId -> {
                     try {
-                        final Rental rental = checkRentalExistsForCustomer(customer, rentalId);
+                        final Rental rental = customer.getRentals().stream()
+                                .filter(r -> rentalId.equals(r.getId()))
+                                .findAny()
+                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rentalId, customer.getId())));
 
                         rental.apply(func);
                     } catch (RentalNotFoundException | IllegalStateException ex) {
@@ -110,12 +113,5 @@ public class DefaultRentalService implements RentalService {
         customerRepository.save(customer);
 
         return customer;
-    }
-
-    private Rental checkRentalExistsForCustomer(Customer customer, Long rentalId) {
-        return customer.getRentals().stream()
-                .filter(r -> rentalId.equals(r.getId()))
-                .findAny()
-                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rentalId, customer.getId())));
     }
 }
