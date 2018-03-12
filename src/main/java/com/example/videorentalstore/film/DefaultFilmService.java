@@ -31,30 +31,30 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Film save(CreateFilmCommand createFilmCommand) {
-        this.filmRepository.findByTitle(createFilmCommand.getTitle()).stream()
+    public Film save(String title, String type, int quantity) {
+        this.filmRepository.findByTitle(title).stream()
                 .findAny().ifPresent(f -> {
-                    throw new FilmUniqueViolationException(String.format("Film with title '%s' already exits", createFilmCommand.getTitle()));
+                    throw new FilmUniqueViolationException(String.format("Film with title '%s' already exits", title));
                 });
 
-        final Film film = new Film(createFilmCommand.getTitle(), ReleaseType.valueOf(createFilmCommand.getType()), createFilmCommand.getQuantity());
+        final Film film = new Film(title, ReleaseType.valueOf(type), quantity);
 
         return this.filmRepository.save(film);
     }
 
     @Override
-    public Film update(UpdateFilmCommand updateFilmCommand) {
+    public Film update(Long id, String title, String type, int quantity) {
         // TODO: 3/9/18 Extract filter().findAny().ifPresent() is reusable lambda. Sending only the predicate for filter action.
-        this.filmRepository.findByTitle(updateFilmCommand.getTitle()).stream()
-                .filter(f -> !f.getId().equals(updateFilmCommand.getId()))
+        this.filmRepository.findByTitle(title).stream()
+                .filter(f -> !f.getId().equals(id))
                 .findAny().ifPresent(f -> {
-                    throw new FilmUniqueViolationException(String.format("Film with title '%s' already exits", updateFilmCommand.getTitle()));
+                    throw new FilmUniqueViolationException(String.format("Film with title '%s' already exits", title));
                 });
 
-        final Film film = this.filmRepository.findById(updateFilmCommand.getId())
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmCommand.getId())));
+        final Film film = this.filmRepository.findById(id)
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", id)));
 
-        film.update(updateFilmCommand.getTitle(), updateFilmCommand.getType(), updateFilmCommand.getQuantity());
+        film.update(title, type, quantity);
 
         return this.filmRepository.save(film);
     }
@@ -70,11 +70,11 @@ public class DefaultFilmService implements FilmService {
     }
 
     @Override
-    public Film updateQuantity(UpdateFilmQuantityCommand updateFilmQuantityCommand) {
-        final Film film = this.filmRepository.findById(updateFilmQuantityCommand.getId())
-                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", updateFilmQuantityCommand.getId())));
+    public Film updateQuantity(Long id, int quantity) {
+        final Film film = this.filmRepository.findById(id)
+                .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", id)));
 
-        film.changeQuantityBy(updateFilmQuantityCommand.getQuantity());
+        film.changeQuantityBy(quantity);
 
         return this.filmRepository.save(film);
     }

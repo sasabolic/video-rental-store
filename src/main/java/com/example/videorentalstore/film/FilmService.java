@@ -11,8 +11,7 @@ public interface FilmService {
      * Returns list of {@code Film} for given {@code title}.
      *
      * @param title the title
-     * @return the list of all {@code Film} if {@code title} is {@code null} or list of {@code Film}
-     *         who's title field is containing String in given {@code title} value.
+     * @return the list of all {@code Film} if {@code title} is {@code null} or list of {@code Film}         who's title field is containing String in given {@code title} value.
      */
     List<Film> findAll(String title);
 
@@ -25,20 +24,25 @@ public interface FilmService {
     Film findById(Long id);
 
     /**
-     * Creates new {@code Film} based on given {@link CreateFilmCommand}.
+     * Creates new {@code Film} based on given values.
      *
-     * @param createFilmCommand the pay film command
+     * @param title    the title
+     * @param type     the type
+     * @param quantity the quantity
      * @return the film
      */
-    Film save(CreateFilmCommand createFilmCommand);
+    Film save(String title, String type, int quantity);
 
     /**
-     * Updates {@code Film} with values from given {@link UpdateFilmCommand}.
+     * Updates {@code Film} with given values.
      *
-     * @param updateFilmCommand the update film command
+     * @param id       the id
+     * @param title    the title
+     * @param type     the type
+     * @param quantity the quantity
      * @return the film
      */
-    Film update(UpdateFilmCommand updateFilmCommand);
+    Film update(Long id, String title, String type, int quantity);
 
     /**
      * Deactivates {@code Film} with given {@code id}.
@@ -49,10 +53,11 @@ public interface FilmService {
     Film delete(Long id);
 
     /**
-     * Updates {@code Film} quantity by increasing/decreasing it with value from given {@link UpdateFilmQuantityCommand}.
+     * Updates {@code Film} quantity by increasing/decreasing it by the value {@code quantity}.
      *
-     * @param updateFilmQuantityCommand the update film quantity command
+     * @param id       the id
+     * @param quantity the quantity
      * @return the film
      */
-    Film updateQuantity(UpdateFilmQuantityCommand updateFilmQuantityCommand);
+    Film updateQuantity(Long id, int quantity);
 }

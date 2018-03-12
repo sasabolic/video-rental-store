@@ -20,8 +20,7 @@ import java.util.Collections;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -191,7 +190,7 @@ public class FilmControllerTest {
 
     @Test
     public void whenCreateThenReturnStatusOK() throws Exception {
-        given(this.filmService.save(isA(CreateFilmCommand.class)))
+        given(this.filmService.save(anyString(), anyString(), anyInt()))
                 .willReturn(FilmDataFixtures.newReleaseFilm());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -210,7 +209,7 @@ public class FilmControllerTest {
         final ReleaseType type = ReleaseType.NEW_RELEASE;
         final int quantity = 10;
 
-        given(this.filmService.save(isA(CreateFilmCommand.class)))
+        given(this.filmService.save(anyString(), anyString(), anyInt()))
                 .willReturn(FilmDataFixtures.film(title, type, quantity));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -233,7 +232,7 @@ public class FilmControllerTest {
         final String title = "Matrix 11";
         final String message = "Film with title '" + title + "' already exits";
 
-        given(this.filmService.save(isA(CreateFilmCommand.class))).willThrow(new FilmUniqueViolationException(message));
+        given(this.filmService.save(anyString(), anyString(), anyInt())).willThrow(new FilmUniqueViolationException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/films")
@@ -250,7 +249,7 @@ public class FilmControllerTest {
         final String title = "Matrix 11";
         final String message = "Film with title '" + title + "' already exits";
 
-        given(this.filmService.save(isA(CreateFilmCommand.class))).willThrow(new FilmUniqueViolationException(message));
+        given(this.filmService.save(anyString(), anyString(), anyInt())).willThrow(new FilmUniqueViolationException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/films")
@@ -300,7 +299,7 @@ public class FilmControllerTest {
 
     @Test
     public void whenUpdateThenReturnStatusOK() throws Exception {
-        given(this.filmService.update(isA(UpdateFilmCommand.class)))
+        given(this.filmService.update(anyLong(), anyString(), anyString(), anyInt()))
                 .willReturn(FilmDataFixtures.oldReleaseFilm());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -320,7 +319,7 @@ public class FilmControllerTest {
         final ReleaseType type = ReleaseType.NEW_RELEASE;
         final int quantity = 10;
 
-        given(this.filmService.update(isA(UpdateFilmCommand.class)))
+        given(this.filmService.update(anyLong(), anyString(), anyString(), anyInt()))
                 .willReturn(FilmDataFixtures.film(title, type, quantity));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -344,7 +343,7 @@ public class FilmControllerTest {
         final Long filmId = 1L;
         final String message = "Film with id '" + filmId + "' does not exist";
 
-        given(this.filmService.update(isA(UpdateFilmCommand.class))).willThrow(new FilmNotFoundException(message));
+        given(this.filmService.update(anyLong(), anyString(), anyString(), anyInt())).willThrow(new FilmNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/films/{filmId}", filmId)
@@ -361,7 +360,7 @@ public class FilmControllerTest {
         final String title = "Matrix 11";
         final String message = "Film with title '" + title + "' already exits";
 
-        given(this.filmService.update(isA(UpdateFilmCommand.class))).willThrow(new FilmUniqueViolationException(message));
+        given(this.filmService.update(anyLong(), anyString(), anyString(), anyInt())).willThrow(new FilmUniqueViolationException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/films/{filmId}", 1L)
@@ -378,7 +377,7 @@ public class FilmControllerTest {
         final String title = "Matrix 11";
         final String message = "Film with title '" + title + "' already exits";
 
-        given(this.filmService.update(isA(UpdateFilmCommand.class))).willThrow(new FilmUniqueViolationException(message));
+        given(this.filmService.update(anyLong(), anyString(), anyString(), anyInt())).willThrow(new FilmUniqueViolationException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .put("/films/{filmId}", 1L)
@@ -428,7 +427,7 @@ public class FilmControllerTest {
 
     @Test
     public void whenUpdateQuantityThenReturnStatusOK() throws Exception {
-        given(this.filmService.updateQuantity(isA(UpdateFilmQuantityCommand.class)))
+        given(this.filmService.updateQuantity(anyLong(), anyInt()))
                 .willReturn(FilmDataFixtures.newReleaseFilm());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -445,7 +444,7 @@ public class FilmControllerTest {
     public void whenUpdateQuantityThenReturnJson() throws Exception {
         final int quantity = 10;
 
-        given(this.filmService.updateQuantity(isA(UpdateFilmQuantityCommand.class)))
+        given(this.filmService.updateQuantity(anyLong(), anyInt()))
                 .willReturn(FilmDataFixtures.newReleaseFilm("Matrix 11", quantity));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -466,7 +465,7 @@ public class FilmControllerTest {
         final Long filmId = 1L;
         final String message = "Film with id '" + filmId + "' does not exist";
 
-        given(this.filmService.updateQuantity(isA(UpdateFilmQuantityCommand.class))).willThrow(new FilmNotFoundException(message));
+        given(this.filmService.updateQuantity(anyLong(), anyInt())).willThrow(new FilmNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/films/{filmId}", 1L)

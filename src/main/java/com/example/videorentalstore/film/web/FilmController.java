@@ -1,6 +1,7 @@
 package com.example.videorentalstore.film.web;
 
-import com.example.videorentalstore.film.*;
+import com.example.videorentalstore.film.Film;
+import com.example.videorentalstore.film.FilmService;
 import com.example.videorentalstore.film.web.dto.FilmResponse;
 import com.example.videorentalstore.film.web.dto.SaveFilmRequest;
 import com.example.videorentalstore.film.web.dto.UpdateFilmQuantityRequest;
@@ -43,21 +44,21 @@ public class FilmController {
 
     @PostMapping
     public ResponseEntity<FilmResponse> create(@RequestBody @Valid SaveFilmRequest saveFilmRequest) {
-        final Film film = this.filmService.save(new CreateFilmCommand(saveFilmRequest.getTitle(), saveFilmRequest.getType(), saveFilmRequest.getQuantity()));
+        final Film film = this.filmService.save(saveFilmRequest.getTitle(), saveFilmRequest.getType(), saveFilmRequest.getQuantity());
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
 
     @PutMapping(value = "/{filmId}")
     public ResponseEntity<FilmResponse> update(@PathVariable Long filmId, @RequestBody @Valid SaveFilmRequest saveFilmRequest) {
-        final Film film = this.filmService.update(new UpdateFilmCommand(filmId, saveFilmRequest.getTitle(), saveFilmRequest.getType(), saveFilmRequest.getQuantity()));
+        final Film film = this.filmService.update(filmId, saveFilmRequest.getTitle(), saveFilmRequest.getType(), saveFilmRequest.getQuantity());
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
 
     @PatchMapping(value = "/{filmId}")
     public ResponseEntity<FilmResponse> updateQuantity(@PathVariable Long filmId, @RequestBody @Valid UpdateFilmQuantityRequest updateFilmQuantityRequest) {
-        final Film film = this.filmService.updateQuantity(new UpdateFilmQuantityCommand(filmId, updateFilmQuantityRequest.getQuantity()));
+        final Film film = this.filmService.updateQuantity(filmId, updateFilmQuantityRequest.getQuantity());
 
         return ResponseEntity.ok(this.filmResponseAssembler.of(film));
     }
