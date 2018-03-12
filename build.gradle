@@ -27,18 +27,22 @@ ext {
     jaxbVersion = '2.3.0'
     hikariVersion = '2.7.7'
     h2Version = '1.4.196'
+    evoInflectorVersion = '1.2.2'
 }
 
 dependencyManagement {
     dependencies {
         dependency "javax.xml.bind:jaxb-api:${jaxbVersion}"
         dependency "com.h2database:h2:${h2Version}"
+        dependency "org.atteo:evo-inflector:${evoInflectorVersion}"
     }
 }
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-hateoas')
+    compile('org.atteo:evo-inflector')
     compile('org.springframework.boot:spring-boot-properties-migrator')
     compileOnly('org.projectlombok:lombok')
 
