@@ -8,11 +8,9 @@ public interface RentalService {
 
     List<Rental> findAllForCustomer(Long customerId, Rental.Status status);
 
-    Receipt create(BatchRentalCreateCommand batchRentalCreateCommand);
+    RentalResult create(Long customerId, List<RentalInfo> rentalInfos);
 
-    List<Rental> create(Long customerId, List<RentalInfo> rentalInfos);
-
-    List<Rental> returnBack(Long customerId, List<Long> rentalIds);
+    RentalResult returnBack(Long customerId, List<Long> rentalIds);
 
     void delete(Long customerId, List<Long> ids);
 }
