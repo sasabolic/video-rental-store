@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -80,7 +81,7 @@ public class Rental {
         return this;
     }
 
-    public void markReturned() {
+    public Rental markReturned() {
         if (this.status != Status.IN_PROCESS) {
             throw new IllegalStateException(
                     String.format("Cannot mark rental as RETURNED that is currently not IN_PROCESS! Current status: %s.", this.status));
@@ -88,6 +89,8 @@ public class Rental {
         this.status = Status.RETURNED;
         this.returnDate = Instant.now();
         this.film.putBack();
+
+        return this;
     }
 
     public Rental markLatePaymentExpected() {
@@ -141,11 +144,17 @@ public class Rental {
         return this.status.equals(status);
     }
 
-    public void deactivate() {
+    public Rental apply(Function<Rental, Rental> fun) {
+        return fun.apply(this);
+    }
+
+    public Rental deactivate() {
         if (!this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED)) {
             throw new IllegalStateException(String.format("Cannot deactivate rental that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
         }
         this.active = false;
+
+        return this;
     }
 
     public BigDecimal calculatePrice() {
