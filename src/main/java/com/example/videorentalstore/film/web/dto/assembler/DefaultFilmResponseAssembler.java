@@ -4,6 +4,9 @@ import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.web.dto.FilmResponse;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementation of {@link FilmResponseAssembler}.
+ */
 @Component
 public class DefaultFilmResponseAssembler implements FilmResponseAssembler {
 

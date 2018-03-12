@@ -27,7 +27,7 @@ public interface FilmService {
     /**
      * Creates new {@code Film} based on given {@link CreateFilmCommand}.
      *
-     * @param createFilmCommand the create film command
+     * @param createFilmCommand the pay film command
      * @return the film
      */
     Film save(CreateFilmCommand createFilmCommand);

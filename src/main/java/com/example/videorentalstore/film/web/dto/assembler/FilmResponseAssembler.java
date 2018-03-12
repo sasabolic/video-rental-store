@@ -4,5 +4,8 @@ import com.example.videorentalstore.core.GenericResponseAssembler;
 import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.web.dto.FilmResponse;
 
+/**
+ * Assembler interface for creating {@link FilmResponse} DTOs.
+ */
 public interface FilmResponseAssembler extends GenericResponseAssembler<Film, FilmResponse> {
 }
