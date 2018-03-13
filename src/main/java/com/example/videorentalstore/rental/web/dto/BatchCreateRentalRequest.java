@@ -1,5 +1,6 @@
 package com.example.videorentalstore.rental.web.dto;
 
+import com.example.videorentalstore.rental.RentalInfo;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Batch pay rentals request DTO. Contains List of {@link CreateRentalRequest} DTOs.
@@ -26,6 +28,9 @@ public class BatchCreateRentalRequest implements List<CreateRentalRequest> {
 
     public BatchCreateRentalRequest(List<CreateRentalRequest> createRentalRequests) {
         this.createRentalRequests = createRentalRequests;
+    }
+    public List<RentalInfo> toRentalInfoList() {
+        return this.createRentalRequests.stream().map(CreateRentalRequest::toRentalInfo).collect(Collectors.toList());
     }
 
     @Override

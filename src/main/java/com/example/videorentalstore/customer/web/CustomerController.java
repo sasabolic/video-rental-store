@@ -6,7 +6,6 @@ import com.example.videorentalstore.customer.CustomerService;
 import com.example.videorentalstore.customer.web.dto.CustomerResponse;
 import com.example.videorentalstore.customer.web.dto.SaveCustomerRequest;
 import com.example.videorentalstore.customer.web.dto.assembler.CustomerResponseAssembler;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,27 +30,27 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<Resources<CustomerResponse>> getAll(@RequestParam(required = false) String name) {
-        final List<Customer> result = this.customerService.findAll(name);
+    public ResponseEntity<List<CustomerResponse>> getAll(@RequestParam(required = false) String name) {
+        final List<Customer> customers = this.customerService.findAll(name);
 
-        return ResponseEntity.ok(this.customerResponseAssembler.of(result, name));
+        return ResponseEntity.ok(this.customerResponseAssembler.of(customers));
     }
 
     @GetMapping(value = "/{customerId}")
     public ResponseEntity<CustomerResponse> get(@PathVariable Long customerId) {
-        final Customer result = this.customerService.findById(customerId);
+        final Customer customer = this.customerService.findById(customerId);
 
-        return ResponseEntity.ok(this.customerResponseAssembler.of(result));
+        return ResponseEntity.ok(this.customerResponseAssembler.of(customer));
     }
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody @Valid SaveCustomerRequest saveCustomerRequest) {
-        final Customer result = this.customerService.save(saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName());
+        final Customer customer = this.customerService.save(saveCustomerRequest.getFirstName(), saveCustomerRequest.getLastName());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{filmId}")
-                .buildAndExpand(result.getId()).toUri();
+                .path("/{customerId}")
+                .buildAndExpand(customer.getId()).toUri();
 
         return ResponseEntity.created(location).build();
     }

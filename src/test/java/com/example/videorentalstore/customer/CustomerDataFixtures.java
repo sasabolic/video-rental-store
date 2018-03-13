@@ -31,7 +31,7 @@ public class CustomerDataFixtures {
 
     public static Customer customerWithReturnedRentals() {
         final Customer customer = customer();
-        RentalDataFixtures.completedRentals().forEach(r -> customer.addRental(r));
+        RentalDataFixtures.returnedRentals().forEach(r -> customer.addRental(r));
 
         return customer;
     }

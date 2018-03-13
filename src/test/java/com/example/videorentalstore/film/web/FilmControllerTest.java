@@ -82,13 +82,10 @@ public class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$._embedded.films").isArray())
-                .andExpect(jsonPath("$._embedded.films", hasSize(2)))
-                .andExpect(jsonPath("$._embedded.films[0].title", equalTo(title)))
-                .andExpect(jsonPath("$._embedded.films[0]._links.self.href", equalTo("http://localhost/films/" + filmId)))
-                .andExpect(jsonPath("$._embedded.films[1].title", equalTo(title1)))
-                .andExpect(jsonPath("$._embedded.films[1]._links.self.href", equalTo("http://localhost/films/" + filmId1)))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films{?title}")));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].title", equalTo(title)))
+                .andExpect(jsonPath("$[1].title", equalTo(title1)));
     }
 
     @Test
@@ -111,13 +108,10 @@ public class FilmControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$._embedded.films").isArray())
-                .andExpect(jsonPath("$._embedded.films", hasSize(2)))
-                .andExpect(jsonPath("$._embedded.films[0].title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$._embedded.films[0]._links.self.href", equalTo("http://localhost/films/" + filmId)))
-                .andExpect(jsonPath("$._embedded.films[1].title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$._embedded.films[1]._links.self.href", equalTo("http://localhost/films/" + filmId1)))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films?title=" + title)));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$[1].title", equalTo("Spider Man 2")));
     }
 
     @Test
@@ -133,8 +127,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films?title=" + title)));
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 
     @Test
@@ -352,12 +345,11 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/hal+json;charset=UTF-8"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.title", equalTo(title)))
                 .andExpect(jsonPath("$.type", equalTo(type.name())))
-                .andExpect(jsonPath("$.quantity", equalTo(quantity)))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films/" + filmId)));
+                .andExpect(jsonPath("$.quantity", equalTo(quantity)));
     }
 
     @Test
@@ -479,10 +471,9 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/hal+json;charset=UTF-8"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.quantity", equalTo(quantity)))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/films/" + filmId)));
+                .andExpect(jsonPath("$.quantity", equalTo(quantity)));
     }
 
     @Test

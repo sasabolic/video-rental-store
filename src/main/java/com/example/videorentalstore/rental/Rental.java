@@ -4,12 +4,12 @@ import com.example.videorentalstore.film.Film;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.function.Function;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -17,6 +17,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Getter
 @NoArgsConstructor
 @ToString
+@Where(clause = "active = true")
 public class Rental {
 
     @Id
@@ -34,10 +35,7 @@ public class Rental {
     private Instant startDate;
 
     @Column(name = "end_date")
-    private Instant returnDate;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private Instant endDate;
 
     private boolean active = true;
 
@@ -58,99 +56,12 @@ public class Rental {
 
         this.daysRented = daysRented;
         this.startDate = startDate;
-        this.status = Status.RESERVED;
-    }
-
-    public Rental markUpFrontPaymentExpected() {
-        if (this.status != Status.RESERVED) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark rental as UP_FRONT_PAYMENT_EXPECTED that is currently not RESERVED! Current status: %s.", this.status));
-        }
-        this.status = Status.UP_FRONT_PAYMENT_EXPECTED;
-
-        return this;
-    }
-
-    public Rental markInProcess() {
-        if (this.status != Status.UP_FRONT_PAYMENT_EXPECTED) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark rental as IN_PROCESS that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
-        }
-        this.status = Status.IN_PROCESS;
-
-        return this;
     }
 
     public Rental markReturned() {
-        if (this.status != Status.IN_PROCESS) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark rental as RETURNED that is currently not IN_PROCESS! Current status: %s.", this.status));
-        }
-        this.status = Status.RETURNED;
-        this.returnDate = Instant.now();
+        this.active = false;
+        this.endDate = Instant.now();
         this.film.putBack();
-
-        return this;
-    }
-
-    public Rental markLatePaymentExpected() {
-        if (this.status != Status.RETURNED) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark rental as LATE_PAYMENT_EXPECTED that is currently not RETURNED! Current status: %s.", this.status));
-        }
-        this.status = Status.LATE_PAYMENT_EXPECTED;
-
-        return this;
-    }
-
-    public Rental markCompleted() {
-        if (this.status != Status.LATE_PAYMENT_EXPECTED) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark rental as COMPLETED that is currently not LATE_PAYMENT_EXPECTED! Current status: %s.", this.status));
-        }
-        this.status = Status.COMPLETED;
-        this.active = false;
-
-        return this;
-    }
-
-    public boolean isReserved() {
-        return this.status.equals(Status.RESERVED);
-    }
-
-    public boolean isUpFrontPaymentExpected() {
-        return this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED);
-    }
-
-    public boolean isReturned() {
-        return this.status.equals(Status.RETURNED);
-    }
-
-    public boolean isInProcess() {
-        return this.status.equals(Status.IN_PROCESS);
-    }
-
-    public boolean isLatePaymentExpected() {
-        return this.status.equals(Status.LATE_PAYMENT_EXPECTED);
-    }
-
-    public boolean isNotCompleted() {
-        return !this.status.equals(Status.COMPLETED);
-    }
-
-    public boolean hasStatus(Status status) {
-        return this.status.equals(status);
-    }
-
-    public Rental apply(Function<Rental, Rental> fun) {
-        return fun.apply(this);
-    }
-
-    public Rental deactivate() {
-        if (!this.status.equals(Status.RESERVED)) {
-            throw new IllegalStateException(String.format("Cannot deactivate rental that is currently not RESERVED! Current status: %s.", this.status));
-        }
-        this.active = false;
 
         return this;
     }
@@ -160,30 +71,13 @@ public class Rental {
     }
 
     public BigDecimal calculateExtraCharges() {
-        if (this.returnDate == null) {
-            throw new NullPointerException("Cannot create late charges if RETURN DATE is not set.");
+        if (this.endDate == null) {
+            throw new NullPointerException("Cannot create late charges if END DATE is not set.");
         }
-        return this.film.calculateExtraCharges(DAYS.between(this.startDate, this.returnDate) - this.daysRented);
+        return this.film.calculateExtraCharges(DAYS.between(this.startDate, this.endDate) - this.daysRented);
     }
 
     public int calculateBonusPoints() {
         return this.film.calculateBonusPoints(this.daysRented);
-    }
-
-    /**
-     * Enumeration for all the statuses {@link Rental} can be in.
-     */
-    public enum Status {
-        RESERVED,
-
-        UP_FRONT_PAYMENT_EXPECTED,
-
-        IN_PROCESS,
-
-        RETURNED,
-
-        LATE_PAYMENT_EXPECTED,
-
-        COMPLETED
     }
 }

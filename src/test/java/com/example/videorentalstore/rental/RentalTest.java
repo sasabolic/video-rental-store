@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,8 +31,8 @@ public class RentalTest {
     }
 
     @Test
-    public void whenNewInstanceThenStatusReserved() {
-        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.RESERVED);
+    public void whenNewInstanceThenEndDateNull() {
+        assertThat(rental.getEndDate()).isNull();
     }
 
     @Test
@@ -60,236 +62,24 @@ public class RentalTest {
     }
 
     @Test
-    public void whenMarkUpFrontPaymentExpectedThenStatusUpFrontPaymentExpected() {
-        rental.markUpFrontPaymentExpected();
-
-        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
-    }
-
-    @Test
-    public void givenInvalidStateWhenMarkUpFrontPaymentExpectedThenThrowError() {
-        thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark rental as UP_FRONT_PAYMENT_EXPECTED that is currently not RESERVED!");
-
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
-
-        rental.markUpFrontPaymentExpected();
-    }
-
-    @Test
-    public void whenMarkInProcessThenStatusInProcess() {
-        rental.markUpFrontPaymentExpected();
-
-        rental.markInProcess();
-
-        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.IN_PROCESS);
-    }
-
-    @Test
-    public void givenInvalidStateWhenMarkInProcessThenThrowError() {
-        thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark rental as IN_PROCESS that is currently not UP_FRONT_PAYMENT_EXPECTED!");
-
-        rental.markInProcess();
-    }
-
-    @Test
-    public void whenMarkReturnedThenStatusReturned() {
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
-
+    public void whenMarkReturnedThenActiveFalse() {
         rental.markReturned();
-
-        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.RETURNED);
-    }
-
-    @Test
-    public void givenInvalidStateWhenMarkReturnedThenThrowError() {
-        thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark rental as RETURNED that is currently not IN_PROCESS!");
-
-        rental.markReturned();
-    }
-
-    @Test
-    public void whenMarkLatePaymentExpectedThenStatusLatePaymentExpected() {
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
-        rental.markReturned();
-
-        rental.markLatePaymentExpected();
-
-        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.LATE_PAYMENT_EXPECTED);
-    }
-
-    @Test
-    public void givenInvalidStateWhenMarkLatePaymentExpectedThenThrowError() {
-        thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark rental as LATE_PAYMENT_EXPECTED that is currently not RETURNED!");
-
-        rental.markLatePaymentExpected();
-    }
-
-    @Test
-    public void whenMarkCompletedThenStatusCompleted() {
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
-        rental.markReturned();
-        rental.markLatePaymentExpected();
-
-        rental.markCompleted();
-
-        assertThat(rental.getStatus()).isEqualByComparingTo(Rental.Status.COMPLETED);
-    }
-
-    @Test
-    public void givenInvalidStateWhenMarkCompletedThenThrowError() {
-        thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot mark rental as COMPLETED that is currently not LATE_PAYMENT_EXPECTED! Current status: RESERVED.");
-
-        rental.markCompleted();
-    }
-
-    @Test
-    public void whenIsReservedThenTrue() {
-
-        final boolean result = rental.isReserved();
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenDifferentStatusWhenIsReservedThenFalse() {
-        rental.markUpFrontPaymentExpected();
-
-        final boolean result = rental.isReserved();
-
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    public void whenIsUpFrontPaymentExpectedThenTrue() {
-        rental.markUpFrontPaymentExpected();
-
-        final boolean result = rental.isUpFrontPaymentExpected();
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenDifferentStatusWhenIsUpFrontPaymentExpectedThenFalse() {
-
-        final boolean result = rental.isUpFrontPaymentExpected();
-
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    public void whenIsInProcessThenTrue() {
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
-
-        final boolean result = rental.isInProcess();
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenDifferentStatusWhenIsInProcessThenFalse() {
-
-        final boolean result = rental.isUpFrontPaymentExpected();
-
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    public void whenIsLatePaymentExpectedThenTrue() {
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
-        rental.markReturned();
-        rental.markLatePaymentExpected();
-
-        final boolean result = rental.isLatePaymentExpected();
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenDifferentStatusWhenIsLatePaymentExpectedThenFalse() {
-
-        final boolean result = rental.isUpFrontPaymentExpected();
-
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    public void givenDifferentStatusWhenIsNotCompletedThenTrue() {
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
-        rental.markReturned();
-
-        final boolean result = rental.isNotCompleted();
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void whenIsNotCompletedThenFalse() {
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
-        rental.markReturned();
-        rental.markLatePaymentExpected();
-        rental.markCompleted();
-
-        final boolean result = rental.isNotCompleted();
-
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    public void whenHasStatusThenTrue() {
-        rental.markUpFrontPaymentExpected();
-
-        final boolean result = rental.hasStatus(Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
-
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    public void givenDifferentStatusWhenHasStatusThenFalse() {
-        rental.markUpFrontPaymentExpected();
-
-        final boolean result = rental.hasStatus(Rental.Status.IN_PROCESS);
-
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    public void whenApplyThenChanged() {
-        final Rental rental = RentalDataFixtures.rental();
-        final boolean before = rental.isActive();
-
-        rental.apply(Rental::deactivate);
-
-        assertThat(rental.isActive()).isNotEqualTo(before);
-    }
-
-    @Test
-    public void whenDeactivateThenActiveFalse() {
-        rental.deactivate();
 
         assertThat(rental.isActive()).isFalse();
     }
 
     @Test
-    public void givenInvalidStateWhenDeactivateThenThrowError() {
-        thrown.expect(IllegalStateException.class);
-        thrown.expectMessage("Cannot deactivate rental that is currently not RESERVED!");
+    public void whenMarkReturnedThenEndDateIsNotNull() {
+        rental.markReturned();
 
-        rental.markUpFrontPaymentExpected();
+        assertThat(rental.getEndDate()).isNotNull();
+    }
 
-        rental.deactivate();
+    @Test
+    public void whenMarkReturnedThenEndDateIsToday() {
+        rental.markReturned();
+
+        assertThat(ChronoUnit.DAYS.between(rental.getEndDate(), Instant.now())).isEqualTo(0);
     }
 
     @Test
@@ -306,8 +96,6 @@ public class RentalTest {
     public void whenCalculateExtraChargesThenReturnCorrectResult() {
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 2, 3);
 
-        rental.markUpFrontPaymentExpected();
-        rental.markInProcess();
         rental.markReturned();
 
         final BigDecimal result = rental.calculateExtraCharges();
@@ -319,7 +107,7 @@ public class RentalTest {
     @Test
     public void givenNullReturnDateWhenCalculateExtraChargesThenThrowException() {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("Cannot create late charges if RETURN DATE is not set.");
+        thrown.expectMessage("Cannot create late charges if END DATE is not set.");
 
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5);
 

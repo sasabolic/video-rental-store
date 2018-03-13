@@ -76,15 +76,14 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$._embedded.customers").isArray())
-                .andExpect(jsonPath("$._embedded.customers", hasSize(3)))
-                .andExpect(jsonPath("$._embedded.customers[0].first_name", equalTo("John")))
-                .andExpect(jsonPath("$._embedded.customers[0].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$._embedded.customers[1].first_name", equalTo("Giovanni")))
-                .andExpect(jsonPath("$._embedded.customers[1].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$._embedded.customers[2].first_name", equalTo("Evan")))
-                .andExpect(jsonPath("$._embedded.customers[2].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers{?name}")));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].first_name", equalTo("John")))
+                .andExpect(jsonPath("$[0].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$[1].first_name", equalTo("Giovanni")))
+                .andExpect(jsonPath("$[1].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$[2].first_name", equalTo("Evan")))
+                .andExpect(jsonPath("$[2].last_name", equalTo("Smith")));
     }
 
     @Test
@@ -101,12 +100,11 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$._embedded.customers").isArray())
-                .andExpect(jsonPath("$._embedded.customers", hasSize(3)))
-                .andExpect(jsonPath("$._embedded.customers[0].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$._embedded.customers[1].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$._embedded.customers[2].last_name", equalTo("Smith")))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers?name=" + name)));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$[1].last_name", equalTo("Smith")))
+                .andExpect(jsonPath("$[2].last_name", equalTo("Smith")));
     }
 
     @Test
@@ -124,7 +122,9 @@ public class CustomerControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers?name=" + name)));
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test
@@ -165,9 +165,7 @@ public class CustomerControllerTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.first_name", equalTo(firstName)))
-                .andExpect(jsonPath("$.last_name", equalTo(lastName)))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers/" + customerId)))
-                .andExpect(jsonPath("$._links.rentals.href", equalTo("http://localhost/customers/" + customerId + "/rentals{?status}")));
+                .andExpect(jsonPath("$.last_name", equalTo(lastName)));
     }
 
     @Test
@@ -309,12 +307,10 @@ public class CustomerControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/hal+json;charset=UTF-8"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.first_name", equalTo(firstName)))
-                .andExpect(jsonPath("$.last_name", equalTo(lastName)))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers/" + customerId)))
-                .andExpect(jsonPath("$._links.rentals.href", equalTo("http://localhost/customers/" + customerId + "/rentals{?status}")));
+                .andExpect(jsonPath("$.last_name", equalTo(lastName)));
     }
 
     @Test

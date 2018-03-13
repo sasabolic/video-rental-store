@@ -1,10 +1,10 @@
 package com.example.videorentalstore.customer;
 
-import com.example.videorentalstore.invoice.Invoice;
 import com.example.videorentalstore.rental.Rental;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,6 +16,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @ToString
+@Where(clause = "active = true")
 public class Customer {
 
     @Id
@@ -37,10 +38,6 @@ public class Customer {
     @JoinColumn(name = "customer_id")
     private List<Rental> rentals = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "customer_id")
-    private List<Invoice> invoices = new ArrayList<>();
-
     public Customer(String firstName, String lastName) {
         Objects.requireNonNull(firstName, "Customer's first name cannot be null!");
         Objects.requireNonNull(lastName, "Customer's last name cannot be null!");
@@ -55,9 +52,9 @@ public class Customer {
     }
 
     public void deactivate() {
-        this.rentals.stream().filter(Rental::isNotCompleted).findAny().ifPresent(r -> {
-            throw new IllegalStateException(String.format("Customer with id '%d' cannot be deactivated while containing rentals in status IN_PROCESS.", this.id));
-        });
+        if (!this.rentals.isEmpty()) {
+            throw new IllegalStateException(String.format("Customer with id '%d' cannot be deactivated while containing rentals.", this.id));
+        }
         this.active = false;
     }
 
@@ -67,21 +64,18 @@ public class Customer {
 
     public void addBonusPoints() {
         this.bonusPoints += this.rentals.stream()
-                .filter(Rental::isInProcess)
                 .map(Rental::calculateBonusPoints)
                 .reduce(0, (x, y) -> x + y);
     }
 
     public BigDecimal calculatePrice() {
         return this.rentals.stream()
-                .filter(Rental::isUpFrontPaymentExpected)
                 .map(Rental::calculatePrice)
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }
 
     public BigDecimal calculateExtraCharges() {
         return this.rentals.stream()
-                .filter(Rental::isLatePaymentExpected)
                 .map(Rental::calculateExtraCharges)
                 .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
     }

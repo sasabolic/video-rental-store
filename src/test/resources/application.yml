@@ -1,0 +1,6 @@
+spring.liquibase.change-log: classpath:/db/changelog/db.changelog-master.xml
+
+spring.jackson.serialization.indent_output: true
+
+spring.datasource.url: jdbc:h2:mem:testdb;MODE=MYSQL;
+spring.jpa.show-sql: true

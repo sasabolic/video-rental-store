@@ -64,7 +64,7 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenDeactivateWithNotCompletedRentalsThenThrowException() {
+    public void whenDeactivateWithExistingRentalsThenThrowException() {
         thrown.expect(IllegalStateException.class);
 
         RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
@@ -73,26 +73,20 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenDeactivateWithCompletedRentalsThenActiveFalse() {
-        final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
-        rentals.stream().forEach(Rental::markInProcess);
-        rentals.stream().forEach(Rental::markReturned);
-        rentals.stream().forEach(Rental::markLatePaymentExpected);
-        rentals.stream().forEach(Rental::markCompleted);
+    public void whenDeactivateWithRentalsThenThrowException() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Customer with id 'null' cannot be deactivated while containing rentals.");
+
+        final List<Rental> rentals = RentalDataFixtures.returnedRentals();
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
         customer.deactivate();
-
-        assertThat(customer.isActive()).isFalse();
     }
 
     @Test
     public void whenCalculateThenReturnCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-
-        rentals.forEach(Rental::markUpFrontPaymentExpected);
 
         rentals.forEach(r -> customer.addRental(r));
 
@@ -102,12 +96,17 @@ public class CustomerTest {
     }
 
     @Test
-    public void givenRentalsReservedWhenCalculateThenReturnCorrectAmount() {
-        RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
+    public void givenEndDateNullWhenCalculateExtraChargesThenReturnThrowException() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Cannot create late charges if END DATE is not set.");
 
-        final BigDecimal totalAmount = customer.calculatePrice();
+        final List<Rental> rentals = RentalDataFixtures.rentals();
 
-        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.ZERO);
+        rentals.forEach(r -> customer.addRental(r));
+
+        final BigDecimal totalAmount = customer.calculateExtraCharges();
+
+        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.valueOf(110));
     }
 
     @Test
@@ -123,12 +122,10 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalsInProcessThenBonusPointsAdded() {
+    public void whenAddBonusPointsThenBonusPointsAdded() {
         final long before = customer.getBonusPoints();
 
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
-        rentals.stream().forEach(Rental::markInProcess);
 
         rentals.forEach(r -> customer.addRental(r));
 
@@ -140,62 +137,13 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalsNonInProcessStatusThenBonusPointsNotAdded() {
-        final long before = customer.getBonusPoints();
-
-        final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
-
-        rentals.stream().forEach(r -> customer.addRental(r));
-
-        customer.addBonusPoints();
-
-        final long result = customer.getBonusPoints();
-
-        assertThat(result).isEqualByComparingTo(before);
-    }
-
-    @Test
     public void whenRentalsReturnedSameDayThenCalculateExtraChargesReturnsZeroAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
-        rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
-        rentals.stream().forEach(Rental::markLatePaymentExpected);
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
         final BigDecimal totalAmount = customer.calculateExtraCharges();
-
-        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.ZERO);
-    }
-
-    @Test
-    public void whenRentalsReturnedThenCalculateExtraChargesReturnsCorrectAmount() {
-        final List<Rental> rentals = RentalDataFixtures.rentals(3);
-        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
-        rentals.stream().forEach(Rental::markInProcess);
-        rentals.stream().forEach(Rental::markReturned);
-        rentals.stream().forEach(Rental::markLatePaymentExpected);
-
-        rentals.stream().forEach(r -> customer.addRental(r));
-
-        final BigDecimal totalAmount = customer.calculateExtraCharges();
-
-        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.valueOf(110));
-    }
-
-    @Test
-    public void whenRentalsReturnedThenCalculatePriceReturnsCorrectAmount() {
-        final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
-        rentals.stream().forEach(Rental::markInProcess);
-        rentals.stream().forEach(Rental::markReturned);
-        rentals.stream().forEach(Rental::markLatePaymentExpected);
-
-        rentals.stream().forEach(r -> customer.addRental(r));
-
-        final BigDecimal totalAmount = customer.calculatePrice();
 
         assertThat(totalAmount).isEqualByComparingTo(BigDecimal.ZERO);
     }

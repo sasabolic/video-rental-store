@@ -21,13 +21,4 @@ public class DefaultCustomerResponseAssembler implements CustomerResponseAssembl
     public CustomerResponse of(Customer entity) {
         return new CustomerResponse(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getBonusPoints());
     }
-
-    @Override
-    public Resources<CustomerResponse> of(Collection<Customer> entities, String name) {
-        final Resources<CustomerResponse> resources = new Resources<>(of(entities));
-
-        resources.add(linkTo(methodOn(CustomerController.class).getAll(name)).withSelfRel());
-
-        return resources;
-    }
 }

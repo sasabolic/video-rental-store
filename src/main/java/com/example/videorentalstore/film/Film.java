@@ -3,6 +3,7 @@ package com.example.videorentalstore.film;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @ToString
+@Where(clause = "active = true")
 public class Film {
 
     @Id

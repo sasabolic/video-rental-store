@@ -2,6 +2,7 @@ package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.film.FilmRepository;
 import com.example.videorentalstore.rental.Rental;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +28,15 @@ public class CustomerRepositoryTest {
     @Autowired
     private FilmRepository filmRepository;
 
+    private Customer customer;
+
+    @Before
+    public void setUp() {
+        customer = CustomerDataFixtures.customer("John", "Smith");
+        entityManager.persist(customer);
+        entityManager.flush();
+    }
+
     @Test
     public void whenRentalsAddedThenRentalsSizeIncreased() {
         Rental rental1 = new Rental(filmRepository.findById(1L).get(), 3);
@@ -44,58 +53,6 @@ public class CustomerRepositoryTest {
 
         assertThat(result).isNotNull();
         assertThat(result.getRentals()).hasSize(before + 2);
-    }
-
-    @Test
-    public void whenRentalsAddedThenCalculateExtraChargesReturnsAmountZero() {
-        Rental rental1 = new Rental(filmRepository.findById(1L).get(), 3);
-        Rental rental2 = new Rental(filmRepository.findById(2L).get(), 5);
-
-        final Customer customer = customerRepository.findById(1L).get();
-
-        // add rentals
-        customer.addRental(rental1);
-        customer.addRental(rental2);
-
-        final Customer result = customerRepository.save(customer);
-
-        final BigDecimal extraCharges = result.calculateExtraCharges();
-
-        assertThat(extraCharges).isEqualByComparingTo(BigDecimal.ZERO);
-    }
-
-    @Test
-    public void whenRentalsAddedThenCalculateReturnsCorrectAmount() {
-        Rental rental1 = new Rental(filmRepository.findById(1L).get(), 3);
-        Rental rental2 = new Rental(filmRepository.findById(2L).get(), 5);
-
-        final Customer customer = customerRepository.findById(1L).get();
-        customer.addRental(rental1);
-        customer.addRental(rental2);
-
-        final Customer result = customerRepository.save(customer);
-
-        final BigDecimal amount = result.calculatePrice();
-
-        assertThat(amount).isEqualByComparingTo(BigDecimal.ZERO);
-    }
-
-    @Test
-    public void whenRentalsUpFrontPaymentExpectedAddedThenCalculateReturnsCorrectAmount() {
-        Rental rental1 = new Rental(filmRepository.findById(1L).get(), 3);
-        Rental rental2 = new Rental(filmRepository.findById(2L).get(), 5);
-        rental1.markUpFrontPaymentExpected();
-        rental2.markUpFrontPaymentExpected();
-
-        final Customer customer = customerRepository.findById(1L).get();
-        customer.addRental(rental1);
-        customer.addRental(rental2);
-
-        final Customer result = customerRepository.save(customer);
-
-        final BigDecimal amount = result.calculatePrice();
-
-        assertThat(amount).isEqualByComparingTo(BigDecimal.valueOf(210));
     }
 
     @Test
@@ -123,8 +80,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenSaveThenReturnCorrectResult() {
-        final Customer customer = CustomerDataFixtures.customer();
-
         final Customer result = customerRepository.save(customer);
 
         assertThat(result).isNotNull();
@@ -136,8 +91,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenDeactivateThenActiveFalse() {
-        Customer customer = CustomerDataFixtures.customer();
-
         customer.deactivate();
 
         final Customer result = customerRepository.save(customer);
@@ -148,10 +101,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenDeactivateThenSizeDecreased() {
-        final Customer customer = CustomerDataFixtures.customer();
-        entityManager.persist(customer);
-        entityManager.flush();
-
         Long before = customerRepository.count();
 
         customer.deactivate();
@@ -165,10 +114,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenDeactivateThenSearchAllReturnsCorrectResult() {
-        final Customer customer = CustomerDataFixtures.customer();
-        entityManager.persist(customer);
-        entityManager.flush();
-
         customer.deactivate();
 
         customerRepository.save(customer);
@@ -181,10 +126,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenDeactivateThenSearchByIdReturnsCorrectResult() {
-        final Customer customer = CustomerDataFixtures.customer();
-        entityManager.persist(customer);
-        entityManager.flush();
-
         customer.deactivate();
 
         customerRepository.save(customer);
@@ -196,10 +137,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenDeactivateThenSearchByNameReturnsCorrectResult() {
-        final Customer customer = CustomerDataFixtures.customer("John", "Smith");
-        entityManager.persist(customer);
-        entityManager.flush();
-
         customer.deactivate();
 
         customerRepository.save(customer);
@@ -211,9 +148,6 @@ public class CustomerRepositoryTest {
 
     @Test
     public void whenSearchByIdThenReturnCorrectResult() {
-        final Customer customer = CustomerDataFixtures.customer();
-        entityManager.persist(customer);
-        entityManager.flush();
 
         final Customer result = customerRepository.findById(customer.getId()).get();
 
@@ -222,6 +156,30 @@ public class CustomerRepositoryTest {
         assertThat(result.getLastName()).isEqualTo(customer.getLastName());
         assertThat(result.getBonusPoints()).isEqualTo(customer.getBonusPoints());
         assertThat(result.getRentals()).isEqualTo(customer.getRentals());
+    }
+
+    @Test
+    public void whenSearchByIdThenActiveTrue() {
+
+        final Customer result = customerRepository.findById(customer.getId()).get();
+
+        assertThat(result).isNotNull();
+        assertThat(result.isActive()).isTrue();
+    }
+
+    @Test
+    public void givenReturnedRentalsWhenSearchByIdRentalsEmpty() {
+        final List<Rental> rentals = customerRepository.findById(customer.getId()).get().getRentals();
+
+        rentals.stream().map(Rental::markReturned).forEach(r -> customer.addRental(r));
+
+        customerRepository.save(customer);
+
+        final Customer result = customerRepository.findById(customer.getId()).get();
+
+        assertThat(result).isNotNull();
+        assertThat(result.isActive()).isTrue();
+        assertThat(result.getRentals()).isEmpty();
     }
 
     @Test

@@ -4,13 +4,9 @@ import java.util.List;
 
 public interface RentalService {
 
-    List<Rental> findAll();
+    BatchRental findAllForCustomer(Long customerId);
 
-    List<Rental> findAllForCustomer(Long customerId, Rental.Status status);
+    BatchRental create(Long customerId, List<RentalInfo> rentalInfos);
 
-    RentalResult create(Long customerId, List<RentalInfo> rentalInfos);
-
-    RentalResult returnBack(Long customerId, List<Long> rentalIds);
-
-    void delete(Long customerId, List<Long> ids);
+    BatchRental returnBack(Long customerId, List<Long> rentalIds);
 }

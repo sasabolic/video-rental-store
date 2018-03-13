@@ -45,12 +45,12 @@ public class RentalDataFixtures {
         );
     }
 
-    public static List<Rental> completedRentals() {
+    public static List<Rental> returnedRentals() {
         return Arrays.asList(
-                rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1).markCompleted(),
-                rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5).markCompleted(),
-                rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2).markCompleted(),
-                rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7).markCompleted()
+                rental(FilmDataFixtures.newReleaseFilm("Matrix 11"), 1).markReturned(),
+                rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5).markReturned(),
+                rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2).markReturned(),
+                rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7).markReturned()
         );
     }
 

@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -35,37 +36,24 @@ public class RentalServiceTest {
     @Mock
     private FilmRepository filmRepository;
 
-    @Mock
-    private RentalRepository rentalRepository;
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() {
-        rentalService = new DefaultRentalService(customerRepository, filmRepository, rentalRepository);
-    }
-
-    @Test
-    public void whenFindingAllThenReturnListOfRentals() {
-        doReturn(RentalDataFixtures.rentals()).when(rentalRepository).findAll();
-
-        final List<Rental> result = rentalService.findAll();
-
-        assertThat(result).isNotNull();
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(4);
+        rentalService = new DefaultRentalService(customerRepository, filmRepository);
     }
 
     @Test
     public void whenFindingAllForCustomerThenReturnListOfRentals() {
         doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
 
-        final List<Rental> result = rentalService.findAllForCustomer(1L, null);
+        final BatchRental result = rentalService.findAllForCustomer(1L);
 
         assertThat(result).isNotNull();
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(4);
+        assertThat(result.getAmount()).isNull();
+        assertThat(result.getRentals()).isNotEmpty();
+        assertThat(result.getRentals()).hasSize(4);
     }
 
     @Test
@@ -77,18 +65,7 @@ public class RentalServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        rentalService.findAllForCustomer(1L, null);
-    }
-
-    @Test
-    public void whenFindingAllForCustomerWithStatusThenReturnListOfRentals() {
-        doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
-
-        final List<Rental> result = rentalService.findAllForCustomer(1L, Rental.Status.RESERVED);
-
-        assertThat(result).isNotNull();
-        assertThat(result).isNotEmpty();
-        assertThat(result).hasSize(4);
+        rentalService.findAllForCustomer(1L);
     }
 
     @Test
@@ -106,12 +83,11 @@ public class RentalServiceTest {
                 new RentalInfo(3L, 2),
                 new RentalInfo(4L, 7));
 
-        final RentalResult result = rentalService.create(1L, rentalInfos);
+        final BatchRental result = rentalService.create(1L, rentalInfos);
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("status", Rental.Status.RESERVED);
+        assertThat(result).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
         assertThat(result.getRentals()).hasSize(4);
-        assertThat(result.getRentals()).extracting(Rental::getStatus).containsOnly(Rental.Status.RESERVED);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(result.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
     }
@@ -146,7 +122,7 @@ public class RentalServiceTest {
                 new RentalInfo(3L, 2),
                 new RentalInfo(4L, 7));
 
-        RentalResult result = null;
+        BatchRental result = null;
         try {
             result = rentalService.create(1L, rentalInfos);
         } catch (RentalException ex) {
@@ -174,10 +150,10 @@ public class RentalServiceTest {
         final Rental regularReleaseRental1 = spy(RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2, 3));
         final Rental oldReleaseRental = spy(RentalDataFixtures.rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7, 3));
 
-        customer.addRental(newReleaseRental.markUpFrontPaymentExpected().markInProcess());
-        customer.addRental(regularReleaseRental.markUpFrontPaymentExpected().markInProcess());
-        customer.addRental(regularReleaseRental1.markUpFrontPaymentExpected().markInProcess());
-        customer.addRental(oldReleaseRental.markUpFrontPaymentExpected().markInProcess());
+        customer.addRental(newReleaseRental.markReturned());
+        customer.addRental(regularReleaseRental.markReturned());
+        customer.addRental(regularReleaseRental1.markReturned());
+        customer.addRental(oldReleaseRental.markReturned());
 
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
         doReturn(1L).when(newReleaseRental).getId();
@@ -185,14 +161,13 @@ public class RentalServiceTest {
         doReturn(3L).when(regularReleaseRental1).getId();
         doReturn(4L).when(oldReleaseRental).getId();
 
-        final RentalResult result = rentalService.returnBack(1L, Arrays.asList(1L, 2L, 3L, 4L));
+        final BatchRental result = rentalService.returnBack(1L, Arrays.asList(1L, 2L, 3L, 4L));
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("status", Rental.Status.RETURNED);
+        assertThat(result).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
         assertThat(result.getRentals()).hasSize(4);
-        assertThat(result.getRentals()).extracting(Rental::getStatus).containsOnly(Rental.Status.RETURNED);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(result.getRentals()).extracting(r -> r.getReturnDate()).isNotNull();
+        assertThat(result.getRentals()).extracting(r -> r.getEndDate()).isNotNull();
     }
 
     @Test
@@ -208,14 +183,14 @@ public class RentalServiceTest {
     }
 
     @Test
-    public void whenReturningBackRentalsOfNonExistingFilmsThenThrowException() {
+    public void whenReturningBackRentalsOfNonExistingRentalsThenThrowException() {
         final long customerId = 1L;
         final Customer customer = spy(CustomerDataFixtures.customer());
 
         doReturn(customerId).when(customer).getId();
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
 
-        RentalResult result = null;
+        BatchRental result = null;
         try {
             result = rentalService.returnBack(customerId, Arrays.asList(1L, 2L, 3L, 4L));
         } catch (RentalException ex) {

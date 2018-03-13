@@ -3,6 +3,8 @@ package com.example.videorentalstore.rental.web;
 import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.rental.*;
+import com.example.videorentalstore.rental.web.dto.assembler.BatchRentalResponseAssembler;
+import com.example.videorentalstore.rental.web.dto.assembler.DefaultBatchRentalResponseAssembler;
 import com.example.videorentalstore.rental.web.dto.assembler.DefaultRentalResponseAssembler;
 import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssembler;
 import org.junit.Test;
@@ -18,14 +20,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -41,6 +44,11 @@ public class CustomerRentalControllerTest {
         public RentalResponseAssembler rentalResponseAssembler() {
             return new DefaultRentalResponseAssembler();
         }
+
+        @Bean
+        public BatchRentalResponseAssembler batchRentalResponseAssembler() {
+            return new DefaultBatchRentalResponseAssembler(rentalResponseAssembler());
+        }
     }
 
     @Autowired
@@ -51,7 +59,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetAllForCustomerThenReturnStatusOK() throws Exception {
-        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
+        given(this.rentalService.findAllForCustomer(anyLong())).willReturn(new BatchRental(RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", 12)
@@ -64,7 +72,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenGetAllForCustomerThenReturnJson() throws Exception {
-        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
+        given(this.rentalService.findAllForCustomer(anyLong())).willReturn(new BatchRental(RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", 12)
@@ -74,116 +82,17 @@ public class CustomerRentalControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$._embedded.rentals").isArray())
-                .andExpect(jsonPath("$._embedded.rentals", hasSize(4)))
-                .andExpect(jsonPath("$._embedded.rentals[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$._embedded.rentals[0].days_rented", equalTo(1)))
-                .andExpect(jsonPath("$._embedded.rentals[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$._embedded.rentals[1].days_rented", equalTo(5)))
-                .andExpect(jsonPath("$._embedded.rentals[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$._embedded.rentals[2].days_rented", equalTo(2)))
-                .andExpect(jsonPath("$._embedded.rentals[3].film_title", equalTo("Out of Africa")))
-                .andExpect(jsonPath("$._embedded.rentals[3].days_rented", equalTo(7)))
-                .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/12/rentals{?status}")))
-                .andExpect(jsonPath("$._links.create_invoice.href", is("http://localhost/customers/12/invoices")));
-    }
-
-    @Test
-    public void whenGetAllForCustomerWithStatusThenReturnStatusOK() throws Exception {
-        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
-
-        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/rentals?status={status}", 12, Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void whenGetAllForCustomerWithStatusNonInvoiceableThenDoNotReturnCreateInvoiceLink() throws Exception {
-        final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.forEach(r -> r.markUpFrontPaymentExpected().markInProcess().markReturned().markLatePaymentExpected());
-        final Rental.Status status = Rental.Status.LATE_PAYMENT_EXPECTED;
-
-        given(this.rentalService.findAllForCustomer(anyLong(), isA(Rental.Status.class))).willReturn(rentals);
-
-        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/rentals?status={status}", 12, status)
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.rentals").isArray())
-                .andExpect(jsonPath("$._embedded.rentals", hasSize(4)))
-                .andExpect(jsonPath("$._embedded.rentals[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$._embedded.rentals[0].days_rented", equalTo(1)))
-                .andExpect(jsonPath("$._embedded.rentals[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$._embedded.rentals[1].days_rented", equalTo(5)))
-                .andExpect(jsonPath("$._embedded.rentals[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$._embedded.rentals[2].days_rented", equalTo(2)))
-                .andExpect(jsonPath("$._embedded.rentals[3].film_title", equalTo("Out of Africa")))
-                .andExpect(jsonPath("$._embedded.rentals[3].days_rented", equalTo(7)))
-                .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/12/rentals?status=" + status)))
-                .andExpect(jsonPath("$._links.create_invoice.href").doesNotExist());
-    }
-
-    @Test
-    public void whenGetAllForCustomerWithStatusThenReturnJson() throws Exception {
-        final Rental.Status status = Rental.Status.UP_FRONT_PAYMENT_EXPECTED;
-
-        given(this.rentalService.findAllForCustomer(anyLong(), isA(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
-
-        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/rentals?status={status}", 12, status)
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.rentals").isArray())
-                .andExpect(jsonPath("$._embedded.rentals", hasSize(4)))
-                .andExpect(jsonPath("$._embedded.rentals[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$._embedded.rentals[0].days_rented", equalTo(1)))
-                .andExpect(jsonPath("$._embedded.rentals[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$._embedded.rentals[1].days_rented", equalTo(5)))
-                .andExpect(jsonPath("$._embedded.rentals[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$._embedded.rentals[2].days_rented", equalTo(2)))
-                .andExpect(jsonPath("$._embedded.rentals[3].film_title", equalTo("Out of Africa")))
-                .andExpect(jsonPath("$._embedded.rentals[3].days_rented", equalTo(7)))
-                .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/12/rentals?status=" + status)))
-                .andExpect(jsonPath("$._links.create_invoice.href", is("http://localhost/customers/12/invoices")));
-    }
-
-    @Test
-    public void whenGetAllForCustomerWithNonExistingStatusThenReturnStatusBadRequest() throws Exception {
-        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
-
-        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/rentals?status={status}", 12, "NON_EXISTING")
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void whenGetAllForCustomerWithNonExistingStatusThenReturnJsonError() throws Exception {
-        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
-
-        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/rentals?status={status}", 12, "NON_EXISTING")
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.status", equalTo(400)));
+                .andExpect(jsonPath("$.amount", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.rentals").isArray())
+                .andExpect(jsonPath("$.rentals", hasSize(4)))
+                .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
+                .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
+                .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
+                .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")))
+                .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)));
     }
 
     @Test
@@ -191,7 +100,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willThrow(new CustomerNotFoundException(message));
+        given(this.rentalService.findAllForCustomer(anyLong())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", customerId)
@@ -207,7 +116,7 @@ public class CustomerRentalControllerTest {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willThrow(new CustomerNotFoundException(message));
+        given(this.rentalService.findAllForCustomer(anyLong())).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/customers/{customerId}/rentals", customerId)
@@ -224,8 +133,8 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
-    public void whenCreateForCustomerThenReturnStatusCreated() throws Exception {
-        given(rentalService.create(anyLong(), anyList())).willReturn(new RentalResult(Rental.Status.UP_FRONT_PAYMENT_EXPECTED, RentalDataFixtures.rentals()));
+    public void whenCreateForCustomerThenReturnStatusOK() throws Exception {
+        given(rentalService.create(anyLong(), anyList())).willReturn(new BatchRental(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", 12)
@@ -234,13 +143,13 @@ public class CustomerRentalControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void whenCreateForCustomerThenReturnLocationHeader() throws Exception {
+    public void whenCreateForCustomerThenReturnJson() throws Exception {
         final long customerId = 12L;
-        given(rentalService.create(anyLong(), anyList())).willReturn(new RentalResult(Rental.Status.UP_FRONT_PAYMENT_EXPECTED, RentalDataFixtures.rentals()));
+        given(rentalService.create(anyLong(), anyList())).willReturn(new BatchRental(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", customerId)
@@ -249,8 +158,19 @@ public class CustomerRentalControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "http://localhost/customers/" + customerId + "/rentals?status=UP_FRONT_PAYMENT_EXPECTED"));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.amount", equalTo(250)))
+                .andExpect(jsonPath("$.rentals").isArray())
+                .andExpect(jsonPath("$.rentals", hasSize(4)))
+                .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
+                .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
+                .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
+                .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")))
+                .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)));
     }
 
     @Test
@@ -416,7 +336,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenReturnBackThenReturnStatusOK() throws Exception {
-        given(rentalService.returnBack(anyLong(), anyList())).willReturn(new RentalResult(Rental.Status.LATE_PAYMENT_EXPECTED, RentalDataFixtures.rentals()));
+        given(rentalService.returnBack(anyLong(), anyList())).willReturn(new BatchRental(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
@@ -430,11 +350,9 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenReturnBackThenReturnJson() throws Exception {
-        final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.forEach(r -> r.markUpFrontPaymentExpected().markInProcess().markReturned());
-        final Rental.Status status = Rental.Status.RETURNED;
+        final List<Rental> rentals = RentalDataFixtures.returnedRentals();
 
-        given(rentalService.returnBack(anyLong(), anyList())).willReturn(new RentalResult(status, rentals));
+        given(rentalService.returnBack(anyLong(), anyList())).willReturn(new BatchRental(BigDecimal.valueOf(110), rentals));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
@@ -444,27 +362,26 @@ public class CustomerRentalControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/hal+json;charset=UTF-8"))
-                .andExpect(jsonPath("$._embedded.rentals").isArray())
-                .andExpect(jsonPath("$._embedded.rentals", hasSize(4)))
-                .andExpect(jsonPath("$._embedded.rentals[0].days_rented", equalTo(1)))
-                .andExpect(jsonPath("$._embedded.rentals[0].film_title", equalTo("Matrix 11")))
-                .andExpect(jsonPath("$._embedded.rentals[0].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$._embedded.rentals[0].return_date", is(notNullValue())))
-                .andExpect(jsonPath("$._embedded.rentals[1].days_rented", equalTo(5)))
-                .andExpect(jsonPath("$._embedded.rentals[1].film_title", equalTo("Spider Man")))
-                .andExpect(jsonPath("$._embedded.rentals[1].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$._embedded.rentals[1].return_date", is(notNullValue())))
-                .andExpect(jsonPath("$._embedded.rentals[2].days_rented", equalTo(2)))
-                .andExpect(jsonPath("$._embedded.rentals[2].film_title", equalTo("Spider Man 2")))
-                .andExpect(jsonPath("$._embedded.rentals[2].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$._embedded.rentals[2].return_date", is(notNullValue())))
-                .andExpect(jsonPath("$._embedded.rentals[3].days_rented", equalTo(7)))
-                .andExpect(jsonPath("$._embedded.rentals[3].film_title", equalTo("Out of Africa")))
-                .andExpect(jsonPath("$._embedded.rentals[3].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$._embedded.rentals[3].return_date", is(notNullValue())))
-                .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/12/rentals?status=" + status)))
-                .andExpect(jsonPath("$._links.create_invoice.href", is("http://localhost/customers/12/invoices")));
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.amount", equalTo(110)))
+                .andExpect(jsonPath("$.rentals").isArray())
+                .andExpect(jsonPath("$.rentals", hasSize(4)))
+                .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
+                .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$.rentals[0].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[0].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
+                .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$.rentals[1].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[1].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
+                .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$.rentals[2].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[2].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
+                .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")))
+                .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[3].return_date", is(notNullValue())));
     }
 
     @Test
