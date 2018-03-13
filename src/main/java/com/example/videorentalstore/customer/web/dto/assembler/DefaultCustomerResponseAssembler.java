@@ -1,15 +1,8 @@
 package com.example.videorentalstore.customer.web.dto.assembler;
 
 import com.example.videorentalstore.customer.Customer;
-import com.example.videorentalstore.customer.web.CustomerController;
 import com.example.videorentalstore.customer.web.dto.CustomerResponse;
-import org.springframework.hateoas.Resources;
 import org.springframework.stereotype.Component;
-
-import java.util.Collection;
-
-import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * Implementation of {@link CustomerResponseAssembler}.
