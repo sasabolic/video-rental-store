@@ -76,7 +76,7 @@ Add additional notes about how to deploy this on a live system
 * Basic and Regular price should be read from app properties
 * README file finish
 * ~~Introduce DTO objects for controllers~~
-* Liquibase table constraints (unique film title)
+* ~~Liquibase table constraints (unique film title)~~
 * ~~Docker for project~~
 * ~~Swagger~~
 * ~~Hateoas~~

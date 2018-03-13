@@ -93,6 +93,30 @@ public class RentalServiceTest {
     }
 
     @Test
+    public void givenAlreadyListOfRentalsWhenCreatingRentalsThenThrowException() {
+        final long customerId = 1L;
+
+        thrown.expect(RentalException.class);
+        thrown.expectMessage("Could not create new rentals. Customer with '" + customerId + "' contains active rentals.");
+
+        doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
+
+        final List<RentalInfo> rentalInfos = Arrays.asList(
+                new RentalInfo(1L, 1),
+                new RentalInfo(2L, 5),
+                new RentalInfo(3L, 2),
+                new RentalInfo(4L, 7));
+
+        final BatchRental result = rentalService.create(1L, rentalInfos);
+
+        assertThat(result).isNotNull();
+        assertThat(result).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
+        assertThat(result.getRentals()).hasSize(4);
+        assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
+        assertThat(result.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
+    }
+
+    @Test
     public void whenCreatingRentalsForNonExistingCustomerThenThrowException() {
         final long customerId = 1L;
 

@@ -37,6 +37,10 @@ public class DefaultRentalService implements RentalService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
+        if (!customer.getRentals().isEmpty()) {
+            throw new RentalException(String.format("Could not create new rentals. Customer with '%d' contains active rentals.", customerId));
+        }
+
         List<Exception> exceptions = new ArrayList<>();
         rentalInfos.stream()
                 .forEach(rentalInfo -> {
@@ -52,7 +56,7 @@ public class DefaultRentalService implements RentalService {
                 });
 
         if (!exceptions.isEmpty()) {
-            throw new RentalException("Could not create rentals", exceptions);
+            throw new RentalException("Could not create new rentals", exceptions);
         }
 
         customer.addBonusPoints();
@@ -63,7 +67,6 @@ public class DefaultRentalService implements RentalService {
 
     @Override
     public BatchRental returnBack(Long customerId, List<Long> rentalIds) {
-//        final Customer customer = process(customerId, rentalIds, r -> r.markReturned(), "Could not return back rentals");
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
@@ -90,39 +93,4 @@ public class DefaultRentalService implements RentalService {
 
         return new BatchRental(customer.calculateExtraCharges(), customer.getRentals());
     }
-
-//    @Override
-//    public void delete(Long customerId, List<Long> rentalIds) {
-//        final Customer customer = process(customerId, rentalIds, Rental::deactivate, "Could not delete rentals");
-//
-//        rentalRepository.deleteAll(customer.getRentals());
-//    }
-//
-//    private Customer process(Long customerId, List<Long> rentalIds, Function<Rental, Rental> func, String errorMsg) {
-//        Customer customer = customerRepository.findById(customerId)
-//                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
-//
-//        List<Exception> exceptions = new ArrayList<>();
-//        rentalIds.stream()
-//                .forEach(rentalId -> {
-//                    try {
-//                        final Rental rental = customer.getRentals().stream()
-//                                .filter(r -> rentalId.equals(r.getId()))
-//                                .findAny()
-//                                .orElseThrow(() -> new RentalNotFoundException(String.format("Rental with id '%d' is not rented by customer with id '%d'", rentalId, customer.getId())));
-//
-//                        rental.apply(func);
-//                    } catch (RentalNotFoundException | IllegalStateException ex) {
-//                        exceptions.add(ex);
-//                    }
-//                });
-//
-//        if (!exceptions.isEmpty()) {
-//            throw new RentalException(errorMsg, exceptions);
-//        }
-//
-//        customerRepository.save(customer);
-//
-//        return customer;
-//    }
 }

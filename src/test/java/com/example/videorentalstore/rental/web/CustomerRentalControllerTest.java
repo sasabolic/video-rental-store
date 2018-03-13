@@ -269,6 +269,45 @@ public class CustomerRentalControllerTest {
     }
 
     @Test
+    public void whenCreateForCustomerWithExistingRentalsThenReturnBadRequest() throws Exception {
+        final Long customerId = 1L;
+        final String message = "Could not create new rentals. Customer with '" + customerId + "' contains active rentals.";
+
+        given(rentalService.create(anyLong(), anyList())).willThrow(new RentalException(message));
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers/{customerId}/rentals", customerId)
+                .content(RentalDataFixtures.json())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void whenCreateForCustomerExistingRentalsThenReturnJsonError() throws Exception {
+        final Long customerId = 1L;
+        final String message = "Could not create new rentals. Customer with '" + customerId + "' contains active rentals.";
+
+        given(rentalService.create(anyLong(), anyList())).willThrow(new RentalException(message));
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/customers/{customerId}/rentals", customerId)
+                .content(RentalDataFixtures.json())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status", equalTo(400)))
+                .andExpect(jsonPath("$.message", equalTo(message)));
+    }
+
+    @Test
     public void whenCreateForCustomerEmptyRequestThenReturnStatusBadRequest() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", 12)

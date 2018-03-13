@@ -10,8 +10,12 @@ public class RentalException extends RuntimeException {
 
     private List<Exception> exceptions = new ArrayList<>();
 
-    public RentalException(String message, List<Exception> exceptions) {
+    public RentalException(String message) {
         super(message);
+    }
+
+    public RentalException(String message, List<Exception> exceptions) {
+        this(message);
         this.exceptions.addAll(exceptions);
     }
 
