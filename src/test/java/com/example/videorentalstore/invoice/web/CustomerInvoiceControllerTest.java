@@ -6,8 +6,12 @@ import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.invoice.Invoice;
 import com.example.videorentalstore.invoice.InvoiceDataFixtures;
 import com.example.videorentalstore.invoice.InvoiceService;
+import com.example.videorentalstore.invoice.InvoiceType;
 import com.example.videorentalstore.invoice.web.dto.assembler.DefaultInvoiceResponseAssembler;
 import com.example.videorentalstore.invoice.web.dto.assembler.InvoiceResponseAssembler;
+import com.example.videorentalstore.rental.RentalDataFixtures;
+import com.example.videorentalstore.rental.web.dto.assembler.DefaultRentalResponseAssembler;
+import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssembler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
@@ -39,8 +45,13 @@ public class CustomerInvoiceControllerTest {
     static class TestConfig {
 
         @Bean
+        public RentalResponseAssembler rentalResponseAssembler() {
+            return new DefaultRentalResponseAssembler();
+        }
+
+        @Bean
         public InvoiceResponseAssembler invoiceResponseAssembler() {
-            return new DefaultInvoiceResponseAssembler();
+            return new DefaultInvoiceResponseAssembler(rentalResponseAssembler());
         }
     }
 
@@ -51,56 +62,57 @@ public class CustomerInvoiceControllerTest {
     private InvoiceService invoiceService;
 
     @Test
-    public void whenGetForCustomerAndTypeThenReturnStatusOK() throws Exception {
+    public void whenCreateForCustomerThenReturnStatusCreated() throws Exception {
         final long customerId = 12L;
-        final Customer customer = spy(CustomerDataFixtures.customer());
+        final long invoiceId = 1;
+        Customer customer = CustomerDataFixtures.customerWithRentals(0);
+        final Invoice invoice = spy(InvoiceDataFixtures.invoice(customer));
 
-        given(customer.getId()).willReturn(customerId);
-        given(this.invoiceService.calculate(anyLong(), isA(Invoice.Type.class))).willReturn(InvoiceDataFixtures.invoice(BigDecimal.TEN, customer));
+        given(invoice.getId()).willReturn(invoiceId);
+        given(this.invoiceService.create(anyLong(), isA(InvoiceType.class))).willReturn(invoice);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/invoices/{type}", customerId, "up-front")
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/customers/{customerId}/invoices", customerId)
+                .content(InvoiceDataFixtures.json())
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
-    public void whenGetForCustomerAndTypeThenReturnJson() throws Exception {
+    public void whenCreateForCustomerThenReturnLocationHeader() throws Exception {
         final long customerId = 12L;
-        final String invoiceType = "up-front";
-        final Customer customer = spy(CustomerDataFixtures.customer());
+        final long invoiceId = 1;
+        Customer customer = CustomerDataFixtures.customerWithRentals(0);
+        final Invoice invoice = spy(InvoiceDataFixtures.invoice(customer));
 
-        given(customer.getId()).willReturn(customerId);
-
-        given(this.invoiceService.calculate(anyLong(), isA(Invoice.Type.class))).willReturn(InvoiceDataFixtures.invoice(BigDecimal.TEN, customer));
+        given(invoice.getId()).willReturn(invoiceId);
+        given(this.invoiceService.create(anyLong(), isA(InvoiceType.class))).willReturn(invoice);
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/invoices/{type}", customerId, invoiceType)
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/customers/{customerId}/invoices", customerId)
+                .content(InvoiceDataFixtures.json())
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.amount", equalTo(10)))
-                .andExpect(jsonPath("$._links.self.href", equalTo("http://localhost/customers/" + customerId + "/invoices/" + invoiceType)))
-                .andExpect(jsonPath("$._links.create_payment.href", equalTo("http://localhost/customers/" + customerId + "/payments")));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/invoices/" + invoiceId));
     }
 
     @Test
-    public void whenGetForNonExistingCustomerAndTypeThenReturnStatusNotFound() throws Exception {
+    public void whenCreateForNonExistingCustomerThenReturnStatusNotFound() throws Exception {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.invoiceService.calculate(anyLong(), isA(Invoice.Type.class))).willThrow(new CustomerNotFoundException(message));
+        given(invoiceService.create(anyLong(), isA(InvoiceType.class))).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/invoices/{type}", customerId, "up-front")
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/customers/{customerId}/invoices", customerId)
+                .content(InvoiceDataFixtures.json())
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
@@ -108,15 +120,16 @@ public class CustomerInvoiceControllerTest {
     }
 
     @Test
-    public void whenGetForNonExistingCustomerAndTypeThenReturnJsonError() throws Exception {
+    public void whenCreateForNonExistingCustomerThenReturnJsonError() throws Exception {
         final Long customerId = 1L;
         final String message = "Customer with id '" + customerId + "' does not exist";
 
-        given(this.invoiceService.calculate(anyLong(), isA(Invoice.Type.class))).willThrow(new CustomerNotFoundException(message));
+        given(invoiceService.create(anyLong(), isA(InvoiceType.class))).willThrow(new CustomerNotFoundException(message));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/invoices/{type}", customerId, "up-front")
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/customers/{customerId}/invoices", customerId)
+                .content(InvoiceDataFixtures.json())
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
@@ -129,10 +142,11 @@ public class CustomerInvoiceControllerTest {
     }
 
     @Test
-    public void whenGetForCustomerAndNonExistingTypeThenReturnStatusBadRequest() throws Exception {
+    public void whenCreateForCustomerEmptyRequestThenReturnStatusBadRequest() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/invoices/{type}", 1L, "non-existing")
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/customers/{customerId}/invoices", 12)
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
@@ -140,13 +154,11 @@ public class CustomerInvoiceControllerTest {
     }
 
     @Test
-    public void whenGetForCustomerAndNonExistingTypeThenReturnJsonError() throws Exception {
-        final String type = "non-existing";
-        final String message = "Invoice type of for path variable '" + type + "' does not exist.";
-
+    public void whenCreateForCustomerEmptyRequestThenReturnJsonError() throws Exception {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get("/customers/{customerId}/invoices/{type}", 1L, type)
-                .accept(MediaType.APPLICATION_JSON);
+                .post("/customers/{customerId}/invoices", 12)
+                .content("{}")
+                .contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
@@ -155,6 +167,8 @@ public class CustomerInvoiceControllerTest {
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(400)))
-                .andExpect(jsonPath("$.message", equalTo(message)));
+                .andExpect(jsonPath("$.message", equalTo("Validation failed")))
+                .andExpect(jsonPath("$.errors").isArray())
+                .andExpect(jsonPath("$.errors", hasSize(1)));
     }
 }

@@ -58,23 +58,23 @@ public class Rental {
 
         this.daysRented = daysRented;
         this.startDate = startDate;
-        this.status = Status.UP_FRONT_PAYMENT_EXPECTED;
+        this.status = Status.RESERVED;
     }
 
-    public Rental markPaidUpFront() {
-        if (this.status != Status.UP_FRONT_PAYMENT_EXPECTED) {
+    public Rental markUpFrontPaymentExpected() {
+        if (this.status != Status.RESERVED) {
             throw new IllegalStateException(
-                    String.format("Cannot mark rental as PAID_UP_FRONT that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as UP_FRONT_PAYMENT_EXPECTED that is currently not RESERVED! Current status: %s.", this.status));
         }
-        this.status = Status.PAID_UP_FRONT;
+        this.status = Status.UP_FRONT_PAYMENT_EXPECTED;
 
         return this;
     }
 
     public Rental markInProcess() {
-        if (this.status != Status.PAID_UP_FRONT) {
+        if (this.status != Status.UP_FRONT_PAYMENT_EXPECTED) {
             throw new IllegalStateException(
-                    String.format("Cannot mark rental as IN_PROCESS that is currently not PAID_UP_FRONT! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as IN_PROCESS that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
         }
         this.status = Status.IN_PROCESS;
 
@@ -103,20 +103,10 @@ public class Rental {
         return this;
     }
 
-    public Rental markPayedLate() {
+    public Rental markCompleted() {
         if (this.status != Status.LATE_PAYMENT_EXPECTED) {
             throw new IllegalStateException(
-                    String.format("Cannot mark rental as PAID_LATE that is currently not LATE_PAYMENT_EXPECTED! Current status: %s.", this.status));
-        }
-        this.status = Status.PAID_LATE;
-
-        return this;
-    }
-
-    public Rental markCompleted() {
-        if (this.status != Status.PAID_LATE) {
-            throw new IllegalStateException(
-                    String.format("Cannot mark rental as COMPLETED that is currently not PAID_LATE! Current status: %s.", this.status));
+                    String.format("Cannot mark rental as COMPLETED that is currently not LATE_PAYMENT_EXPECTED! Current status: %s.", this.status));
         }
         this.status = Status.COMPLETED;
         this.active = false;
@@ -124,12 +114,20 @@ public class Rental {
         return this;
     }
 
+    public boolean isReserved() {
+        return this.status.equals(Status.RESERVED);
+    }
+
     public boolean isUpFrontPaymentExpected() {
         return this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED);
     }
 
-    public boolean isPaidUpFront() {
-        return this.status.equals(Status.PAID_UP_FRONT);
+    public boolean isReturned() {
+        return this.status.equals(Status.RETURNED);
+    }
+
+    public boolean isInProcess() {
+        return this.status.equals(Status.IN_PROCESS);
     }
 
     public boolean isLatePaymentExpected() {
@@ -149,8 +147,8 @@ public class Rental {
     }
 
     public Rental deactivate() {
-        if (!this.status.equals(Status.UP_FRONT_PAYMENT_EXPECTED)) {
-            throw new IllegalStateException(String.format("Cannot deactivate rental that is currently not UP_FRONT_PAYMENT_EXPECTED! Current status: %s.", this.status));
+        if (!this.status.equals(Status.RESERVED)) {
+            throw new IllegalStateException(String.format("Cannot deactivate rental that is currently not RESERVED! Current status: %s.", this.status));
         }
         this.active = false;
 
@@ -163,7 +161,7 @@ public class Rental {
 
     public BigDecimal calculateExtraCharges() {
         if (this.returnDate == null) {
-            throw new NullPointerException("Cannot calculate late charges if RETURN DATE is not set.");
+            throw new NullPointerException("Cannot create late charges if RETURN DATE is not set.");
         }
         return this.film.calculateExtraCharges(DAYS.between(this.startDate, this.returnDate) - this.daysRented);
     }
@@ -176,17 +174,15 @@ public class Rental {
      * Enumeration for all the statuses {@link Rental} can be in.
      */
     public enum Status {
-        UP_FRONT_PAYMENT_EXPECTED,
+        RESERVED,
 
-        PAID_UP_FRONT,
+        UP_FRONT_PAYMENT_EXPECTED,
 
         IN_PROCESS,
 
-        RETURNED, // mozda i ne treba vec odma sledeci
+        RETURNED,
 
         LATE_PAYMENT_EXPECTED,
-
-        PAID_LATE, // mozda i ne treba vec odma sledeci
 
         COMPLETED
     }

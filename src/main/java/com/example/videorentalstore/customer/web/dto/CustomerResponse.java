@@ -1,7 +1,6 @@
 package com.example.videorentalstore.customer.web.dto;
 
 import com.example.videorentalstore.customer.web.CustomerController;
-import com.example.videorentalstore.film.web.FilmController;
 import com.example.videorentalstore.rental.web.CustomerRentalController;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -34,5 +33,6 @@ public class CustomerResponse extends ResourceSupport {
 
         add(linkTo(methodOn(CustomerController.class).get(id)).withSelfRel());
         add(linkTo(methodOn(CustomerRentalController.class).getAll(id, null)).withRel("rentals"));
+        add(linkTo(methodOn(CustomerRentalController.class).create(id, null)).withRel("create_rental"));
     }
 }

@@ -1,9 +1,7 @@
 package com.example.videorentalstore.invoice.web.dto;
 
-import com.example.videorentalstore.customer.Customer;
-import com.example.videorentalstore.invoice.Invoice;
-import com.example.videorentalstore.invoice.web.CustomerInvoiceController;
-import com.example.videorentalstore.payment.web.CustomerPaymentController;
+import com.example.videorentalstore.invoice.web.InvoiceController;
+import com.example.videorentalstore.payment.web.PaymentController;
 import lombok.Getter;
 import org.springframework.hateoas.ResourceSupport;
 
@@ -20,10 +18,10 @@ public class InvoiceResponse extends ResourceSupport {
 
     private BigDecimal amount;
 
-    public InvoiceResponse(BigDecimal amount, Customer customer, Invoice.Type type) {
+    public InvoiceResponse(Long id, BigDecimal amount) {
         this.amount = amount;
 
-        add(linkTo(methodOn(CustomerInvoiceController.class).get(customer.getId(), type.pathVariable())).withSelfRel());
-        add(linkTo(methodOn(CustomerPaymentController.class).getAll(customer.getId())).withRel("create_payment"));
+        add(linkTo(methodOn(InvoiceController.class).get(id)).withSelfRel());
+        add(linkTo(methodOn(PaymentController.class).create(null)).withRel("create_payment"));
     }
 }

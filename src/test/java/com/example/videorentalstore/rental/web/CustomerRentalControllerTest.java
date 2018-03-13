@@ -85,7 +85,7 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$._embedded.rentals[3].film_title", equalTo("Out of Africa")))
                 .andExpect(jsonPath("$._embedded.rentals[3].days_rented", equalTo(7)))
                 .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/12/rentals{?status}")))
-                .andExpect(jsonPath("$._links.invoices.href", is("http://localhost/customers/12/invoices/{type}")));
+                .andExpect(jsonPath("$._links.create_invoice.href", is("http://localhost/customers/12/invoices")));
     }
 
     @Test
@@ -93,12 +93,40 @@ public class CustomerRentalControllerTest {
         given(this.rentalService.findAllForCustomer(anyLong(), nullable(Rental.Status.class))).willReturn(RentalDataFixtures.rentals());
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .get("/customers/{customerId}/rentals", 12);
                 .get("/customers/{customerId}/rentals?status={status}", 12, Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenGetAllForCustomerWithStatusNonInvoiceableThenDoNotReturnCreateInvoiceLink() throws Exception {
+        final List<Rental> rentals = RentalDataFixtures.rentals();
+        rentals.forEach(r -> r.markUpFrontPaymentExpected().markInProcess().markReturned().markLatePaymentExpected());
+        final Rental.Status status = Rental.Status.LATE_PAYMENT_EXPECTED;
+
+        given(this.rentalService.findAllForCustomer(anyLong(), isA(Rental.Status.class))).willReturn(rentals);
+
+        final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get("/customers/{customerId}/rentals?status={status}", 12, status)
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.rentals").isArray())
+                .andExpect(jsonPath("$._embedded.rentals", hasSize(4)))
+                .andExpect(jsonPath("$._embedded.rentals[0].film_title", equalTo("Matrix 11")))
+                .andExpect(jsonPath("$._embedded.rentals[0].days_rented", equalTo(1)))
+                .andExpect(jsonPath("$._embedded.rentals[1].film_title", equalTo("Spider Man")))
+                .andExpect(jsonPath("$._embedded.rentals[1].days_rented", equalTo(5)))
+                .andExpect(jsonPath("$._embedded.rentals[2].film_title", equalTo("Spider Man 2")))
+                .andExpect(jsonPath("$._embedded.rentals[2].days_rented", equalTo(2)))
+                .andExpect(jsonPath("$._embedded.rentals[3].film_title", equalTo("Out of Africa")))
+                .andExpect(jsonPath("$._embedded.rentals[3].days_rented", equalTo(7)))
+                .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/12/rentals?status=" + status)))
+                .andExpect(jsonPath("$._links.create_invoice.href").doesNotExist());
     }
 
     @Test
@@ -125,7 +153,7 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$._embedded.rentals[3].film_title", equalTo("Out of Africa")))
                 .andExpect(jsonPath("$._embedded.rentals[3].days_rented", equalTo(7)))
                 .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/12/rentals?status=" + status)))
-                .andExpect(jsonPath("$._links.invoices.href", is("http://localhost/customers/12/invoices/up-front")));
+                .andExpect(jsonPath("$._links.create_invoice.href", is("http://localhost/customers/12/invoices")));
     }
 
     @Test
@@ -403,8 +431,8 @@ public class CustomerRentalControllerTest {
     @Test
     public void whenReturnBackThenReturnJson() throws Exception {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.forEach(r -> r.markPaidUpFront().markInProcess().markReturned().markLatePaymentExpected());
-        final Rental.Status status = Rental.Status.LATE_PAYMENT_EXPECTED;
+        rentals.forEach(r -> r.markUpFrontPaymentExpected().markInProcess().markReturned());
+        final Rental.Status status = Rental.Status.RETURNED;
 
         given(rentalService.returnBack(anyLong(), anyList())).willReturn(new RentalResult(status, rentals));
 
@@ -436,7 +464,7 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$._embedded.rentals[3].start_date", is(notNullValue())))
                 .andExpect(jsonPath("$._embedded.rentals[3].return_date", is(notNullValue())))
                 .andExpect(jsonPath("$._links.self.href", is("http://localhost/customers/12/rentals?status=" + status)))
-                .andExpect(jsonPath("$._links.invoices.href", is("http://localhost/customers/12/invoices/late-charge")));
+                .andExpect(jsonPath("$._links.create_invoice.href", is("http://localhost/customers/12/invoices")));
     }
 
     @Test

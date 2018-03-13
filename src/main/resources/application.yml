@@ -10,3 +10,6 @@ spring.datasource.password: TheP@ssw0rd
 spring.liquibase.change-log: classpath:/db/changelog/db.changelog-master.xml
 
 spring.jackson.serialization.indent_output: true
+spring:
+  jpa:
+    show-sql: true

@@ -84,7 +84,7 @@ public class RentalServiceTest {
     public void whenFindingAllForCustomerWithStatusThenReturnListOfRentals() {
         doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
 
-        final List<Rental> result = rentalService.findAllForCustomer(1L, Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
+        final List<Rental> result = rentalService.findAllForCustomer(1L, Rental.Status.RESERVED);
 
         assertThat(result).isNotNull();
         assertThat(result).isNotEmpty();
@@ -109,9 +109,9 @@ public class RentalServiceTest {
         final RentalResult result = rentalService.create(1L, rentalInfos);
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("status", Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
+        assertThat(result).hasFieldOrPropertyWithValue("status", Rental.Status.RESERVED);
         assertThat(result.getRentals()).hasSize(4);
-        assertThat(result.getRentals()).extracting(Rental::getStatus).containsOnly(Rental.Status.UP_FRONT_PAYMENT_EXPECTED);
+        assertThat(result.getRentals()).extracting(Rental::getStatus).containsOnly(Rental.Status.RESERVED);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(result.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
     }
@@ -174,10 +174,10 @@ public class RentalServiceTest {
         final Rental regularReleaseRental1 = spy(RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2, 3));
         final Rental oldReleaseRental = spy(RentalDataFixtures.rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7, 3));
 
-        customer.addRental(newReleaseRental.markPaidUpFront().markInProcess());
-        customer.addRental(regularReleaseRental.markPaidUpFront().markInProcess());
-        customer.addRental(regularReleaseRental1.markPaidUpFront().markInProcess());
-        customer.addRental(oldReleaseRental.markPaidUpFront().markInProcess());
+        customer.addRental(newReleaseRental.markUpFrontPaymentExpected().markInProcess());
+        customer.addRental(regularReleaseRental.markUpFrontPaymentExpected().markInProcess());
+        customer.addRental(regularReleaseRental1.markUpFrontPaymentExpected().markInProcess());
+        customer.addRental(oldReleaseRental.markUpFrontPaymentExpected().markInProcess());
 
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
         doReturn(1L).when(newReleaseRental).getId();
@@ -188,9 +188,9 @@ public class RentalServiceTest {
         final RentalResult result = rentalService.returnBack(1L, Arrays.asList(1L, 2L, 3L, 4L));
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("status", Rental.Status.LATE_PAYMENT_EXPECTED);
+        assertThat(result).hasFieldOrPropertyWithValue("status", Rental.Status.RETURNED);
         assertThat(result.getRentals()).hasSize(4);
-        assertThat(result.getRentals()).extracting(Rental::getStatus).containsOnly(Rental.Status.LATE_PAYMENT_EXPECTED);
+        assertThat(result.getRentals()).extracting(Rental::getStatus).containsOnly(Rental.Status.RETURNED);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(result.getRentals()).extracting(r -> r.getReturnDate()).isNotNull();
     }

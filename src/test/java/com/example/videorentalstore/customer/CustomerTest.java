@@ -1,7 +1,5 @@
 package com.example.videorentalstore.customer;
 
-import com.example.videorentalstore.payment.PaymentDataFixtures;
-import com.example.videorentalstore.payment.Receipt;
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalDataFixtures;
 import org.junit.Before;
@@ -77,11 +75,10 @@ public class CustomerTest {
     @Test
     public void whenDeactivateWithCompletedRentalsThenActiveFalse() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markPaidUpFront);
+        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
         rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
         rentals.stream().forEach(Rental::markLatePaymentExpected);
-        rentals.stream().forEach(Rental::markPayedLate);
         rentals.stream().forEach(Rental::markCompleted);
 
         rentals.stream().forEach(r -> customer.addRental(r));
@@ -93,7 +90,11 @@ public class CustomerTest {
 
     @Test
     public void whenCalculateThenReturnCorrectAmount() {
-        RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
+        final List<Rental> rentals = RentalDataFixtures.rentals();
+
+        rentals.forEach(Rental::markUpFrontPaymentExpected);
+
+        rentals.forEach(r -> customer.addRental(r));
 
         final BigDecimal totalAmount = customer.calculatePrice();
 
@@ -101,12 +102,8 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalPaidUpFrontRentalsCalculateThenReturnCorrectAmount() {
-        final List<Rental> rentals = RentalDataFixtures.rentals();
-
-        rentals.forEach(Rental::markPaidUpFront);
-
-        rentals.forEach(r -> customer.addRental(r));
+    public void givenRentalsReservedWhenCalculateThenReturnCorrectAmount() {
+        RentalDataFixtures.rentals().forEach(r -> customer.addRental(r));
 
         final BigDecimal totalAmount = customer.calculatePrice();
 
@@ -126,11 +123,12 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalsPaidUpFrontThenBonusPointsAdded() {
+    public void whenRentalsInProcessThenBonusPointsAdded() {
         final long before = customer.getBonusPoints();
 
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markPaidUpFront);
+        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
+        rentals.stream().forEach(Rental::markInProcess);
 
         rentals.forEach(r -> customer.addRental(r));
 
@@ -142,12 +140,11 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenRentalsNonPaidUpFrontStatusThenBonusPointsNotAdded() {
+    public void whenRentalsNonInProcessStatusThenBonusPointsNotAdded() {
         final long before = customer.getBonusPoints();
 
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markPaidUpFront);
-        rentals.stream().forEach(Rental::markInProcess);
+        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
@@ -159,22 +156,9 @@ public class CustomerTest {
     }
 
     @Test
-    public void whenReceiptsAddedThenReceiptsSizeIncreased() {
-        final long before = customer.getReceipts().size();
-
-        final List<Receipt> receipts = PaymentDataFixtures.receipts();
-
-        receipts.forEach(r -> customer.addReceipt(r));
-
-        final long result = customer.getReceipts().size();
-
-        assertThat(result).isEqualByComparingTo(before + receipts.size());
-    }
-
-    @Test
     public void whenRentalsReturnedSameDayThenCalculateExtraChargesReturnsZeroAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markPaidUpFront);
+        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
         rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
         rentals.stream().forEach(Rental::markLatePaymentExpected);
@@ -189,7 +173,7 @@ public class CustomerTest {
     @Test
     public void whenRentalsReturnedThenCalculateExtraChargesReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals(3);
-        rentals.stream().forEach(Rental::markPaidUpFront);
+        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
         rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
         rentals.stream().forEach(Rental::markLatePaymentExpected);
@@ -204,7 +188,7 @@ public class CustomerTest {
     @Test
     public void whenRentalsReturnedThenCalculatePriceReturnsCorrectAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markPaidUpFront);
+        rentals.stream().forEach(Rental::markUpFrontPaymentExpected);
         rentals.stream().forEach(Rental::markInProcess);
         rentals.stream().forEach(Rental::markReturned);
         rentals.stream().forEach(Rental::markLatePaymentExpected);

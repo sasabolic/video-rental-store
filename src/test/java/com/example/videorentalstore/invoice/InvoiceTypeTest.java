@@ -13,17 +13,17 @@ public class InvoiceTypeTest {
 
     @Test
     public void whenFromValueThenCorrectResult() {
-        final Invoice.Type result = Invoice.Type.fromPathVariable("up-front");
+        final InvoiceType result = InvoiceType.fromString("UP_FRONT");
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(Invoice.Type.UP_FRONT);
+        assertThat(result).isEqualByComparingTo(InvoiceType.UP_FRONT);
     }
 
     @Test
     public void givenNonExistingValueWhenFromPathVariableThenThrowException() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Invoice type of for path variable 'up_front' does not exist.");
+        thrown.expectMessage("Invoice type of 'non-existing' does not exist.");
 
-        Invoice.Type.fromPathVariable("up_front");
+        InvoiceType.fromString("non-existing");
     }
 }

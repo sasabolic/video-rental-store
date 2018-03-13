@@ -53,6 +53,34 @@
             </column>
             <column name="customer_id" type="int"/>
         </createTable>
+
+        <createTable tableName="invoice">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="amount" type="decimal(12,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_id" type="int"/>
+            <column name="active" type="boolean" defaultValueBoolean="true"/>
+        </createTable>
+
+        <createTable tableName="invoice_rental">
+            <column name="invoice_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="rental_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="invoice_rental" columnNames="invoice_id,rental_id"/>
+        <addForeignKeyConstraint baseTableName="invoice_rental" baseColumnNames="invoice_id" constraintName="invoice_rental_invoice_unique_fk_id_invoice_id" referencedTableName="invoice"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="invoice_rental" baseColumnNames="rental_id" constraintName="invoice_rental_rental_unique_fk_id_rental_id" referencedTableName="rental"
+                                 referencedColumnNames="id"/>
     </changeSet>
 
     <changeSet id="2" author="developer">

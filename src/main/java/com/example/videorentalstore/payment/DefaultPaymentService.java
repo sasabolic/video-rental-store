@@ -4,65 +4,40 @@ import com.example.videorentalstore.customer.Customer;
 import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.customer.CustomerRepository;
 import com.example.videorentalstore.invoice.Invoice;
-import com.example.videorentalstore.rental.Rental;
+import com.example.videorentalstore.invoice.InvoiceNotFoundException;
+import com.example.videorentalstore.invoice.InvoiceRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Implementation of {@link PaymentService} delegating persistence operations to {@link CustomerRepository} and {@link ReceiptRepository}.
  */
 @Service
+@Transactional
 public class DefaultPaymentService implements PaymentService {
 
     private final CustomerRepository customerRepository;
-    private final ReceiptRepository receiptRepository;
+    private final InvoiceRepository invoiceRepository;
 
-    public DefaultPaymentService(CustomerRepository customerRepository, ReceiptRepository receiptRepository) {
+    public DefaultPaymentService(CustomerRepository customerRepository, InvoiceRepository invoiceRepository) {
         this.customerRepository = customerRepository;
-        this.receiptRepository = receiptRepository;
+        this.invoiceRepository = invoiceRepository;
     }
 
     @Override
-    public List<Receipt> findAllForCustomer(Long customerId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
+    public void pay(Long invoiceId) {
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new InvoiceNotFoundException(String.format("Invoice with id '%d' does not exist", invoiceId)));
 
-        return customer.getReceipts();
-    }
+        invoice.pay();
 
-    @Override
-    public Receipt findById(Long id) {
-        return receiptRepository.findById(id)
-                .orElseThrow(() -> new ReceiptNotFoundException(String.format("Receipt with id '%d' does not exist", id)));
-    }
+        invoiceRepository.save(invoice.deactivate());
 
-    @Override
-    public Receipt pay(Long customerId, Invoice.Type type, BigDecimal amount) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
-
-
-        switch (type) {
-            case UP_FRONT:
-                customer.getRentals().stream()
-                        .filter(Rental::isUpFrontPaymentExpected)
-                        .forEach(Rental::markPaidUpFront);
-
-                customer.addBonusPoints();
-                break;
-            case LATE_CHARGE:
-                customer.getRentals().stream()
-                        .filter(Rental::isLatePaymentExpected)
-                        .forEach(r -> r.markPayedLate().markCompleted());
-        }
-
-        Receipt receipt = new Receipt(amount);
-        customer.addReceipt(receipt);
+        final Customer customer = invoice.getCustomer();
+        customer.addBonusPoints();
 
         customerRepository.save(customer);
-
-        return receipt;
     }
 }

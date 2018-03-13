@@ -31,12 +31,15 @@ public class InvoiceServiceTest {
     @Mock
     private CustomerRepository customerRepository;
 
+    @Mock
+    private InvoiceRepository invoiceRepository;
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() {
-        invoiceService = new DefaultInvoiceService(customerRepository);
+        invoiceService = new DefaultInvoiceService(customerRepository, invoiceRepository);
     }
 
     @Test
@@ -46,7 +49,7 @@ public class InvoiceServiceTest {
 
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
 
-        final Invoice result = invoiceService.calculate(11L, Invoice.Type.UP_FRONT);
+        final Invoice result = invoiceService.create(11L, InvoiceType.UP_FRONT);
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
@@ -61,14 +64,14 @@ public class InvoiceServiceTest {
         final Rental regularReleaseRental1 = spy(RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man 2"), 2, 3));
         final Rental oldReleaseRental = spy(RentalDataFixtures.rental(FilmDataFixtures.oldReleaseFilm("Out of Africa"), 7, 3));
 
-        customer.addRental(newReleaseRental.markPaidUpFront().markInProcess().markReturned().markLatePaymentExpected());
-        customer.addRental(regularReleaseRental.markPaidUpFront().markInProcess().markReturned().markLatePaymentExpected());
-        customer.addRental(regularReleaseRental1.markPaidUpFront().markInProcess().markReturned().markLatePaymentExpected());
-        customer.addRental(oldReleaseRental.markPaidUpFront().markInProcess().markReturned().markLatePaymentExpected());
+        customer.addRental(newReleaseRental.markUpFrontPaymentExpected().markInProcess().markReturned().markLatePaymentExpected());
+        customer.addRental(regularReleaseRental.markUpFrontPaymentExpected().markInProcess().markReturned().markLatePaymentExpected());
+        customer.addRental(regularReleaseRental1.markUpFrontPaymentExpected().markInProcess().markReturned().markLatePaymentExpected());
+        customer.addRental(oldReleaseRental.markUpFrontPaymentExpected().markInProcess().markReturned().markLatePaymentExpected());
 
         doReturn(Optional.of(customer)).when(customerRepository).findById(anyLong());
 
-        final Invoice result = invoiceService.calculate(11L, Invoice.Type.LATE_CHARGE);
+        final Invoice result = invoiceService.create(11L, InvoiceType.LATE_CHARGE);
 
         assertThat(result).isNotNull();
         assertThat(result).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
@@ -83,6 +86,6 @@ public class InvoiceServiceTest {
 
         doReturn(Optional.ofNullable(null)).when(customerRepository).findById(anyLong());
 
-        invoiceService.calculate(customerId, Invoice.Type.LATE_CHARGE);
+        invoiceService.create(customerId, InvoiceType.LATE_CHARGE);
     }
 }

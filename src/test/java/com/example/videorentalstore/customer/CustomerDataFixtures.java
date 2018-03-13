@@ -1,6 +1,5 @@
 package com.example.videorentalstore.customer;
 
-import com.example.videorentalstore.payment.PaymentDataFixtures;
 import com.example.videorentalstore.rental.RentalDataFixtures;
 
 import java.util.Arrays;
@@ -26,13 +25,6 @@ public class CustomerDataFixtures {
     public static Customer customerWithRentals(int startedDaysBeforeNow) {
         final Customer customer = customer();
         RentalDataFixtures.rentals(startedDaysBeforeNow).forEach(r -> customer.addRental(r));
-
-        return customer;
-    }
-
-    public static Customer customerWithReceipts() {
-        final Customer customer = customer();
-        PaymentDataFixtures.receipts().forEach(r -> customer.addReceipt(r));
 
         return customer;
     }

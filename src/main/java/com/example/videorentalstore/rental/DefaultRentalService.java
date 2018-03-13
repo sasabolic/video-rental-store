@@ -70,14 +70,14 @@ public class DefaultRentalService implements RentalService {
 
         customerRepository.save(customer);
 
-        return new RentalResult(Rental.Status.UP_FRONT_PAYMENT_EXPECTED, customer.getRentals());
+        return new RentalResult(Rental.Status.RESERVED, customer.getRentals());
     }
 
     @Override
     public RentalResult returnBack(Long customerId, List<Long> rentalIds) {
-        final Customer customer = process(customerId, rentalIds, r -> r.markReturned().markLatePaymentExpected(), "Could not return back rentals");
+        final Customer customer = process(customerId, rentalIds, r -> r.markReturned(), "Could not return back rentals");
 
-        return new RentalResult(Rental.Status.LATE_PAYMENT_EXPECTED, customer.getRentals());
+        return new RentalResult(Rental.Status.RETURNED, customer.getRentals());
     }
 
     @Override

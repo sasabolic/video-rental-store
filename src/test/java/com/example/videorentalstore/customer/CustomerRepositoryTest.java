@@ -77,6 +77,24 @@ public class CustomerRepositoryTest {
 
         final BigDecimal amount = result.calculatePrice();
 
+        assertThat(amount).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    public void whenRentalsUpFrontPaymentExpectedAddedThenCalculateReturnsCorrectAmount() {
+        Rental rental1 = new Rental(filmRepository.findById(1L).get(), 3);
+        Rental rental2 = new Rental(filmRepository.findById(2L).get(), 5);
+        rental1.markUpFrontPaymentExpected();
+        rental2.markUpFrontPaymentExpected();
+
+        final Customer customer = customerRepository.findById(1L).get();
+        customer.addRental(rental1);
+        customer.addRental(rental2);
+
+        final Customer result = customerRepository.save(customer);
+
+        final BigDecimal amount = result.calculatePrice();
+
         assertThat(amount).isEqualByComparingTo(BigDecimal.valueOf(210));
     }
 

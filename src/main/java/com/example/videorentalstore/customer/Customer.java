@@ -1,6 +1,6 @@
 package com.example.videorentalstore.customer;
 
-import com.example.videorentalstore.payment.Receipt;
+import com.example.videorentalstore.invoice.Invoice;
 import com.example.videorentalstore.rental.Rental;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +39,7 @@ public class Customer {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "customer_id")
-    private List<Receipt> receipts = new ArrayList<>();
+    private List<Invoice> invoices = new ArrayList<>();
 
     public Customer(String firstName, String lastName) {
         Objects.requireNonNull(firstName, "Customer's first name cannot be null!");
@@ -65,13 +65,9 @@ public class Customer {
         this.rentals.add(rental);
     }
 
-    public void addReceipt(Receipt receipt) {
-        this.receipts.add(receipt);
-    }
-
     public void addBonusPoints() {
         this.bonusPoints += this.rentals.stream()
-                .filter(Rental::isPaidUpFront)
+                .filter(Rental::isInProcess)
                 .map(Rental::calculateBonusPoints)
                 .reduce(0, (x, y) -> x + y);
     }

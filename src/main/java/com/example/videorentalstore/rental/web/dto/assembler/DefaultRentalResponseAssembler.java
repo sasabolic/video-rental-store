@@ -9,6 +9,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -28,15 +29,13 @@ public class DefaultRentalResponseAssembler implements RentalResponseAssembler {
     public Resources<RentalResponse> of(Collection<Rental> entities, Rental.Status status, Long customerId) {
         final Resources<RentalResponse> resources = new Resources<>(of(entities));
 
-        String type = null;
-        if (Rental.Status.UP_FRONT_PAYMENT_EXPECTED.equals(status)) {
-            type = Invoice.Type.UP_FRONT.pathVariable();
-        } else if (Rental.Status.LATE_PAYMENT_EXPECTED.equals(status)) {
-            type = Invoice.Type.LATE_CHARGE.pathVariable();
-        }
 
         resources.add(linkTo(methodOn(CustomerRentalController.class).getAll(customerId, status != null ? status.name() : null)).withSelfRel());
-        resources.add(linkTo(methodOn(CustomerInvoiceController.class).get(customerId, type)).withRel("invoices"));
+
+        final Optional<Rental> invoiceableRental = entities.stream().filter(e -> e.isReserved() || e.isReturned()).findAny();
+        if (invoiceableRental.isPresent()) {
+            resources.add(linkTo(methodOn(CustomerInvoiceController.class).create(customerId, null, null)).withRel("create_invoice"));
+        }
 
         return resources;
     }
