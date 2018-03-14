@@ -1,8 +1,5 @@
-# Database
-
 spring.jpa.hibernate.ddl-auto: none
 
-spring.datasource.type: com.zaxxer.hikari.HikariDataSource
 spring.datasource.url: jdbc:mysql://${VRS_MYSQL:localhost}:3306/db_app?useSSL=false
 spring.datasource.username: appuser
 spring.datasource.password: TheP@ssw0rd
