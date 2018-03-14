@@ -1,6 +1,7 @@
 package com.example.videorentalstore.film;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
  * Implementation of {@link FilmService} delegating persistence operations to {@link FilmRepository}.
  */
 @Service
+@Transactional
 public class DefaultFilmService implements FilmService {
 
     private final FilmRepository filmRepository;

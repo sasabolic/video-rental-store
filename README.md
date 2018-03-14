@@ -72,8 +72,8 @@ Add additional notes about how to deploy this on a live system
 * ~~Refactor mvc tests~~
 * ~~CORS~~
 * ~~Move WEB integration tests to new module~~ 
-* BigDecimal to Money pathVariable object
-* Basic and Regular price should be read from app properties
+* ~~BigDecimal to Money pathVariable object~~
+* ~~Basic and Regular price should be read from app properties~~
 * README file finish
 * ~~Introduce DTO objects for controllers~~
 * ~~Liquibase table constraints (unique film title)~~
