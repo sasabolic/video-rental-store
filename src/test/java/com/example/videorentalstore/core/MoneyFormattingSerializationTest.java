@@ -11,7 +11,7 @@ import javax.money.format.AmountFormatQueryBuilder;
 import javax.money.format.MonetaryAmountFormat;
 import javax.money.format.MonetaryFormats;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +22,7 @@ public class MoneyFormattingSerializationTest {
 
     @Before
     public void setUp() {
-        objectMapper = new ObjectMapper().registerModules(Arrays.asList(new JsonConfig.MoneyModule()));
+        objectMapper = new ObjectMapper().registerModules(Collections.singletonList(new JsonConfig.MoneyModule()));
     }
 
     @Test

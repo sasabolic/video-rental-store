@@ -42,8 +42,7 @@ public class DefaultRentalService implements RentalService {
         }
 
         List<Exception> exceptions = new ArrayList<>();
-        rentalInfos.stream()
-                .forEach(rentalInfo -> {
+        rentalInfos.forEach(rentalInfo -> {
                     try {
                         final Film film = filmRepository.findById(rentalInfo.getFilmId())
                                 .orElseThrow(() -> new FilmNotFoundException(String.format("Film with id '%d' does not exist", rentalInfo.getFilmId())));
@@ -71,8 +70,7 @@ public class DefaultRentalService implements RentalService {
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
         List<Exception> exceptions = new ArrayList<>();
-        rentalIds.stream()
-                .forEach(rentalId -> {
+        rentalIds.forEach(rentalId -> {
                     try {
                         final Rental rental = customer.getRentals().stream()
                                 .filter(r -> rentalId.equals(r.getId()))

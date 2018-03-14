@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,7 +113,7 @@ public class FilmServiceTest {
         thrown.expect(FilmUniqueViolationException.class);
         thrown.expectMessage("Film with title '" + film.getTitle() + "' already exits");
 
-        doReturn(Arrays.asList(film)).when(filmRepository).findByTitle(isA(String.class));
+        doReturn(Collections.singletonList(film)).when(filmRepository).findByTitle(isA(String.class));
 
         filmService.save(film.getTitle(), film.getType().name(), film.getQuantity());
     }
@@ -145,7 +146,7 @@ public class FilmServiceTest {
         thrown.expectMessage("Film with title '" + film.getTitle() + "' already exits");
 
         doReturn(6L).when(film).getId();
-        doReturn(Arrays.asList(film)).when(filmRepository).findByTitle(isA(String.class));
+        doReturn(Collections.singletonList(film)).when(filmRepository).findByTitle(isA(String.class));
 
         filmService.update(filmId, film.getTitle(), film.getType().name(), film.getQuantity());
     }

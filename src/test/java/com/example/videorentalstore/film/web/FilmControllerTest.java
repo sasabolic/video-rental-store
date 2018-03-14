@@ -71,7 +71,7 @@ public class FilmControllerTest {
         final Film film1 = spy(FilmDataFixtures.regularReleaseFilm(title1));
 
         given(film.getId()).willReturn(filmId);
-        given(film1.getId()).willReturn(filmId);
+        given(film1.getId()).willReturn(filmId1);
         given(this.filmService.findAll(null)).willReturn(Arrays.asList(film, film1));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -81,7 +81,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].title", equalTo(title)))
@@ -107,7 +107,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].title", equalTo("Spider Man")))
@@ -127,7 +127,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.title", equalTo(title)));
     }
@@ -193,7 +193,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(404)))
@@ -270,7 +270,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isConflict())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(409)))
@@ -299,7 +299,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(400)))
@@ -345,7 +345,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.title", equalTo(title)))
                 .andExpect(jsonPath("$.type", equalTo(type.name())))
@@ -401,7 +401,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isConflict())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(409)))
@@ -430,7 +430,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(400)))
@@ -471,7 +471,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.quantity", equalTo(quantity)));
     }
@@ -515,7 +515,7 @@ public class FilmControllerTest {
         mockMvc.perform(requestBuilder)
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.status", equalTo(400)))
@@ -538,10 +538,10 @@ public class FilmControllerTest {
 
     @Test
     public void whenDeleteThenReturnEmptyBody() throws Exception {
-        final Long filmdId = 1L;
+        final Long filmId = 1L;
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete("/films/{filmId}", filmdId);
+                .delete("/films/{filmId}", filmId);
 
         mockMvc.perform(requestBuilder)
                 .andDo(print())

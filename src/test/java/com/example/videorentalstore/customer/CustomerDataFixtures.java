@@ -24,14 +24,7 @@ public class CustomerDataFixtures {
 
     public static Customer customerWithRentals(int startedDaysBeforeNow) {
         final Customer customer = customer();
-        RentalDataFixtures.rentals(startedDaysBeforeNow).forEach(r -> customer.addRental(r));
-
-        return customer;
-    }
-
-    public static Customer customerWithReturnedRentals() {
-        final Customer customer = customer();
-        RentalDataFixtures.returnedRentals().forEach(r -> customer.addRental(r));
+        RentalDataFixtures.rentals(startedDaysBeforeNow).forEach(customer::addRental);
 
         return customer;
     }

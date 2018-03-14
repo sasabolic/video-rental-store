@@ -93,7 +93,7 @@ public class BatchReturnRentalRequest implements List<ReturnRentalRequest> {
 
     @Override
     public void clear() {
-        this.returnRentalRequests.clear();;
+        this.returnRentalRequests.clear();
     }
 
     @Override

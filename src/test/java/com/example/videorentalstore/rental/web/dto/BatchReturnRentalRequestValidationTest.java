@@ -7,7 +7,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
@@ -25,7 +24,7 @@ public class BatchReturnRentalRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        BatchReturnRentalRequest request = new BatchReturnRentalRequest(Arrays.asList(new ReturnRentalRequest(1L)));
+        BatchReturnRentalRequest request = new BatchReturnRentalRequest(Collections.singletonList(new ReturnRentalRequest(1L)));
         final Set<ConstraintViolation<BatchReturnRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();

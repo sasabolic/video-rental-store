@@ -59,14 +59,6 @@ public class FilmDataFixtures {
         return film(title, ReleaseType.OLD_RELEASE, quantity);
     }
 
-    public static String json(Film film) {
-        return "{\n" +
-                "  \"title\": \"" + film.getTitle() + "\",\n" +
-                "  \"type\": \"" + film.getType().name() + "\",\n" +
-                "  \"quantity\": " + film.getQuantity() + "\n" +
-                "}";
-    }
-
     public static String json() {
         return "{\n" +
                 "  \"title\": \"Matrix 11\",\n" +

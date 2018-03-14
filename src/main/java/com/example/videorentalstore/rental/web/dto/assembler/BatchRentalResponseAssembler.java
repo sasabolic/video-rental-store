@@ -2,10 +2,10 @@ package com.example.videorentalstore.rental.web.dto.assembler;
 
 import com.example.videorentalstore.core.GenericResponseAssembler;
 import com.example.videorentalstore.rental.BatchRental;
-import com.example.videorentalstore.rental.web.dto.BatchRentalReponse;
+import com.example.videorentalstore.rental.web.dto.BatchRentalResponse;
 
 /**
- * Assembler interface for creating {@link BatchRentalReponse} DTOs.
+ * Assembler interface for creating {@link BatchRentalResponse} DTOs.
  */
-public interface BatchRentalResponseAssembler extends GenericResponseAssembler<BatchRental, BatchRentalReponse> {
+public interface BatchRentalResponseAssembler extends GenericResponseAssembler<BatchRental, BatchRentalResponse> {
 }

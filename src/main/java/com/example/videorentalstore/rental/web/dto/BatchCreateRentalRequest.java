@@ -100,7 +100,7 @@ public class BatchCreateRentalRequest implements List<CreateRentalRequest> {
 
     @Override
     public void clear() {
-        this.createRentalRequests.clear();;
+        this.createRentalRequests.clear();
     }
 
     @Override

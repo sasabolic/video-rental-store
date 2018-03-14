@@ -5,10 +5,13 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Exception thrown in case creation or returning batch of{@link Rental} is not successful.
+ */
 @Getter
 public class RentalException extends RuntimeException {
 
-    private List<Exception> exceptions = new ArrayList<>();
+    private final List<Exception> exceptions = new ArrayList<>();
 
     public RentalException(String message) {
         super(message);

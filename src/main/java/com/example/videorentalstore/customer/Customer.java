@@ -73,12 +73,12 @@ public class Customer {
     public Money calculatePrice() {
         return this.rentals.stream()
                 .map(Rental::calculatePrice)
-                .reduce(Money.of(0, CURRENCY_CODE), (x, y) -> x.add(y));
+                .reduce(Money.of(0, CURRENCY_CODE), Money::add);
     }
 
     public Money calculateExtraCharges() {
         return this.rentals.stream()
                 .map(Rental::calculateExtraCharges)
-                .reduce(Money.of(0, CURRENCY_CODE), (x, y) -> x.add(y));
+                .reduce(Money.of(0, CURRENCY_CODE), Money::add);
     }
 }

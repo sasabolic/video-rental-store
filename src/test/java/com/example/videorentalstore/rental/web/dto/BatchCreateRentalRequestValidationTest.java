@@ -25,7 +25,7 @@ public class BatchCreateRentalRequestValidationTest {
 
     @Test
     public void whenRequestValidThenViolationListEmpty() {
-        BatchCreateRentalRequest request = new BatchCreateRentalRequest(Arrays.asList(new CreateRentalRequest(1L, 10)));
+        BatchCreateRentalRequest request = new BatchCreateRentalRequest(Collections.singletonList(new CreateRentalRequest(1L, 10)));
         final Set<ConstraintViolation<BatchCreateRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isEmpty();
@@ -53,7 +53,7 @@ public class BatchCreateRentalRequestValidationTest {
 
     @Test
     public void whenRequestInvalidCreateRentalRequestThenViolationForCreateRentalRequest() {
-        BatchCreateRentalRequest request = new BatchCreateRentalRequest(Arrays.asList(new CreateRentalRequest(null, 0)));
+        BatchCreateRentalRequest request = new BatchCreateRentalRequest(Collections.singletonList(new CreateRentalRequest(null, 0)));
         final Set<ConstraintViolation<BatchCreateRentalRequest>> validate = validator.validate(request);
 
         assertThat(validate).isNotEmpty();

@@ -36,9 +36,9 @@ public class JsonConfig {
             addValueInstantiator(MonetaryAmount.class, new MoneyInstantiator());
         }
 
-        public static class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount> {
+        static class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount> {
 
-            public MonetaryAmountSerializer() {
+            MonetaryAmountSerializer() {
                 super(MonetaryAmount.class);
             }
 
@@ -52,7 +52,7 @@ public class JsonConfig {
             }
         }
 
-        public static class MoneyInstantiator extends ValueInstantiator {
+        static class MoneyInstantiator extends ValueInstantiator {
 
             @Override
             public String getValueTypeDesc() {

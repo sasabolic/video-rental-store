@@ -79,7 +79,7 @@ public class CustomerTest {
 
         final List<Rental> rentals = RentalDataFixtures.returnedRentals();
 
-        rentals.stream().forEach(r -> customer.addRental(r));
+        rentals.forEach(r -> customer.addRental(r));
 
         customer.deactivate();
     }
@@ -139,9 +139,9 @@ public class CustomerTest {
     @Test
     public void whenRentalsReturnedSameDayThenCalculateExtraChargesReturnsZeroAmount() {
         final List<Rental> rentals = RentalDataFixtures.rentals();
-        rentals.stream().forEach(Rental::markReturned);
+        rentals.forEach(Rental::markReturned);
 
-        rentals.stream().forEach(r -> customer.addRental(r));
+        rentals.forEach(r -> customer.addRental(r));
 
         final Money result = customer.calculateExtraCharges();
 

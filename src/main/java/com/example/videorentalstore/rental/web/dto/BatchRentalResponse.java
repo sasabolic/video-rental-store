@@ -6,9 +6,12 @@ import org.javamoney.moneta.Money;
 
 import java.util.List;
 
+/**
+ * Batch rental response DTO.
+ */
 @AllArgsConstructor
 @Getter
-public class BatchRentalReponse {
+public class BatchRentalResponse {
 
     private Money amount;
     private List<RentalResponse> rentals;

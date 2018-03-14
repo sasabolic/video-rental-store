@@ -90,7 +90,7 @@ public class RentalServiceTest {
         assertThat(result).hasFieldOrPropertyWithValue("amount", Money.of(250, CURRENCY_CODE));
         assertThat(result.getRentals()).hasSize(4);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(result.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
+        assertThat(result.getRentals()).extracting(Rental::getDaysRented).containsExactly(1, 5, 2, 7);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class RentalServiceTest {
         assertThat(result).hasFieldOrPropertyWithValue("amount", Money.of(250, CURRENCY_CODE));
         assertThat(result.getRentals()).hasSize(4);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
-        assertThat(result.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
+        assertThat(result.getRentals()).extracting(Rental::getDaysRented).containsExactly(1, 5, 2, 7);
     }
 
     @Test

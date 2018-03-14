@@ -87,36 +87,33 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                           HttpStatus status,
                           String error,
                           String exception,
-                          String message,
-                          List<String> errors) {
+                          String message) {
             this.timestamp = timestamp;
             this.status = status.value();
             this.error = error;
             this.exception = exception;
             this.message = message;
-            this.errors = errors;
         }
 
-        public static RestError of(HttpStatus status, Throwable ex) {
+        static RestError of(HttpStatus status, Throwable ex) {
             return of(status, ex, ex.getLocalizedMessage());
         }
 
-        public static RestError of(HttpStatus status, Throwable ex, String message) {
+        static RestError of(HttpStatus status, Throwable ex, String message) {
             return new RestError(
                     LocalDateTime.now(),
                     status,
                     status.getReasonPhrase(),
                     ex.getClass().getName(),
-                    message,
-                    null);
+                    message);
         }
 
-        public void addValidationErrors(List<? extends ObjectError> bindErrors) {
+        void addValidationErrors(List<? extends ObjectError> bindErrors) {
             this.errors = bindErrors.stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
         }
 
-        public void addErrors(List<? extends Exception> errors) {
+        void addErrors(List<? extends Exception> errors) {
             this.errors = errors.stream()
                     .map(Exception::getMessage).collect(Collectors.toList());
         }

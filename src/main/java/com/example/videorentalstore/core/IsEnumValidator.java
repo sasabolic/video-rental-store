@@ -38,7 +38,7 @@ public class IsEnumValidator implements ConstraintValidator<IsEnum, String> {
         if (!isValid && constraintAnnotation.message().isEmpty()) {
             // add generic message
             final String validList = Arrays.stream(enumConstants)
-                    .map(e -> e.name()).collect(Collectors.joining(", "));
+                    .map(Enum::name).collect(Collectors.joining(", "));
 
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(String.format("Invalid value: '%s'. Allowed values are: '%s'", value, validList)).addConstraintViolation();
