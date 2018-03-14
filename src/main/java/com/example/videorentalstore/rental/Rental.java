@@ -8,7 +8,6 @@ import org.hibernate.annotations.Where;
 import org.javamoney.moneta.Money;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 

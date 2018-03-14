@@ -2,8 +2,6 @@ package com.example.videorentalstore.film;
 
 import org.javamoney.moneta.Money;
 
-import java.math.BigDecimal;
-
 import static com.example.videorentalstore.film.Price.BASIC_PRICE;
 import static com.example.videorentalstore.film.Price.PREMIUM_PRICE;
 
@@ -21,7 +19,7 @@ public enum ReleaseType {
             if (daysRented <= 0) {
                 return Money.of(0, price().getCurrency());
             }
-            return price().multiply(BigDecimal.valueOf(daysRented));
+            return price().multiply(daysRented);
         }
 
         @Override
@@ -46,7 +44,7 @@ public enum ReleaseType {
             Money amount = price();
 
             if (daysRented > 3) {
-                amount = amount.add(price().multiply(BigDecimal.valueOf(daysRented - 3)));
+                amount = amount.add(price().multiply(daysRented - 3));
             }
             return amount;
         }
@@ -73,7 +71,7 @@ public enum ReleaseType {
             Money amount = BASIC_PRICE;
 
             if (daysRented > 5) {
-                amount = amount.add(BASIC_PRICE.multiply(BigDecimal.valueOf(daysRented - 5)));
+                amount = amount.add(BASIC_PRICE.multiply(daysRented - 5));
             }
             return amount;
         }
@@ -117,7 +115,7 @@ public enum ReleaseType {
      * @return the money
      */
     public Money calculateExtraCharges(long extraDays) {
-        return price().multiply(BigDecimal.valueOf(extraDays));
+        return price().multiply(extraDays);
     }
 
     /**

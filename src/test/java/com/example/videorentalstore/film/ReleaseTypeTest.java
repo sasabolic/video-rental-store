@@ -3,8 +3,6 @@ package com.example.videorentalstore.film;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReleaseTypeTest {

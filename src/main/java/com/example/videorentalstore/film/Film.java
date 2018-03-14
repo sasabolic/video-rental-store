@@ -7,7 +7,6 @@ import org.hibernate.annotations.Where;
 import org.javamoney.moneta.Money;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
