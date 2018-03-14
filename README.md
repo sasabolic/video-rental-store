@@ -56,9 +56,138 @@ After you have run the `./run.sh` for the first time, all of the services will b
 ## API reference
 
 API reference documentation is available at http://localhost:8080/swagger-ui.html.
-To login to the API with the Swagger follow these steps:
 
-Add additional notes about how to deploy this on a live system
+### Example API calls
+
+Example API calls for the customer rental flow. The database is prepopulated with film and customer data. 
+In the following examples the customer 'Nikola Tesla' with id '1' will be used:
+
+* To search for customer with name: 'tesla': 
+
+    Request:
+    ```
+        curl -X GET "http://localhost:8080/customers?name=tesla" -H "accept: */*"
+    ```
+    Response:
+    ```
+        [
+           {
+               "id": 1,
+               "first_name": "Nikola",
+               "last_name": "Tesla",
+               "bonus_points": 0
+           }
+       ]
+    ```
+
+* To search for film with title: 'spider': 
+
+    Request:
+    ```
+        curl -X GET "http://localhost:8080/films?title=spider" -H "accept: */*"
+    ```
+    Response:
+    ```
+        [
+            {
+                "id": 2,
+                "title": "Spider Man",
+                "type": "REGULAR_RELEASE",
+                "quantity": 4
+            },
+            {
+                "id": 3,
+                "title": "Spider Man 2",
+                "type": "REGULAR_RELEASE",
+                "quantity": 3
+            }
+        ]
+    ```
+* To create new film rentals for customer with id '1' 
+
+    Request:
+    ```
+        curl -X POST "http://localhost:8080/customers/1/rentals" -H "accept: */*" -H "Content-Type: application/json" -d "[ { \"film_id\": 1, \"days_rented\": 1 }, { \"film_id\": 2, \"days_rented\": 5 }, { \"film_id\": 3, \"days_rented\": 2 }, { \"film_id\": 4, \"days_rented\": 7 }]"
+    ```
+    Response:
+    ```
+        {
+          "amount": "SEK 250.00",
+          "rentals": [
+            {
+              "id": 1,
+              "film_title": "Matrix 11",
+              "days_rented": 1,
+              "start_date": "2018-03-14T16:08:17.363728Z",
+              "end_date": null
+            },
+            {
+              "id": 2,
+              "film_title": "Spider Man",
+              "days_rented": 5,
+              "start_date": "2018-03-14T16:08:17.409213Z",
+              "end_date": null
+            },
+            {
+              "id": 3,
+              "film_title": "Spider Man 2",
+              "days_rented": 2,
+              "start_date": "2018-03-14T16:08:17.424916Z",
+              "end_date": null
+            },
+            {
+              "id": 4,
+              "film_title": "Out of Africa",
+              "days_rented": 7,
+              "start_date": "2018-03-14T16:08:17.433951Z",
+              "end_date": null
+            }
+          ]
+        }
+    ```
+
+* To return rentals (after 3 days) for customer with id '1' 
+
+    Request:
+    ```
+        curl -X PATCH "http://localhost:8080/customers/1/rentals" -H "accept: */*" -H "Content-Type: application/json" -d "[ { \"rental_id\": 1 }, { \"rental_id\": 2 }, { \"rental_id\": 3 }, { \"rental_id\": 4 }]"
+    ```
+    Response:
+    ```
+        {
+          "amount": "SEK 110.00",
+          "rentals": [
+            {
+              "id": 1,
+              "film_title": "Matrix 11",
+              "days_rented": 1,
+              "start_date": "2018-03-14T16:08:17Z",
+              "end_date": "2018-03-17T16:10:02.121004Z"
+            },
+            {
+              "id": 2,
+              "film_title": "Spider Man",
+              "days_rented": 5,
+              "start_date": "2018-03-14T16:08:17Z",
+              "end_date": "2018-03-17T16:10:02.121045Z"
+            },
+            {
+              "id": 3,
+              "film_title": "Spider Man 2",
+              "days_rented": 2,
+              "start_date": "2018-03-14T16:08:17Z",
+              "end_date": "2018-03-17T16:10:02.121055Z"
+            },
+            {
+              "id": 4,
+              "film_title": "Out of Africa",
+              "days_rented": 7,
+              "start_date": "2018-03-14T16:08:17Z",
+              "end_date": "2018-03-17T16:10:02.121063Z"
+            }
+          ]
+        }
+    ```
 
 ## Built With
 
