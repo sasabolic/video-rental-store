@@ -42,6 +42,16 @@
             <column name="customer_id" type="int"/>
             <column name="active" type="boolean" defaultValueBoolean="true"/>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="film_id"
+                                 baseTableName="rental"
+                                 constraintName="fk_rental_film"
+                                 referencedColumnNames="id"
+                                 referencedTableName="film"/>
+        <addForeignKeyConstraint baseColumnNames="customer_id"
+                                 baseTableName="rental"
+                                 constraintName="fk_rental_customer"
+                                 referencedColumnNames="id"
+                                 referencedTableName="customer"/>
     </changeSet>
 
     <changeSet id="2" author="developer">
