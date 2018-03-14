@@ -189,6 +189,40 @@ In the following examples the customer 'Nikola Tesla' with id '1' will be used:
         }
     ```
 
+* To get the customer with id '1' 
+
+    Request:
+    ```
+        curl -X GET "http://localhost:8080/customers/1" -H "accept: */*"
+    ```
+    Response:
+    ```
+        {
+          "id": 1,
+          "first_name": "Nikola",
+          "last_name": "Tesla",
+          "bonus_points": 5
+        }
+    ```
+    
+* In case customer with id '4" does not exist
+
+    Request:
+    ```
+        curl -X GET "http://localhost:8080/customers/4" -H "accept: */*"
+    ```
+    Response:
+    ```
+        {
+          "timestamp": "2018-03-14T17:41:11.013941",
+          "status": 404,
+          "error": "Not Found",
+          "exception": "com.example.videorentalstore.customer.CustomerNotFoundException",
+          "message": "Customer with id '4' does not exist",
+          "errors": null
+        }
+    ```
+
 ## Built With
 
 * [Spring Boot](https://projects.spring.io/spring-boot/) - The web framework used
