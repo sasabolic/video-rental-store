@@ -5,12 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Where;
+import org.javamoney.moneta.Money;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static com.example.videorentalstore.film.Price.CURRENCY_CODE;
 
 @Entity
 @Getter
@@ -68,15 +71,15 @@ public class Customer {
                 .reduce(0, (x, y) -> x + y);
     }
 
-    public BigDecimal calculatePrice() {
+    public Money calculatePrice() {
         return this.rentals.stream()
                 .map(Rental::calculatePrice)
-                .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
+                .reduce(Money.of(0, CURRENCY_CODE), (x, y) -> x.add(y));
     }
 
-    public BigDecimal calculateExtraCharges() {
+    public Money calculateExtraCharges() {
         return this.rentals.stream()
                 .map(Rental::calculateExtraCharges)
-                .reduce(BigDecimal.ZERO, (x, y) -> x.add(y));
+                .reduce(Money.of(0, CURRENCY_CODE), (x, y) -> x.add(y));
     }
 }

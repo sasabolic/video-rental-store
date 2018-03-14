@@ -2,12 +2,12 @@ package com.example.videorentalstore.rental;
 
 import com.example.videorentalstore.film.Film;
 import com.example.videorentalstore.film.FilmDataFixtures;
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -86,10 +86,10 @@ public class RentalTest {
     public void whenCalculatePriceThenReturnCorrectResult() {
         rental = RentalDataFixtures.rental(FilmDataFixtures.regularReleaseFilm("Spider Man"), 5);
 
-        final BigDecimal result = rental.calculatePrice();
+        final Money result = rental.calculatePrice();
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(90));
+        assertThat(result).isEqualByComparingTo(Money.of(90, result.getCurrency()));
     }
 
     @Test
@@ -98,10 +98,10 @@ public class RentalTest {
 
         rental.markReturned();
 
-        final BigDecimal result = rental.calculateExtraCharges();
+        final Money result = rental.calculateExtraCharges();
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(30));
+        assertThat(result).isEqualByComparingTo(Money.of(30, result.getCurrency()));
     }
 
     @Test

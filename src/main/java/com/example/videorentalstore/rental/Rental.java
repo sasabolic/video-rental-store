@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Where;
+import org.javamoney.moneta.Money;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -66,11 +67,11 @@ public class Rental {
         return this;
     }
 
-    public BigDecimal calculatePrice() {
+    public Money calculatePrice() {
         return this.film.calculatePrice(this.daysRented);
     }
 
-    public BigDecimal calculateExtraCharges() {
+    public Money calculateExtraCharges() {
         if (this.endDate == null) {
             throw new NullPointerException("Cannot create late charges if END DATE is not set.");
         }

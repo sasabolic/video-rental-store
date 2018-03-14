@@ -1,11 +1,10 @@
 package com.example.videorentalstore.film;
 
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -139,10 +138,10 @@ public class FilmTest {
 
     @Test
     public void whenCalculatePriceThenReturnCorrectResult() {
-        final BigDecimal result = film.calculatePrice(10);
+        final Money result = film.calculatePrice(10);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(240));
+        assertThat(result).isEqualByComparingTo(Money.of(240, result.getCurrency()));
     }
 
     @Test

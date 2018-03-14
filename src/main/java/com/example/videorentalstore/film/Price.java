@@ -1,11 +1,17 @@
 package com.example.videorentalstore.film;
 
-import java.math.BigDecimal;
+import org.javamoney.moneta.Money;
 
-public class Price {
 
-    public static final BigDecimal PREMIUM_PRICE = BigDecimal.valueOf(40);
+/**
+ * The interface containing {@link ReleaseType} price information.
+ */
+public interface Price {
 
-    public static final BigDecimal BASIC_PRICE = BigDecimal.valueOf(30);
+    String CURRENCY_CODE = "SEK";
+
+    Money PREMIUM_PRICE = Money.of(40, CURRENCY_CODE);
+
+    Money BASIC_PRICE = Money.of(30, CURRENCY_CODE);
 
 }

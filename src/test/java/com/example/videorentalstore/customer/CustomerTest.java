@@ -2,6 +2,7 @@ package com.example.videorentalstore.customer;
 
 import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalDataFixtures;
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -90,9 +91,9 @@ public class CustomerTest {
 
         rentals.forEach(r -> customer.addRental(r));
 
-        final BigDecimal totalAmount = customer.calculatePrice();
+        final Money result = customer.calculatePrice();
 
-        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.valueOf(250));
+        assertThat(result).isEqualByComparingTo(Money.of(250, result.getCurrency()));
     }
 
     @Test
@@ -104,9 +105,9 @@ public class CustomerTest {
 
         rentals.forEach(r -> customer.addRental(r));
 
-        final BigDecimal totalAmount = customer.calculateExtraCharges();
+        final Money result = customer.calculateExtraCharges();
 
-        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.valueOf(110));
+        assertThat(result).isEqualByComparingTo(Money.of(110, result.getCurrency()));
     }
 
     @Test
@@ -143,8 +144,8 @@ public class CustomerTest {
 
         rentals.stream().forEach(r -> customer.addRental(r));
 
-        final BigDecimal totalAmount = customer.calculateExtraCharges();
+        final Money result = customer.calculateExtraCharges();
 
-        assertThat(totalAmount).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(result).isEqualByComparingTo(Money.of(0, result.getCurrency()));
     }
 }

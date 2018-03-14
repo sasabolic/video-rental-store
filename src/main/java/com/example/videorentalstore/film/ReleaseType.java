@@ -1,5 +1,7 @@
 package com.example.videorentalstore.film;
 
+import org.javamoney.moneta.Money;
+
 import java.math.BigDecimal;
 
 import static com.example.videorentalstore.film.Price.BASIC_PRICE;
@@ -15,9 +17,9 @@ public enum ReleaseType {
      */
     NEW_RELEASE(PREMIUM_PRICE) {
         @Override
-        public BigDecimal calculatePrice(long daysRented) {
+        public Money calculatePrice(long daysRented) {
             if (daysRented <= 0) {
-                return BigDecimal.ZERO;
+                return Money.of(0, price().getCurrency());
             }
             return price().multiply(BigDecimal.valueOf(daysRented));
         }
@@ -36,17 +38,17 @@ public enum ReleaseType {
      */
     REGULAR_RELEASE(BASIC_PRICE) {
         @Override
-        public BigDecimal calculatePrice(long daysRented) {
+        public Money calculatePrice(long daysRented) {
             if (daysRented <= 0) {
-                return BigDecimal.ZERO;
+                return Money.of(0, price().getCurrency());
             }
 
-            BigDecimal price = price();
+            Money amount = price();
 
             if (daysRented > 3) {
-                price = price.add(price().multiply(BigDecimal.valueOf(daysRented - 3)));
+                amount = amount.add(price().multiply(BigDecimal.valueOf(daysRented - 3)));
             }
-            return price;
+            return amount;
         }
 
         @Override
@@ -63,17 +65,17 @@ public enum ReleaseType {
      */
     OLD_RELEASE(BASIC_PRICE) {
         @Override
-        public BigDecimal calculatePrice(long daysRented) {
+        public Money calculatePrice(long daysRented) {
             if (daysRented <= 0) {
-                return BigDecimal.ZERO;
+                return Money.of(0, price().getCurrency());
             }
 
-            BigDecimal price = BASIC_PRICE;
+            Money amount = BASIC_PRICE;
 
             if (daysRented > 5) {
-                price = price.add(BASIC_PRICE.multiply(BigDecimal.valueOf(daysRented - 5)));
+                amount = amount.add(BASIC_PRICE.multiply(BigDecimal.valueOf(daysRented - 5)));
             }
-            return price;
+            return amount;
         }
 
         @Override
@@ -85,13 +87,18 @@ public enum ReleaseType {
         }
     };
 
-    private final BigDecimal price;
+    private final Money price;
 
-    ReleaseType(BigDecimal price) {
+    ReleaseType(Money price) {
         this.price = price;
     }
 
-    BigDecimal price() {
+    /**
+     * Price money.
+     *
+     * @return the money
+     */
+    Money price() {
         return this.price;
     }
 
@@ -99,17 +106,17 @@ public enum ReleaseType {
      * Calculates price.
      *
      * @param daysRented the days rented
-     * @return the big decimal
+     * @return money
      */
-    public abstract BigDecimal calculatePrice(long daysRented);
+    public abstract Money calculatePrice(long daysRented);
 
     /**
      * Calculates extra charges.
      *
      * @param extraDays the extra days
-     * @return the big decimal
+     * @return the money
      */
-    public BigDecimal calculateExtraCharges(long extraDays) {
+    public Money calculateExtraCharges(long extraDays) {
         return price().multiply(BigDecimal.valueOf(extraDays));
     }
 

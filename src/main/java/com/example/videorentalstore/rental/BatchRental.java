@@ -2,6 +2,7 @@ package com.example.videorentalstore.rental;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.javamoney.moneta.Money;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 @Getter
 public class BatchRental {
 
-    private BigDecimal amount;
+    private Money amount;
     private List<Rental> rentals;
 
     public BatchRental(List<Rental> rentals) {

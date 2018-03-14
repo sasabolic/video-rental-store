@@ -1,5 +1,6 @@
 package com.example.videorentalstore.rental.web;
 
+import com.example.videorentalstore.core.JsonConfig;
 import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.film.FilmNotFoundException;
 import com.example.videorentalstore.rental.*;
@@ -7,6 +8,7 @@ import com.example.videorentalstore.rental.web.dto.assembler.BatchRentalResponse
 import com.example.videorentalstore.rental.web.dto.assembler.DefaultBatchRentalResponseAssembler;
 import com.example.videorentalstore.rental.web.dto.assembler.DefaultRentalResponseAssembler;
 import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssembler;
+import org.javamoney.moneta.Money;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +16,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.videorentalstore.film.Price.CURRENCY_CODE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.*;
@@ -38,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CustomerRentalControllerTest {
 
     @TestConfiguration
+    @Import(JsonConfig.class)
     static class TestConfig {
 
         @Bean
@@ -134,7 +138,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenCreateForCustomerThenReturnStatusOK() throws Exception {
-        given(rentalService.create(anyLong(), anyList())).willReturn(new BatchRental(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
+        given(rentalService.create(anyLong(), anyList())).willReturn(new BatchRental(Money.of(250, CURRENCY_CODE), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", 12)
@@ -149,7 +153,7 @@ public class CustomerRentalControllerTest {
     @Test
     public void whenCreateForCustomerThenReturnJson() throws Exception {
         final long customerId = 12L;
-        given(rentalService.create(anyLong(), anyList())).willReturn(new BatchRental(BigDecimal.valueOf(250), RentalDataFixtures.rentals()));
+        given(rentalService.create(anyLong(), anyList())).willReturn(new BatchRental(Money.of(250, CURRENCY_CODE), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/customers/{customerId}/rentals", customerId)
@@ -160,7 +164,7 @@ public class CustomerRentalControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.amount", equalTo(250)))
+                .andExpect(jsonPath("$.amount", equalTo("SEK\u00A0250.00")))
                 .andExpect(jsonPath("$.rentals").isArray())
                 .andExpect(jsonPath("$.rentals", hasSize(4)))
                 .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
@@ -375,7 +379,7 @@ public class CustomerRentalControllerTest {
 
     @Test
     public void whenReturnBackThenReturnStatusOK() throws Exception {
-        given(rentalService.returnBack(anyLong(), anyList())).willReturn(new BatchRental(BigDecimal.valueOf(110), RentalDataFixtures.rentals()));
+        given(rentalService.returnBack(anyLong(), anyList())).willReturn(new BatchRental(Money.of(110, CURRENCY_CODE), RentalDataFixtures.rentals()));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
@@ -391,7 +395,7 @@ public class CustomerRentalControllerTest {
     public void whenReturnBackThenReturnJson() throws Exception {
         final List<Rental> rentals = RentalDataFixtures.returnedRentals();
 
-        given(rentalService.returnBack(anyLong(), anyList())).willReturn(new BatchRental(BigDecimal.valueOf(110), rentals));
+        given(rentalService.returnBack(anyLong(), anyList())).willReturn(new BatchRental(Money.of(110, CURRENCY_CODE), rentals));
 
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
@@ -402,7 +406,7 @@ public class CustomerRentalControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.amount", equalTo(110)))
+                .andExpect(jsonPath("$.amount", equalTo("SEK\u00A0110.00")))
                 .andExpect(jsonPath("$.rentals").isArray())
                 .andExpect(jsonPath("$.rentals", hasSize(4)))
                 .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))

@@ -6,6 +6,7 @@ import com.example.videorentalstore.customer.CustomerNotFoundException;
 import com.example.videorentalstore.customer.CustomerRepository;
 import com.example.videorentalstore.film.FilmDataFixtures;
 import com.example.videorentalstore.film.FilmRepository;
+import org.javamoney.moneta.Money;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.videorentalstore.film.Price.CURRENCY_CODE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -86,7 +88,7 @@ public class RentalServiceTest {
         final BatchRental result = rentalService.create(1L, rentalInfos);
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
+        assertThat(result).hasFieldOrPropertyWithValue("amount", Money.of(250, CURRENCY_CODE));
         assertThat(result.getRentals()).hasSize(4);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(result.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
@@ -110,7 +112,7 @@ public class RentalServiceTest {
         final BatchRental result = rentalService.create(1L, rentalInfos);
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(250));
+        assertThat(result).hasFieldOrPropertyWithValue("amount", Money.of(250, CURRENCY_CODE));
         assertThat(result.getRentals()).hasSize(4);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(result.getRentals()).extracting(r -> r.getDaysRented()).containsExactly(1, 5, 2, 7);
@@ -188,7 +190,7 @@ public class RentalServiceTest {
         final BatchRental result = rentalService.returnBack(1L, Arrays.asList(1L, 2L, 3L, 4L));
 
         assertThat(result).isNotNull();
-        assertThat(result).hasFieldOrPropertyWithValue("amount", BigDecimal.valueOf(110));
+        assertThat(result).hasFieldOrPropertyWithValue("amount", Money.of(110, CURRENCY_CODE));
         assertThat(result.getRentals()).hasSize(4);
         assertThat(result.getRentals()).extracting(r -> r.getFilm().getTitle()).containsExactly("Matrix 11", "Spider Man", "Spider Man 2", "Out of Africa");
         assertThat(result.getRentals()).extracting(r -> r.getEndDate()).isNotNull();

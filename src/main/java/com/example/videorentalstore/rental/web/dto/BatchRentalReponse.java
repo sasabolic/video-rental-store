@@ -2,6 +2,7 @@ package com.example.videorentalstore.rental.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.javamoney.moneta.Money;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +11,6 @@ import java.util.List;
 @Getter
 public class BatchRentalReponse {
 
-    private BigDecimal amount;
+    private Money amount;
     private List<RentalResponse> rentals;
 }

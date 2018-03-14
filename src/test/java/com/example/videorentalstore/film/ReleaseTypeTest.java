@@ -1,5 +1,6 @@
 package com.example.videorentalstore.film;
 
+import org.javamoney.moneta.Money;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -10,90 +11,90 @@ public class ReleaseTypeTest {
 
     @Test
     public void givenNewReleaseWhenCalculatePriceThenReturnCorrectResult() {
-        final BigDecimal result = ReleaseType.NEW_RELEASE.calculatePrice(10);
+        final Money result = ReleaseType.NEW_RELEASE.calculatePrice(10);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(400));
+        assertThat(result).isEqualByComparingTo(Money.of(400, result.getCurrency()));
     }
 
     @Test
     public void givenNewReleaseWhenCalculatePriceForZeroDaysThenReturnZero() {
-        final BigDecimal result = ReleaseType.NEW_RELEASE.calculatePrice(0);
+        final Money result = ReleaseType.NEW_RELEASE.calculatePrice(0);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(result).isEqualByComparingTo(Money.of(0, result.getCurrency()));
     }
 
     @Test
     public void givenRegularReleaseWhenCalculatePriceThenReturnCorrectResult() {
-        final BigDecimal result = ReleaseType.REGULAR_RELEASE.calculatePrice(10);
+        final Money result = ReleaseType.REGULAR_RELEASE.calculatePrice(10);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(240));
+        assertThat(result).isEqualByComparingTo(Money.of(240, result.getCurrency()));
     }
 
     @Test
     public void givenRegularReleaseWhenCalculatePriceForZeroDaysThenReturnZero() {
-        final BigDecimal result = ReleaseType.REGULAR_RELEASE.calculatePrice(0);
+        final Money result = ReleaseType.REGULAR_RELEASE.calculatePrice(0);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(result).isEqualByComparingTo(Money.of(0, result.getCurrency()));
     }
 
     @Test
     public void givenOldReleaseWhenCalculatePriceThenReturnCorrectResult() {
-        final BigDecimal result = ReleaseType.OLD_RELEASE.calculatePrice(10);
+        final Money result = ReleaseType.OLD_RELEASE.calculatePrice(10);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(180));
+        assertThat(result).isEqualByComparingTo(Money.of(180, result.getCurrency()));
     }
 
     @Test
     public void givenNewReleaseWhenCalculateExtraChargesThenReturnCorrectResult() {
-        final BigDecimal result = ReleaseType.NEW_RELEASE.calculateExtraCharges(10);
+        final Money result = ReleaseType.NEW_RELEASE.calculateExtraCharges(10);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(400));
+        assertThat(result).isEqualByComparingTo(Money.of(400, result.getCurrency()));
     }
 
     @Test
     public void givenNewReleaseWhenCalculateExtraChargesForZeroDaysThenReturnZero() {
-        final BigDecimal result = ReleaseType.NEW_RELEASE.calculateExtraCharges(0);
+        final Money result = ReleaseType.NEW_RELEASE.calculateExtraCharges(0);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(result).isEqualByComparingTo(Money.of(0, result.getCurrency()));
     }
 
     @Test
     public void givenRegularReleaseWhenCalculateExtraChargesThenReturnCorrectResult() {
-        final BigDecimal result = ReleaseType.REGULAR_RELEASE.calculateExtraCharges(10);
+        final Money result = ReleaseType.REGULAR_RELEASE.calculateExtraCharges(10);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(300));
+        assertThat(result).isEqualByComparingTo(Money.of(300, result.getCurrency()));
     }
 
     @Test
     public void givenRegularReleaseWhenCalculateExtraChargesForZeroDaysThenReturnZero() {
-        final BigDecimal result = ReleaseType.REGULAR_RELEASE.calculateExtraCharges(0);
+        final Money result = ReleaseType.REGULAR_RELEASE.calculateExtraCharges(0);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(result).isEqualByComparingTo(Money.of(0, result.getCurrency()));
     }
 
     @Test
     public void givenOldReleaseWhenCalculateExtraChargesThenReturnCorrectResult() {
-        final BigDecimal result = ReleaseType.OLD_RELEASE.calculateExtraCharges(10);
+        final Money result = ReleaseType.OLD_RELEASE.calculateExtraCharges(10);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.valueOf(300));
+        assertThat(result).isEqualByComparingTo(Money.of(300, result.getCurrency()));
     }
 
     @Test
     public void givenOldReleaseWhenCalculateExtraChargesForZeroDaysThenReturnZero() {
-        final BigDecimal result = ReleaseType.OLD_RELEASE.calculateExtraCharges(0);
+        final Money result = ReleaseType.OLD_RELEASE.calculateExtraCharges(0);
 
         assertThat(result).isNotNull();
-        assertThat(result).isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(result).isEqualByComparingTo(Money.of(0, result.getCurrency()));
     }
 
     @Test

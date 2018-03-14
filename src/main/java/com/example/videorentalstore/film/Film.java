@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Where;
+import org.javamoney.moneta.Money;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -71,11 +72,11 @@ public class Film {
         this.quantity++;
     }
 
-    public BigDecimal calculatePrice(long daysRented) {
+    public Money calculatePrice(long daysRented) {
         return type.calculatePrice(daysRented);
     }
 
-    public BigDecimal calculateExtraCharges(long extraDays) {
+    public Money calculateExtraCharges(long extraDays) {
         return type.calculatePrice(extraDays);
     }
 
