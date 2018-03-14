@@ -1,58 +1,62 @@
 # Video Rental Store
 
-One Paragraph of project description goes here
+System for managing rental administration.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will explain you how to get a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+In order to build the project you will have to have [Java 1.8+](http://www.oracle.com/technetwork/java/javase/downloads/index.html), [Docker 17.12.0+](https://docs.docker.com/install/)
+and [Docker Compose](https://docs.docker.com/compose/install/) installed on your machine.
 
-```
-Give examples
-```
+You might have some of the required software already installed on you machine. To confirm it, please run the following commands
+in your terminal window:
 
-### Installing
+For Java:
 
-A step by step series of examples that tell you have to get a development env running
+    java --version
 
-Say what the step will be
+For Docker:
 
-```
-Give the example
-```
+    docker --version
 
-And repeat
+For Docker Compose:
 
-```
-until finished
-```
+    docker-compose --version 
+    
+### Installing and Running
 
-End with an example of getting some data out of the system or using it for a little demo
+Follow the steps below to quickly bring up the infrastructure. 
+
+> It is assumed that you've opened your terminal window and navigated to the directory of this document.
+
+#### Start all the services with docker-compose
+
+To start all the services run the following command from your terminal window:
+
+    ./run.sh
+
+This script will execute tests and package the back-end services, build the Docker images and install them 
+in your local Docker image registry. All of the containers will then be run using **docker-compose**.
+
+> **Important:** 
+>Make sure that you have the following ports available in your local machine: **8080** and **3306**. These are
+>the ports used by **video-rental-store** and **MySQL**, respectively.
+
+After you have run the `./run.sh` for the first time, all of the services will be containerized. Therefore, for every subsequent infrastructure bootstrap, it is sufficient to run **docker-compose**: 
+
+    docker-compose up
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+    ./gradlew clean test
+    
+## API reference
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
+API reference documentation is available at http://localhost:8080/api/app/swagger-ui.html.
+To login to the API with the Swagger follow these steps:
 
 Add additional notes about how to deploy this on a live system
 
@@ -62,23 +66,4 @@ Add additional notes about how to deploy this on a live system
 * [Gradle](https://gradle.org) - Build tool
 * [Docker](https://docs.docker.com/install/) - Container packaging
 
-## TODO List
 
-* ~~RequestDTO to Command object~~
-* ~~Check naming of unit tests~~
-* ~~Check if all code covered with test~~
-* ~~Check naming of command objects~~
-* ~~Validation of request DTOs~~
-* ~~Refactor mvc tests~~
-* ~~CORS~~
-* ~~Move WEB integration tests to new module~~ 
-* ~~BigDecimal to Money pathVariable object~~
-* ~~Basic and Regular price should be read from app properties~~
-* README file finish
-* ~~Introduce DTO objects for controllers~~
-* ~~Liquibase table constraints (unique film title)~~
-* ~~Docker for project~~
-* ~~Swagger~~
-* ~~Hateoas~~
-* ~~verify method called in tests~~
-* ~~Switch test integration tests to H2 database~~
