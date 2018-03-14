@@ -15,4 +15,5 @@ services:
     depends_on:
       - mysql
     image: video-rental-store:latest
-    restart: always
+    ports:
+      - "8080:8080"
