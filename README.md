@@ -55,7 +55,7 @@ After you have run the `./run.sh` for the first time, all of the services will b
     
 ## API reference
 
-API reference documentation is available at http://localhost:8080/api/app/swagger-ui.html.
+API reference documentation is available at http://localhost:8080/swagger-ui.html.
 To login to the API with the Swagger follow these steps:
 
 Add additional notes about how to deploy this on a live system

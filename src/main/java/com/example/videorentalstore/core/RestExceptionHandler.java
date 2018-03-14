@@ -33,11 +33,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(RestError.of(HttpStatus.BAD_REQUEST, e));
     }
 
-    @ExceptionHandler({UnsupportedOperationException.class})
-    public ResponseEntity<Object> handleMethodNotAllowed(Exception e) {
-        return buildResponseEntity(RestError.of(HttpStatus.METHOD_NOT_ALLOWED, e));
-    }
-
     @ExceptionHandler({FilmNotFoundException.class, CustomerNotFoundException.class})
     public ResponseEntity<Object> handleNotFound(Exception e) {
         return buildResponseEntity(RestError.of(HttpStatus.NOT_FOUND, e));

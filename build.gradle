@@ -28,6 +28,7 @@ ext {
     hikariVersion = '2.7.7'
     h2Version = '1.4.196'
     evoInflectorVersion = '1.2.2'
+    springFoxVersion = '2.8.0'
 }
 
 dependencyManagement {
@@ -35,6 +36,9 @@ dependencyManagement {
         dependency "javax.xml.bind:jaxb-api:${jaxbVersion}"
         dependency "com.h2database:h2:${h2Version}"
         dependency "org.atteo:evo-inflector:${evoInflectorVersion}"
+        dependency "io.springfox:springfox-swagger2:${springFoxVersion}"
+        dependency "io.springfox:springfox-swagger-ui:${springFoxVersion}"
+
     }
 }
 
@@ -43,6 +47,10 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.javamoney:moneta:1.1')
     compileOnly('org.projectlombok:lombok')
+
+    // swagger
+    compile('io.springfox:springfox-swagger2')
+    compile('io.springfox:springfox-swagger-ui')
 
     // database
     compile('mysql:mysql-connector-java')

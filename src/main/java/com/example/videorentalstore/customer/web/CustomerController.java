@@ -6,6 +6,7 @@ import com.example.videorentalstore.customer.CustomerService;
 import com.example.videorentalstore.customer.web.dto.CustomerResponse;
 import com.example.videorentalstore.customer.web.dto.SaveCustomerRequest;
 import com.example.videorentalstore.customer.web.dto.assembler.CustomerResponseAssembler;
+import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/customers")
+@Api(tags = "customer")
 public class CustomerController {
 
     private final CustomerService customerService;

@@ -6,6 +6,7 @@ import com.example.videorentalstore.film.web.dto.FilmResponse;
 import com.example.videorentalstore.film.web.dto.SaveFilmRequest;
 import com.example.videorentalstore.film.web.dto.UpdateFilmQuantityRequest;
 import com.example.videorentalstore.film.web.dto.assembler.FilmResponseAssembler;
+import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/films")
+@Api(tags = "film")
 public class FilmController {
 
     private final FilmService filmService;
