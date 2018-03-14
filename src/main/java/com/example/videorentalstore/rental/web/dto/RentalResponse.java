@@ -24,6 +24,6 @@ public class RentalResponse {
     @JsonProperty("start_date")
     private Instant startDate;
 
-    @JsonProperty("return_date")
-    private Instant returnDate;
+    @JsonProperty("end_date")
+    private Instant endDate;
 }

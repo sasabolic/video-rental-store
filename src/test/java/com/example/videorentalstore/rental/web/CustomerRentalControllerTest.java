@@ -412,19 +412,19 @@ public class CustomerRentalControllerTest {
                 .andExpect(jsonPath("$.rentals[0].days_rented", equalTo(1)))
                 .andExpect(jsonPath("$.rentals[0].film_title", equalTo("Matrix 11")))
                 .andExpect(jsonPath("$.rentals[0].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[0].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[0].end_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[1].days_rented", equalTo(5)))
                 .andExpect(jsonPath("$.rentals[1].film_title", equalTo("Spider Man")))
                 .andExpect(jsonPath("$.rentals[1].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[1].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[1].end_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[2].days_rented", equalTo(2)))
                 .andExpect(jsonPath("$.rentals[2].film_title", equalTo("Spider Man 2")))
                 .andExpect(jsonPath("$.rentals[2].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[2].return_date", is(notNullValue())))
+                .andExpect(jsonPath("$.rentals[2].end_date", is(notNullValue())))
                 .andExpect(jsonPath("$.rentals[3].days_rented", equalTo(7)))
                 .andExpect(jsonPath("$.rentals[3].film_title", equalTo("Out of Africa")))
                 .andExpect(jsonPath("$.rentals[3].start_date", is(notNullValue())))
-                .andExpect(jsonPath("$.rentals[3].return_date", is(notNullValue())));
+                .andExpect(jsonPath("$.rentals[3].end_date", is(notNullValue())));
     }
 
     @Test
