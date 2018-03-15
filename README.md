@@ -148,7 +148,7 @@ In the following examples the customer 'Nikola Tesla' with id '1' will be used:
 
     Request:
     
-         curl -X PATCH "http://localhost:8080/customers/1/rentals" -H "accept: */*" -H "Content-Type: application/json" -d "[ { \"rental_id\": 1 }, { \"rental_id\": 2 }, { \"rental_id\": 3 }, { \"rental_id\": 4 }]"
+         curl -X PATCH "http://localhost:8080/customers/1/rentals" -H "accept: */*" -H "Content-Type: application/json" -d "[ { \"id\": 1 }, { \"id\": 2 }, { \"id\": 3 }, { \"id\": 4 }]"
 
     Response:
     
