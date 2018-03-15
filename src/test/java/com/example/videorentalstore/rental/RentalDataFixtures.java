@@ -56,10 +56,10 @@ public class RentalDataFixtures {
 
     public static String returnJson() {
         return "[\n" +
-                "  {\"rental_id\": 1},\n" +
-                "  {\"rental_id\": 2},\n" +
-                "  {\"rental_id\": 3},\n" +
-                "  {\"rental_id\": 4}\n" +
+                "  {\"id\": 1},\n" +
+                "  {\"id\": 2},\n" +
+                "  {\"id\": 3},\n" +
+                "  {\"id\": 4}\n" +
                 "]";
     }
 

@@ -480,10 +480,10 @@ public class CustomerRentalControllerTest {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
                 .content("[\n" +
-                        "  {\"rental_id\": 1},\n" +
-                        "  {\"rental_id\": 2},\n" +
-                        "  {\"rental_id\": " + rentalId1 + "},\n" +
-                        "  {\"rental_id\": " + rentalId2 + "}\n" +
+                        "  {\"id\": 1},\n" +
+                        "  {\"id\": 2},\n" +
+                        "  {\"id\": " + rentalId1 + "},\n" +
+                        "  {\"id\": " + rentalId2 + "}\n" +
                         "]")
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -506,10 +506,10 @@ public class CustomerRentalControllerTest {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 1L)
                 .content("[\n" +
-                        "  {\"rental_id\": 1},\n" +
-                        "  {\"rental_id\": 2},\n" +
-                        "  {\"rental_id\": " + rentalId1 + "},\n" +
-                        "  {\"rental_id\": " + rentalId2 + "}\n" +
+                        "  {\"id\": 1},\n" +
+                        "  {\"id\": 2},\n" +
+                        "  {\"id\": " + rentalId1 + "},\n" +
+                        "  {\"id\": " + rentalId2 + "}\n" +
                         "]")
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -561,7 +561,7 @@ public class CustomerRentalControllerTest {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
                 .content("[\n" +
-                        "  {\"rental_id\": null}\n" +
+                        "  {\"id\": null}\n" +
                         "]")
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -575,7 +575,7 @@ public class CustomerRentalControllerTest {
         final MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch("/customers/{customerId}/rentals", 12)
                 .content("[\n" +
-                        "  {\"rental_id\": null}\n" +
+                        "  {\"id\": null}\n" +
                         "]")
                 .contentType(MediaType.APPLICATION_JSON);
 

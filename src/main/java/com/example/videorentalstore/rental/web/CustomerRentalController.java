@@ -65,7 +65,7 @@ public class CustomerRentalController {
             @ApiResponse(code = 404, message = "Customer not found") })
     @PatchMapping
     public ResponseEntity<BatchRentalResponse> returnBack(@PathVariable("customerId") Long customerId, @RequestBody @Valid BatchReturnRentalRequest batchReturnRentalRequest) {
-        final BatchRental batchRental = this.rentalService.returnBack(customerId, batchReturnRentalRequest.getReturnRentalRequests().stream().map(ReturnRentalRequest::getRentalId).collect(Collectors.toList()));
+        final BatchRental batchRental = this.rentalService.returnBack(customerId, batchReturnRentalRequest.getReturnRentalRequests().stream().map(ReturnRentalRequest::getId).collect(Collectors.toList()));
 
         return ResponseEntity.ok(batchRentalResponseAssembler.of(batchRental));
     }

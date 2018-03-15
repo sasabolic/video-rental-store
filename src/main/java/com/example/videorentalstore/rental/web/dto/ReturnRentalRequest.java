@@ -15,10 +15,10 @@ import javax.validation.constraints.NotNull;
 public class ReturnRentalRequest {
 
     @NotNull(message = "Rental id cannot be null")
-    private Long rentalId;
+    private Long id;
 
     @JsonCreator
-    public ReturnRentalRequest(@JsonProperty("rental_id") Long rentalId) {
-        this.rentalId = rentalId;
+    public ReturnRentalRequest(@JsonProperty("id") Long id) {
+        this.id = id;
     }
 }
