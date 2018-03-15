@@ -1,6 +1,6 @@
 # Video Rental Store
 
-System for managing rental administration.
+System for managing rental the administration.
 
 ## Getting Started
 
@@ -65,163 +65,160 @@ In the following examples the customer 'Nikola Tesla' with id '1' will be used:
 * To search for customer with name: 'tesla': 
 
     Request:
-    ```
-    curl -X GET "http://localhost:8080/customers?name=tesla" -H "accept: */*"
-    ```
+    
+        curl -X GET "http://localhost:8080/customers?name=tesla" -H "accept: */*"
+    
     Response:
-    ```
-    [
-       {
-           "id": 1,
-           "first_name": "Nikola",
-           "last_name": "Tesla",
-           "bonus_points": 0
-       }
-   ]
-    ```
+    
+        [
+           {
+               "id": 1,
+               "first_name": "Nikola",
+               "last_name": "Tesla",
+               "bonus_points": 0
+           }
+        ]
 
 * To search for film with title: 'spider': 
 
     Request:
-    ```
-    curl -X GET "http://localhost:8080/films?title=spider" -H "accept: */*"
-    ```
+    
+        curl -X GET "http://localhost:8080/films?title=spider" -H "accept: */*"
+
     Response:
-    ```
-    [
-        {
-            "id": 2,
-            "title": "Spider Man",
-            "type": "REGULAR_RELEASE",
-            "quantity": 4
-        },
-        {
-            "id": 3,
-            "title": "Spider Man 2",
-            "type": "REGULAR_RELEASE",
-            "quantity": 3
-        }
-    ]
-    ```
+    
+        [
+            {
+                "id": 2,
+                "title": "Spider Man",
+                "type": "REGULAR_RELEASE",
+                "quantity": 4
+            },
+            {
+                "id": 3,
+                "title": "Spider Man 2",
+                "type": "REGULAR_RELEASE",
+                "quantity": 3
+            }
+        ]
+    
 * To create new film rentals for customer with id '1' 
 
     Request:
-    ```
-    curl -X POST "http://localhost:8080/customers/1/rentals" -H "accept: */*" -H "Content-Type: application/json" -d "[ { \"film_id\": 1, \"days_rented\": 1 }, { \"film_id\": 2, \"days_rented\": 5 }, { \"film_id\": 3, \"days_rented\": 2 }, { \"film_id\": 4, \"days_rented\": 7 }]"
-    ```
+    
+        curl -X POST "http://localhost:8080/customers/1/rentals" -H "accept: */*" -H "Content-Type: application/json" -d "[ { \"film_id\": 1, \"days_rented\": 1 }, { \"film_id\": 2, \"days_rented\": 5 }, { \"film_id\": 3, \"days_rented\": 2 }, { \"film_id\": 4, \"days_rented\": 7 }]"
+
     Response:
-    ```
-    {
-      "amount": "SEK 250.00",
-      "rentals": [
+    
         {
-          "id": 1,
-          "film_title": "Matrix 11",
-          "days_rented": 1,
-          "start_date": "2018-03-14T16:08:17.363728Z",
-          "end_date": null
-        },
-        {
-          "id": 2,
-          "film_title": "Spider Man",
-          "days_rented": 5,
-          "start_date": "2018-03-14T16:08:17.409213Z",
-          "end_date": null
-        },
-        {
-          "id": 3,
-          "film_title": "Spider Man 2",
-          "days_rented": 2,
-          "start_date": "2018-03-14T16:08:17.424916Z",
-          "end_date": null
-        },
-        {
-          "id": 4,
-          "film_title": "Out of Africa",
-          "days_rented": 7,
-          "start_date": "2018-03-14T16:08:17.433951Z",
-          "end_date": null
+          "amount": "SEK 250.00",
+          "rentals": [
+            {
+              "id": 1,
+              "film_title": "Matrix 11",
+              "days_rented": 1,
+              "start_date": "2018-03-14T16:08:17.363728Z",
+              "end_date": null
+            },
+            {
+              "id": 2,
+              "film_title": "Spider Man",
+              "days_rented": 5,
+              "start_date": "2018-03-14T16:08:17.409213Z",
+              "end_date": null
+            },
+            {
+              "id": 3,
+              "film_title": "Spider Man 2",
+              "days_rented": 2,
+              "start_date": "2018-03-14T16:08:17.424916Z",
+              "end_date": null
+            },
+            {
+              "id": 4,
+              "film_title": "Out of Africa",
+              "days_rented": 7,
+              "start_date": "2018-03-14T16:08:17.433951Z",
+              "end_date": null
+            }
+          ]
         }
-      ]
-    }
-    ```
 
 * To return rentals (after 3 days) for customer with id '1' 
 
     Request:
-    ```
-    curl -X PATCH "http://localhost:8080/customers/1/rentals" -H "accept: */*" -H "Content-Type: application/json" -d "[ { \"rental_id\": 1 }, { \"rental_id\": 2 }, { \"rental_id\": 3 }, { \"rental_id\": 4 }]"
-    ```
+    
+         curl -X PATCH "http://localhost:8080/customers/1/rentals" -H "accept: */*" -H "Content-Type: application/json" -d "[ { \"rental_id\": 1 }, { \"rental_id\": 2 }, { \"rental_id\": 3 }, { \"rental_id\": 4 }]"
+
     Response:
-    ```
-    {
-      "amount": "SEK 110.00",
-      "rentals": [
+    
         {
-          "id": 1,
-          "film_title": "Matrix 11",
-          "days_rented": 1,
-          "start_date": "2018-03-14T16:08:17Z",
-          "end_date": "2018-03-17T16:10:02.121004Z"
-        },
-        {
-          "id": 2,
-          "film_title": "Spider Man",
-          "days_rented": 5,
-          "start_date": "2018-03-14T16:08:17Z",
-          "end_date": "2018-03-17T16:10:02.121045Z"
-        },
-        {
-          "id": 3,
-          "film_title": "Spider Man 2",
-          "days_rented": 2,
-          "start_date": "2018-03-14T16:08:17Z",
-          "end_date": "2018-03-17T16:10:02.121055Z"
-        },
-        {
-          "id": 4,
-          "film_title": "Out of Africa",
-          "days_rented": 7,
-          "start_date": "2018-03-14T16:08:17Z",
-          "end_date": "2018-03-17T16:10:02.121063Z"
+          "amount": "SEK 110.00",
+          "rentals": [
+            {
+              "id": 1,
+              "film_title": "Matrix 11",
+              "days_rented": 1,
+              "start_date": "2018-03-14T16:08:17Z",
+              "end_date": "2018-03-17T16:10:02.121004Z"
+            },
+            {
+              "id": 2,
+              "film_title": "Spider Man",
+              "days_rented": 5,
+              "start_date": "2018-03-14T16:08:17Z",
+              "end_date": "2018-03-17T16:10:02.121045Z"
+            },
+            {
+              "id": 3,
+              "film_title": "Spider Man 2",
+              "days_rented": 2,
+              "start_date": "2018-03-14T16:08:17Z",
+              "end_date": "2018-03-17T16:10:02.121055Z"
+            },
+            {
+              "id": 4,
+              "film_title": "Out of Africa",
+              "days_rented": 7,
+              "start_date": "2018-03-14T16:08:17Z",
+              "end_date": "2018-03-17T16:10:02.121063Z"
+            }
+          ]
         }
-      ]
-    }
-    ```
 
 * To get the customer with id '1' 
 
     Request:
-    ```
-    curl -X GET "http://localhost:8080/customers/1" -H "accept: */*"
-    ```
+    
+        curl -X GET "http://localhost:8080/customers/1" -H "accept: */*"
+
     Response:
-    ```
-    {
-      "id": 1,
-      "first_name": "Nikola",
-      "last_name": "Tesla",
-      "bonus_points": 5
-    }
-    ```
+    
+        {
+          "id": 1,
+          "first_name": "Nikola",
+          "last_name": "Tesla",
+          "bonus_points": 5
+        }
+
     
 * In case customer with id '4" does not exist
 
     Request:
-    ```
-    curl -X GET "http://localhost:8080/customers/4" -H "accept: */*"
-    ```
+    
+        curl -X GET "http://localhost:8080/customers/4" -H "accept: */*"
+
     Response:
-    ```
-    {
-      "timestamp": "2018-03-14T17:41:11.013941",
-      "status": 404,
-      "error": "Not Found",
-      "exception": "com.example.videorentalstore.customer.CustomerNotFoundException",
-      "message": "Customer with id '4' does not exist",
-      "errors": null
-    }
-    ```
+    
+        {
+          "timestamp": "2018-03-14T17:41:11.013941",
+          "status": 404,
+          "error": "Not Found",
+          "exception": "com.example.videorentalstore.customer.CustomerNotFoundException",
+          "message": "Customer with id '4' does not exist",
+          "errors": null
+        }
+    
 
 ## Built With
 
