@@ -25,11 +25,11 @@ public class DefaultRentalService implements RentalService {
     }
 
     @Override
-    public BatchRental findAllForCustomer(Long customerId) {
+    public List<Rental> findAllForCustomer(Long customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with id '%d' does not exist", customerId)));
 
-        return new BatchRental(customer.getRentals());
+        return customer.getRentals();
     }
 
     @Override

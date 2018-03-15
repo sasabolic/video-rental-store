@@ -49,12 +49,11 @@ public class RentalServiceTest {
     public void whenFindingAllForCustomerThenReturnListOfRentals() {
         doReturn(Optional.of(CustomerDataFixtures.customerWithRentals(3))).when(customerRepository).findById(anyLong());
 
-        final BatchRental result = rentalService.findAllForCustomer(1L);
+        final List<Rental> result = rentalService.findAllForCustomer(1L);
 
         assertThat(result).isNotNull();
-        assertThat(result.getAmount()).isNull();
-        assertThat(result.getRentals()).isNotEmpty();
-        assertThat(result.getRentals()).hasSize(4);
+        assertThat(result).isNotEmpty();
+        assertThat(result).hasSize(4);
     }
 
     @Test

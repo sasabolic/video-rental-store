@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface RentalService {
 
-    BatchRental findAllForCustomer(Long customerId);
+    List<Rental> findAllForCustomer(Long customerId);
 
     BatchRental create(Long customerId, List<RentalInfo> rentalInfos);
 

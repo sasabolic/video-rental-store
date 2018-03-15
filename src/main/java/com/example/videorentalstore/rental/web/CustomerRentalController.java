@@ -1,12 +1,11 @@
 package com.example.videorentalstore.rental.web;
 
 import com.example.videorentalstore.rental.BatchRental;
+import com.example.videorentalstore.rental.Rental;
 import com.example.videorentalstore.rental.RentalService;
-import com.example.videorentalstore.rental.web.dto.BatchCreateRentalRequest;
-import com.example.videorentalstore.rental.web.dto.BatchRentalResponse;
-import com.example.videorentalstore.rental.web.dto.BatchReturnRentalRequest;
-import com.example.videorentalstore.rental.web.dto.ReturnRentalRequest;
+import com.example.videorentalstore.rental.web.dto.*;
 import com.example.videorentalstore.rental.web.dto.assembler.BatchRentalResponseAssembler;
+import com.example.videorentalstore.rental.web.dto.assembler.RentalResponseAssembler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -15,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -26,10 +26,12 @@ import java.util.stream.Collectors;
 public class CustomerRentalController {
 
     private final RentalService rentalService;
+    private final RentalResponseAssembler rentalResponseAssembler;
     private final BatchRentalResponseAssembler batchRentalResponseAssembler;
 
-    public CustomerRentalController(RentalService rentalService, BatchRentalResponseAssembler batchRentalResponseAssembler) {
+    public CustomerRentalController(RentalService rentalService, RentalResponseAssembler rentalResponseAssembler, BatchRentalResponseAssembler batchRentalResponseAssembler) {
         this.rentalService = rentalService;
+        this.rentalResponseAssembler = rentalResponseAssembler;
         this.batchRentalResponseAssembler = batchRentalResponseAssembler;
     }
 
@@ -38,10 +40,10 @@ public class CustomerRentalController {
             response = BatchRentalResponse.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Customer not found") })
-    public ResponseEntity<BatchRentalResponse> getAll(@PathVariable("customerId") Long customerId) {
-        final BatchRental batchRental = this.rentalService.findAllForCustomer(customerId);
+    public ResponseEntity<List<RentalResponse>> getAll(@PathVariable("customerId") Long customerId) {
+        final List<Rental> rentals = this.rentalService.findAllForCustomer(customerId);
 
-        return ResponseEntity.ok(batchRentalResponseAssembler.of(batchRental));
+        return ResponseEntity.ok(rentalResponseAssembler.of(rentals));
     }
 
     @ApiOperation(value = "Creates rentals for customer",
