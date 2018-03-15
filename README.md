@@ -1,6 +1,6 @@
 # Video Rental Store
 
-System for managing rental the administration.
+System for managing the rental administration.
 
 ## Getting Started
 
@@ -53,11 +53,11 @@ After you have run the `./run.sh` for the first time, all of the services will b
 
     ./gradlew clean test
     
-## API reference
+## API Reference
 
 API reference documentation is available at http://localhost:8080/swagger-ui.html.
 
-### Example API calls
+### Example API Calls
 
 Example API calls for the customer rental flow. The database is prepopulated with film and customer data. 
 In the following examples the customer 'Nikola Tesla' with id '1' will be used:
