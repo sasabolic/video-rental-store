@@ -115,6 +115,9 @@ public enum ReleaseType {
      * @return the money
      */
     public Money calculateExtraCharges(long extraDays) {
+        if (extraDays <= 0) {
+            return Money.of(0, price().getCurrency());
+        }
         return price().multiply(extraDays);
     }
 
