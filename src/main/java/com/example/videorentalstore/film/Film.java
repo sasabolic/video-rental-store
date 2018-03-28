@@ -76,7 +76,7 @@ public class Film {
     }
 
     public Money calculateExtraCharges(long extraDays) {
-        return type.calculatePrice(extraDays);
+        return type.calculateExtraCharges(extraDays);
     }
 
     public int calculateBonusPoints(long daysRented) {
