@@ -24,7 +24,6 @@ public class SwaggerConfig {
                 .build()
                 .pathMapping("/")
                 .directModelSubstitute(Money.class, String.class)
-                .enableUrlTemplating(true)
                 .useDefaultResponseMessages(false)
                 .tags(new Tag("rental", "Operations for creating and returning customer's rentals"),
                         new Tag("customer", "All operations on customer"),
