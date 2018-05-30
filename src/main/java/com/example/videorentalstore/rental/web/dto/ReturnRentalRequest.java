@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Return rental request DTO.
+ *
+ * @author Sasa Bolic
  */
 @Getter
 @ToString

@@ -11,6 +11,8 @@ import java.util.*;
 
 /**
  * Batch return rentals request DTO. Contains List of {@link ReturnRentalRequest} DTOs.
+ *
+ * @author Sasa Bolic
  */
 @Getter
 @ToString

@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 /**
  * Batch pay rentals request DTO. Contains List of {@link CreateRentalRequest} DTOs.
+ *
+ * @author Sasa Bolic
  */
 @Getter
 @ToString

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Implementation of {@link BatchRentalResponseAssembler}.
+ *
+ * @author Sasa Bolic
  */
 @Component
 public class DefaultBatchRentalResponseAssembler implements BatchRentalResponseAssembler {

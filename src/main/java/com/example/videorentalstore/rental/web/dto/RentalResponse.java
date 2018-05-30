@@ -8,6 +8,8 @@ import java.time.Instant;
 
 /**
  * Rental response DTO.
+ *
+ * @author Sasa Bolic
  */
 @AllArgsConstructor
 @Getter

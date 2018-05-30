@@ -6,6 +6,8 @@ import com.example.videorentalstore.rental.web.dto.RentalResponse;
 
 /**
  * Assembler interface for creating {@link RentalResponse} DTOs.
+ *
+ * @author Sasa Bolic
  */
 public interface RentalResponseAssembler extends GenericResponseAssembler<Rental, RentalResponse> {
 }

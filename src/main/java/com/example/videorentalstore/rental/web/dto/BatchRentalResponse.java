@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * Batch rental response DTO.
+ *
+ * @author Sasa Bolic
  */
 @AllArgsConstructor
 @Getter

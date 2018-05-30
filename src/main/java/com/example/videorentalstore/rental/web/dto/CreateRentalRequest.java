@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Create rental request DTO.
+ *
+ * @author Sasa Bolic
  */
 @Getter
 @ToString

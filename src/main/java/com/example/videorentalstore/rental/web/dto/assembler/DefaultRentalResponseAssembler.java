@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Implementation of {@link RentalResponseAssembler}.
+ *
+ * @author Sasa Bolic
  */
 @Component
 public class DefaultRentalResponseAssembler implements RentalResponseAssembler {
