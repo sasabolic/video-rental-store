@@ -9,6 +9,8 @@ import java.util.Optional;
 
 /**
  * Repository interface to manage {@code Customer} instances.
+ *
+ * @author Sasa Bolic
  */
 @Transactional(readOnly = true)
 public interface CustomerRepository extends JpaRepository<Customer, Long> {

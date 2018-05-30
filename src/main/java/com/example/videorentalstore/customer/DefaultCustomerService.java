@@ -5,6 +5,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Implementation of {@link CustomerService}.
+ *
+ * @author Sasa Bolic
+ */
 @Service
 @Transactional
 public class DefaultCustomerService implements CustomerService {

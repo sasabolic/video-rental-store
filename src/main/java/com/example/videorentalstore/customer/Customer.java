@@ -14,6 +14,11 @@ import java.util.Objects;
 
 import static com.example.videorentalstore.film.Price.CURRENCY_CODE;
 
+/**
+ * Customer entity.
+ *
+ * @author Sasa Bolic
+ */
 @Entity
 @Getter
 @NoArgsConstructor

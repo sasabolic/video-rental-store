@@ -4,6 +4,8 @@ import java.util.List;
 
 /**
  * Interface for actions on {@code Customer}.
+ *
+ * @author Sasa Bolic
  */
 public interface CustomerService {
 
