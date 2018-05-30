@@ -13,6 +13,11 @@ import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+/**
+ * Rental entity.
+ *
+ * @author Sasa Bolic
+ */
 @Entity
 @Getter
 @NoArgsConstructor

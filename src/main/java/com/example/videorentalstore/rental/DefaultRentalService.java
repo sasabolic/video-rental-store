@@ -12,6 +12,11 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of {@link RentalService}.
+ *
+ * @author Sasa Bolic
+ */
 @Service
 @Transactional
 public class DefaultRentalService implements RentalService {

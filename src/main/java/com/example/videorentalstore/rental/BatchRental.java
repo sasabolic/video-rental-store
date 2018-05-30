@@ -6,6 +6,11 @@ import org.javamoney.moneta.Money;
 
 import java.util.List;
 
+/**
+ * Batch rental information containing list of rentals and total amount of renting price.
+ *
+ * @author Sasa Bolic
+ */
 @AllArgsConstructor
 @Getter
 public class BatchRental {
