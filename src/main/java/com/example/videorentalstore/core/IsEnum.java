@@ -18,6 +18,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * </ul>
  * <p>
  * {@code null} elements are considered valid.
+ *
+ * @author Sasa Bolic
  */
 @Constraint(validatedBy = {IsEnumValidator.class})
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})

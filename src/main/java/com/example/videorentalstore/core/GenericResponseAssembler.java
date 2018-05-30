@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
  *
  * @param <E> the type parameter for entity object
  * @param <D> the type parameter for DTO object
+ *
+ * @author Sasa Bolic
  */
 public interface GenericResponseAssembler<E, D> {
 

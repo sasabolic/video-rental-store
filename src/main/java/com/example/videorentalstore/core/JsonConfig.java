@@ -19,6 +19,8 @@ import java.util.Locale;
 
 /**
  * JSON serialization and deserialization for {@link Money}.
+ *
+ * @author Sasa Bolic
  */
 @Configuration
 public class JsonConfig {

@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 /**
  * Validates that the {@code java.lang.String} is a valid {@link Enum} value.
+ *
+ * @author Sasa Bolic
  */
 public class IsEnumValidator implements ConstraintValidator<IsEnum, String> {
 

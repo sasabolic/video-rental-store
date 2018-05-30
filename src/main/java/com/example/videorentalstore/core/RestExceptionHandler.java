@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 /**
  * Rest exception handler.
+ *
+ * @author Sasa Bolic
  */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
