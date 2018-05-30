@@ -5,7 +5,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 
-    <changeSet id="1" author="developer">
+    <changeSet id="1" author="sasa.bolic">
         <createTable tableName="film">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -54,7 +54,7 @@
                                  referencedTableName="customer"/>
     </changeSet>
 
-    <changeSet id="2" author="developer">
+    <changeSet id="2" author="sasa.bolic">
         <loadData file="db/changelog/data/film_values.csv"
                   tableName="film"/>
         <loadData file="db/changelog/data/customer_values.csv"
