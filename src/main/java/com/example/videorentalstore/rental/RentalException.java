@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * Exception thrown in case creation or returning batch of{@link Rental} is not successful.
+ *
+ * @author Sasa Bolic
  */
 @Getter
 public class RentalException extends RuntimeException {
