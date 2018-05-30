@@ -7,6 +7,8 @@ import static com.example.videorentalstore.film.Price.PREMIUM_PRICE;
 
 /**
  * Release type of {@link Film} used for calculation of price and bonus points.
+ *
+ * @author Sasa Bolic
  */
 public enum ReleaseType {
 

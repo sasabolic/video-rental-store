@@ -5,6 +5,8 @@ import org.javamoney.moneta.Money;
 
 /**
  * The interface containing {@link ReleaseType} price information.
+ *
+ * @author Sasa Bolic
  */
 public interface Price {
 
