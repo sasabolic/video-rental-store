@@ -6,6 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Video rental store application.
+ *
+ * @author Sasa Bolic
+ */
 @SpringBootApplication
 public class VideoRentalStoreApplication {
 
