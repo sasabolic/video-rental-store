@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Implementation of {@link CustomerResponseAssembler}.
+ *
+ * @author Sasa Bolic
  */
 @Component
 public class DefaultCustomerResponseAssembler implements CustomerResponseAssembler {

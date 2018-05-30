@@ -17,6 +17,8 @@ import java.util.List;
 
 /**
  * REST customer resources.
+ *
+ * @author Sasa Bolic
  */
 @RestController
 @RequestMapping("/customers")

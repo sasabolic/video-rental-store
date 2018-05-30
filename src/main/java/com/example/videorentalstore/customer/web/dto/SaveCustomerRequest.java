@@ -8,6 +8,8 @@ import javax.validation.constraints.NotEmpty;
 
 /**
  * Save customer request DTO.
+ *
+ * @author Sasa Bolic
  */
 @Getter
 public class SaveCustomerRequest {

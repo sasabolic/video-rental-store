@@ -6,6 +6,8 @@ import lombok.Getter;
 
 /**
  * Customer response DTO.
+ *
+ * @author Sasa Bolic
  */
 @AllArgsConstructor
 @Getter
