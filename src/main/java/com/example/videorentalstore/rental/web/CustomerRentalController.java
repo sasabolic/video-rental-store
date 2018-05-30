@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 /**
  * REST customer's rental resources.
+ *
+ * @author Sasa Bolic
  */
 @RestController
 @RequestMapping("/customers/{customerId}/rentals")
