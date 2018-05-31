@@ -5,6 +5,8 @@ import lombok.Getter;
 
 /**
  * Film response DTO.
+ *
+ * @author Sasa Bolic
  */
 @AllArgsConstructor
 @Getter

@@ -18,6 +18,8 @@ import java.util.List;
 
 /**
  * REST film resources.
+ *
+ * @author Sasa Bolic
  */
 @RestController
 @RequestMapping("/films")

@@ -6,6 +6,8 @@ import com.example.videorentalstore.film.web.dto.FilmResponse;
 
 /**
  * Assembler interface for creating {@link FilmResponse} DTOs.
+ *
+ * @author Sasa Bolic
  */
 public interface FilmResponseAssembler extends GenericResponseAssembler<Film, FilmResponse> {
 }

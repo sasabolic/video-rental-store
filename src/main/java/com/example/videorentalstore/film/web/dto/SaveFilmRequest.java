@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Save film request DTO.
+ *
+ * @author Sasa Bolic
  */
 @Getter
 public class SaveFilmRequest {

@@ -8,6 +8,8 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Update film's quantity request DTO.
+ *
+ * @author Sasa Bolic
  */
 @Getter
 public class UpdateFilmQuantityRequest {

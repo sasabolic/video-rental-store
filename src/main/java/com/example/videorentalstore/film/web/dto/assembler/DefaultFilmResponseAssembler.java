@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Implementation of {@link FilmResponseAssembler}.
+ *
+ * @author Sasa Bolic
  */
 @Component
 public class DefaultFilmResponseAssembler implements FilmResponseAssembler {
