@@ -2,6 +2,8 @@ package com.example.videorentalstore.film;
 
 /**
  * Exception thrown in case {@code Film} is not unique.
+ *
+ * @author Sasa Bolic
  */
 public class FilmUniqueViolationException extends RuntimeException {
 

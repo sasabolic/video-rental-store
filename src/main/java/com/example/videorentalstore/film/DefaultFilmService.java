@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * Implementation of {@link FilmService} delegating persistence operations to {@link FilmRepository}.
+ *
+ * @author Sasa Bolic
  */
 @Service
 @Transactional

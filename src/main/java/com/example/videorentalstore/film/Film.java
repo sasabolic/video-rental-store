@@ -9,6 +9,11 @@ import org.javamoney.moneta.Money;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * Film entity.
+ *
+ * @author Sasa Bolic
+ */
 @Entity
 @Getter
 @NoArgsConstructor

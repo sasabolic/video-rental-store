@@ -9,6 +9,8 @@ import java.util.Optional;
 
 /**
  * Repository interface to manage {@code Film} instances.
+ *
+ * @author Sasa Bolic
  */
 @Transactional(readOnly = true)
 public interface FilmRepository extends JpaRepository<Film, Long> {
