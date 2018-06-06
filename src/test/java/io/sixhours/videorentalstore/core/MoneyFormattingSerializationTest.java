@@ -28,17 +28,17 @@ public class MoneyFormattingSerializationTest {
     @Test
     public void whenWriteAsStringThenCorrectResult() throws JsonProcessingException {
 
-        String result = objectMapper.writeValueAsString(Money.of(12.99, "SEK"));
+        String result = objectMapper.writeValueAsString(Money.of(12.99, "RSD"));
 
-        assertThat(result).isEqualTo("\"SEK\u00A012.99\"");
+        assertThat(result).isEqualTo("\"RSD\u00A012.99\"");
     }
 
     @Test
     public void whenReadThenCorrectResult() throws IOException {
 
-        final MonetaryAmount result = objectMapper.readValue("\"SEK 12.99\"", MonetaryAmount.class);
+        final MonetaryAmount result = objectMapper.readValue("\"RSD 12.99\"", MonetaryAmount.class);
 
-        assertThat(result).isEqualTo(Money.of(12.99, "SEK"));
+        assertThat(result).isEqualTo(Money.of(12.99, "RSD"));
     }
 
     @Test
@@ -46,9 +46,9 @@ public class MoneyFormattingSerializationTest {
         final MonetaryAmountFormat format = MonetaryFormats.getAmountFormat(
                 AmountFormatQueryBuilder.of(Locale.ROOT).build());
 
-        final String result = format.format(Money.of(250, "SEK"));
+        final String result = format.format(Money.of(250, "RSD"));
 
-        final String expected = "SEK\u00A0250.00";
+        final String expected = "RSD\u00A0250.00";
 
         for (int i = 0; i < result.length(); i++) {
             System.out.println("first: '" + result.codePointAt(i) + "' second: '" + expected.codePointAt(i) + "'");

@@ -10,7 +10,7 @@ import org.javamoney.moneta.Money;
  */
 public interface Price {
 
-    String CURRENCY_CODE = "SEK";
+    String CURRENCY_CODE = "RSD";
 
     Money PREMIUM_PRICE = Money.of(40, CURRENCY_CODE);
 

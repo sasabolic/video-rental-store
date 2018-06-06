@@ -111,7 +111,7 @@ In the following examples the customer 'Nikola Tesla' with id '1' will be used:
     Response:
     
         {
-          "amount": "SEK 250.00",
+          "amount": "RSD 250.00",
           "rentals": [
             {
               "id": 1,
@@ -153,7 +153,7 @@ In the following examples the customer 'Nikola Tesla' with id '1' will be used:
     Response:
     
         {
-          "amount": "SEK 110.00",
+          "amount": "RSD 110.00",
           "rentals": [
             {
               "id": 1,
