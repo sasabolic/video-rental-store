@@ -46,14 +46,15 @@ public class Customer {
     private List<Rental> rentals = new ArrayList<>();
 
     public Customer(String firstName, String lastName) {
-        Objects.requireNonNull(firstName, "Customer's first name cannot be null!");
-        Objects.requireNonNull(lastName, "Customer's last name cannot be null!");
+        validate(firstName, lastName);
 
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
     public void update(String firstName, String lastName) {
+        validate(firstName, lastName);
+
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -85,5 +86,10 @@ public class Customer {
         return this.rentals.stream()
                 .map(Rental::calculateExtraCharges)
                 .reduce(Money.of(0, CURRENCY_CODE), Money::add);
+    }
+
+    private void validate(String firstName, String lastName) {
+        Objects.requireNonNull(firstName, "Customer's first name cannot be null!");
+        Objects.requireNonNull(lastName, "Customer's last name cannot be null!");
     }
 }
