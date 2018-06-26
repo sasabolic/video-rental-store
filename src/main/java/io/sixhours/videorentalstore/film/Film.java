@@ -35,12 +35,7 @@ public class Film {
     private boolean active = true;
 
     public Film(String title, ReleaseType type, int quantity) {
-        Objects.requireNonNull(title, "Film's title cannot be null!");
-        Objects.requireNonNull(type, "Film's type cannot be null!");
-
-        if (quantity < 0) {
-            throw new IllegalArgumentException("Number of film copies cannot be negative!");
-        }
+        validate(title, type, quantity);
 
         this.title = title;
         this.type = type;
@@ -48,6 +43,8 @@ public class Film {
     }
 
     public void update(String title, String type, int quantity) {
+        validate(title, ReleaseType.valueOf(type), quantity);
+
         this.title = title;
         this.type = ReleaseType.valueOf(type);
         this.quantity = quantity;
@@ -86,5 +83,14 @@ public class Film {
 
     public int calculateBonusPoints(long daysRented) {
         return type.calculateBonusPoints(daysRented);
+    }
+
+    private void validate(String title, ReleaseType type, int quantity) {
+        Objects.requireNonNull(title, "Film's title cannot be null!");
+        Objects.requireNonNull(type, "Film's type cannot be null!");
+
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Number of film copies cannot be negative!");
+        }
     }
 }
