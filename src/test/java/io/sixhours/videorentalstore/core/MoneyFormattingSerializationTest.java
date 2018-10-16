@@ -30,7 +30,7 @@ public class MoneyFormattingSerializationTest {
 
         String result = objectMapper.writeValueAsString(Money.of(12.99, "RSD"));
 
-        assertThat(result).isEqualTo("\"RSD\u00A012.99\"");
+        assertThat(result).isEqualTo("\"RSD 12.99\"");
     }
 
     @Test
@@ -48,7 +48,7 @@ public class MoneyFormattingSerializationTest {
 
         final String result = format.format(Money.of(250, "RSD"));
 
-        final String expected = "RSD\u00A0250.00";
+        final String expected = "RSD 250.00";
 
         for (int i = 0; i < result.length(); i++) {
             System.out.println("first: '" + result.codePointAt(i) + "' second: '" + expected.codePointAt(i) + "'");
